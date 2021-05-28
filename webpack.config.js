@@ -1,6 +1,14 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+const alias = {
+	common: path.resolve(__dirname, '/common'),
+	core: path.resolve(__dirname, '/core'),
+    configs: path.resolve(__dirname, '/configs'),
+    components: path.resolve(__dirname, '/components'),
+    pages: path.resolve(__dirname, '/pages')
+};
+
 module.exports = {
     entry: {
         app: ['babel-polyfill', './src/index']
@@ -47,7 +55,8 @@ module.exports = {
         }),
     ],
     resolve: {
-        extensions: ['.js', '.ts']
+        extensions: ['.js', '.ts'],
+        alias: alias
     },
     devServer: {
         historyApiFallback: true,
