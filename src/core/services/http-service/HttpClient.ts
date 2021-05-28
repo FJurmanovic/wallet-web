@@ -104,8 +104,11 @@ function resolveUrl(url: string, path: string): string {
     if (path.includes("http") || path.includes("://")) {
         return path;
     }
-    const fixedPath = path.split("/").join("/");
-    const urlWithPath = `${url.endsWith("/") ? url : `${url}/`}${path}`;
+    const fixedPath = path
+        .split("/")
+        .filter((i) => i)
+        .join("/");
+    const urlWithPath = `${url.endsWith("/") ? url : `${url}/`}${fixedPath}`;
     return urlWithPath;
 }
 

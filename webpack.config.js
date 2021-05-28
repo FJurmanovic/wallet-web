@@ -6,7 +6,8 @@ const alias = {
 	core: path.resolve(__dirname, '/core'),
     configs: path.resolve(__dirname, '/configs'),
     components: path.resolve(__dirname, '/components'),
-    pages: path.resolve(__dirname, '/pages')
+    pages: path.resolve(__dirname, '/pages'),
+    services: path.resolve(__dirname, '/services')
 };
 
 module.exports = {
@@ -47,6 +48,12 @@ module.exports = {
                     loader: 'babel-loader'
                 }
             },
+            {
+                test: /\.m?js/,
+                resolve: {
+                    fullySpecified: false
+                }
+            }
         ]
     },
     plugins: [

@@ -16,6 +16,22 @@
             {
                 "loose": true
             }
+        ],
+        [
+            "module-resolver",
+            {
+                "root": [
+                    "."
+                ],
+                "alias": {
+                    "core": "./src/core",
+                    "common": "./src/common",
+                    "components": "./src/components",
+                    "pages": "./src/pages",
+                    "configs": "./src/configs",
+                    "services": "./src/services"
+                }
+            }
         ]
     ]
 }
