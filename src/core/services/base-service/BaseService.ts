@@ -6,23 +6,23 @@ class BaseService {
         this.httpClient = new HttpClient();
     }
 
-    getAll = (headers: HeadersInit) => {
+    getAll = (headers?: HeadersInit) => {
         return this.httpClient.get(this.endpoint, null, headers);
     };
 
-    get = (params: Object, headers: HeadersInit) => {
+    get = (params?: Object, headers?: HeadersInit) => {
         return this.httpClient.get(this.endpoint, params, headers);
     };
 
-    put = (data: Object, headers: HeadersInit) => {
+    put = (data?: Object, headers?: HeadersInit) => {
         return this.httpClient.put(this.endpoint, data, headers);
     };
 
-    post = (data: Object, headers: HeadersInit) => {
+    post = (data?: Object, headers?: HeadersInit) => {
         return this.httpClient.post(this.endpoint, data, headers);
     };
 
-    delete = (data: Object, headers: HeadersInit) => {
+    delete = (data?: Object, headers?: HeadersInit) => {
         return this.httpClient.delete(this.endpoint, data, headers);
     };
 }

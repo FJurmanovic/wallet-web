@@ -1,10 +1,10 @@
 import { attr, targets, controller, target } from "@github/catalyst";
 import { closest, index, update, isTrue } from "core/utils";
 import { html, render, until } from "@github/jtml";
-import { PingService } from "services";
+import { PingService } from "services/";
 
 @controller
-class AppMainElement extends HTMLElement {
+class HomePageElement extends HTMLElement {
     private pingService: PingService;
     constructor() {
         super();
@@ -27,6 +27,11 @@ class AppMainElement extends HTMLElement {
     };
 
     update() {
-        render(html`${this.pongEl()}`, this);
+        render(
+            html`<app-link data-to="/home" data-title="Home"></app-link> |
+                <app-link data-to="/" data-title="Main"></app-link> |
+                <app-link data-to="/rb" data-title="$1"></app-link>`,
+            this
+        );
     }
 }

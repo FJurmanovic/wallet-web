@@ -1,6 +1,6 @@
 import { toKebabCase } from "core/utils";
 
-export default function closest(proto: Object, key: string): Object {
+export default function closest(proto, key) {
     const kebab: string = toKebabCase(key);
     return Object.defineProperty(proto, key, {
         configurable: true,

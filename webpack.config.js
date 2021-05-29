@@ -7,7 +7,8 @@ const alias = {
     configs: path.resolve(__dirname, '/configs'),
     components: path.resolve(__dirname, '/components'),
     pages: path.resolve(__dirname, '/pages'),
-    services: path.resolve(__dirname, '/services')
+    services: path.resolve(__dirname, '/services'),
+    layouts: path.resolve(__dirname, "/layouts")
 };
 
 module.exports = {

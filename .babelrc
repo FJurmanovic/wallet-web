@@ -29,8 +29,15 @@
                     "components": "./src/components",
                     "pages": "./src/pages",
                     "configs": "./src/configs",
-                    "services": "./src/services"
+                    "services": "./src/services",
+                    "layouts": "./src/layouts"
                 }
+            }
+        ],
+        [
+            "@babel/plugin-proposal-private-methods",
+            {
+                "loose": true
             }
         ]
     ]

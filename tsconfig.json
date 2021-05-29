@@ -32,6 +32,9 @@
             "services*": [
                 "src/services*"
             ],
+            "layouts*": [
+                "src/layouts"
+            ],
             "@src*": [
                 "src*"
             ],
