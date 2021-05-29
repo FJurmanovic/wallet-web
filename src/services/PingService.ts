@@ -1,8 +1,8 @@
-import { BaseService } from "core/services";
+import { AppService, BaseService } from "core/services";
 
 class PingService extends BaseService {
-    constructor() {
-        super("/api");
+    constructor(appService: AppService) {
+        super("/wallet", appService);
     }
 }
 

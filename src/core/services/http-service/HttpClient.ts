@@ -77,7 +77,13 @@ export default HttpClient;
 
 async function createRequest(request: Request): Promise<Response> {
     let response: Response = await fetch(request);
-    if (!response.ok && response.status !== 403 && response.status !== 400) {
+    if (
+        !response.ok &&
+        response.status !== 403 &&
+        response.status !== 400 &&
+        response.status !== 401 &&
+        response.status !== 500
+    ) {
         throw new Error(`HTTP error! status: ${response.status}`);
     } else {
         if (response.headers.get("Content-Type") !== null) {

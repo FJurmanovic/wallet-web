@@ -2,21 +2,25 @@ import { attr, targets, controller, target } from "@github/catalyst";
 import { closest, index, update, isTrue } from "core/utils";
 import { html, render, until } from "@github/jtml";
 import { PingService } from "services/";
+import { AppMainElement } from "components/";
 
 @controller
 class HomePageElement extends HTMLElement {
     private pingService: PingService;
+    @closest appMain: AppMainElement;
     constructor() {
         super();
-        this.pingService = new PingService();
     }
     @update
-    connectedCallback() {}
+    connectedCallback() {
+        this.pingService = new PingService(this.appMain?.appService);
+        this.getPong();
+    }
 
     getPong = async () => {
         try {
             const response = await this.pingService.getAll();
-            return response.api;
+            console.log(response);
         } catch (err) {
             console.log(err);
         }

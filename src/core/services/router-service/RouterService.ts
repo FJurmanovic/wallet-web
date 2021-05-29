@@ -17,12 +17,13 @@ class RouterService {
     setRoutes = (routes: Array<any>) => {
         if (!Array.isArray(this._routes)) this._routes = [];
         routes.forEach((route) => {
-            const { path, component, data, layout } = route;
+            const { path, component, data, layout, middleware } = route;
             const _routeState: RouteState = new RouteState(
                 path,
                 component,
                 data,
-                layout
+                layout,
+                middleware
             );
             this._routes?.push(_routeState);
         });
@@ -30,10 +31,13 @@ class RouterService {
 
     update() {
         if (!this._routes) return;
+        const path = window.location.pathname;
+        const _mainRoot = this.mainRoot;
         for (const route of this._routes) {
-            const path = window.location.pathname;
             if (path == route.path) {
-                const _mainRoot = this.mainRoot;
+                if (route.middleware && typeof route.middleware == "function") {
+                    if (route.middleware()) return;
+                }
                 let changed: boolean = false;
                 if (_mainRoot?.childNodes.length > 0) {
                     console.log(_mainRoot.childNodes);
@@ -94,6 +98,7 @@ class RouterService {
                 return;
             }
         }
+        _mainRoot.innerHTML = "404 - Not found";
     }
 
     @update
@@ -101,10 +106,24 @@ class RouterService {
         if (!Array.isArray(this.historyStack)) this.historyStack = [];
         const _index = this._routes.findIndex((route) => route.path === path);
         if (_index >= 0) {
-            this.historyStack.push(this._routes[_index]);
+            const newRoute = this._routes[_index];
+            this.historyStack.push(newRoute);
             const url = new URL(window.location.toString());
             url.pathname = path;
             window.history.pushState({}, "", url.toString());
+        }
+    }
+
+    @update
+    goBack() {
+        if (!Array.isArray(this.historyStack)) this.historyStack = [];
+        const lenHistory = this.historyStack.length;
+        if (lenHistory > 1) {
+            const nextRoute = this.historyStack[lenHistory - 2];
+            const url = new URL(window.location.toString());
+            url.pathname = nextRoute.path;
+            window.history.pushState({}, "", url.toString());
+            this.historyStack.pop();
         }
     }
 
@@ -117,7 +136,8 @@ class RouteState {
         public path: string,
         public component: string,
         public data: any,
-        public layout: string
+        public layout: string,
+        public middleware: any
     ) {}
 }
 
