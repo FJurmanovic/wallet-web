@@ -20,9 +20,8 @@ class HomePageElement extends HTMLElement {
     getPong = async () => {
         try {
             const response = await this.pingService.getAll();
-            console.log(response);
         } catch (err) {
-            console.log(err);
+            throw err;
         }
     };
 
