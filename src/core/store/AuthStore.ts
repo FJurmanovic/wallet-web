@@ -11,6 +11,8 @@ class AuthStore {
     }
 
     get token() {
+        if (this._token == "null") return null;
+        if (this._token == "undefined") return undefined;
         return this._token;
     }
 

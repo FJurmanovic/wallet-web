@@ -14,7 +14,7 @@ class HomePageElement extends HTMLElement {
     @update
     connectedCallback() {
         this.pingService = new PingService(this.appMain?.appService);
-        this.getPong();
+        if (this.appMain.isAuth) this.getPong();
     }
 
     getPong = async () => {

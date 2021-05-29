@@ -25,11 +25,11 @@ class AppMainElement extends HTMLElement {
                 path: "/",
                 component: "home-page",
                 layout: "menu-layout",
+                middleware: this.middleAuth,
             },
             {
                 path: "/home",
                 component: "home-page",
-                middleware: this.isAuth,
             },
             {
                 path: "/rb",
@@ -47,12 +47,16 @@ class AppMainElement extends HTMLElement {
         this.routerService.init();
     }
 
-    isAuth = () => {
-        if (this.authStore?.token == null) {
+    middleAuth = () => {
+        if (!this.isAuth) {
             this.routerService.goTo("/unauthorized");
             return true;
         }
     };
+
+    get isAuth(): boolean {
+        return this.authStore && this.authStore.token;
+    }
 }
 
 export type { AppMainElement };

@@ -40,10 +40,8 @@ class RouterService {
                 }
                 let changed: boolean = false;
                 if (_mainRoot?.childNodes.length > 0) {
-                    console.log(_mainRoot.childNodes);
                     _mainRoot?.childNodes?.forEach?.(
                         (child: BaseLayoutElement) => {
-                            console.log("Eh");
                             if (
                                 route.layout &&
                                 route.layout.toUpperCase() === child.tagName &&
@@ -101,9 +99,10 @@ class RouterService {
         _mainRoot.innerHTML = "404 - Not found";
     }
 
-    @update
     goTo(path: string) {
         if (!Array.isArray(this.historyStack)) this.historyStack = [];
+        const currentPath = window.location.pathname;
+        if (path == currentPath) return;
         const _index = this._routes.findIndex((route) => route.path === path);
         if (_index >= 0) {
             const newRoute = this._routes[_index];
@@ -111,6 +110,7 @@ class RouterService {
             const url = new URL(window.location.toString());
             url.pathname = path;
             window.history.pushState({}, "", url.toString());
+            this.update();
         }
     }
 
@@ -128,7 +128,11 @@ class RouterService {
     }
 
     @update
-    init() {}
+    init() {
+        window.addEventListener("popstate", () => {
+            this.update();
+        });
+    }
 }
 
 class RouteState {
