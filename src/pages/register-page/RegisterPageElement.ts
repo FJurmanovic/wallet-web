@@ -34,14 +34,11 @@ class RegisterPageElement extends HTMLElement {
             const response = await this.appMain.authStore.userLogin(
                 this.values
             );
-            console.log(response);
 
             if (response?.token) {
                 this.appMain.routerService.goTo("/");
             }
-        } catch (err) {
-            console.log(err);
-        }
+        } catch (err) {}
     };
 
     validate(): boolean {

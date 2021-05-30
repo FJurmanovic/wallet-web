@@ -4,6 +4,9 @@ import { update } from "core/utils";
 class RouterService {
     private historyStack: Array<RouteState> = [];
     private _routes: Array<RouteState> = [];
+    private domEvents: any = {
+        routechanged: new Event("routechanged"),
+    };
     constructor(private mainRoot: Element) {}
 
     get routerState() {
@@ -12,6 +15,15 @@ class RouterService {
             return null;
         }
         return this.historyStack[historyLen - 1];
+    }
+
+    get emptyState() {
+        const historyLen = this.historyStack?.length;
+        if (historyLen < 2) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     setRoutes = (routes: Array<any>) => {
@@ -31,72 +43,67 @@ class RouterService {
 
     update() {
         if (!this._routes) return;
+        window.dispatchEvent(this.domEvents.routechanged);
         const path = window.location.pathname;
         const _mainRoot = this.mainRoot;
-        for (const route of this._routes) {
-            if (path == route.path) {
-                if (route.middleware && typeof route.middleware == "function") {
-                    if (route.middleware()) return;
-                }
-                let changed: boolean = false;
-                if (_mainRoot?.childNodes.length > 0) {
-                    _mainRoot?.childNodes?.forEach?.(
-                        (child: BaseLayoutElement) => {
-                            if (
-                                route.layout &&
-                                route.layout.toUpperCase() === child.tagName &&
-                                !child.compareTags(
-                                    route.component.toUpperCase()
-                                )
-                            ) {
-                                changed = true;
-                                child.setElement(route.component);
-                            } else if (
-                                route.layout &&
-                                route.layout.toUpperCase() !== child.tagName
-                            ) {
-                                changed = true;
-                                const _newElement = document.createElement(
-                                    route.layout
-                                );
-                                _mainRoot.replaceChild(_newElement, child);
-                                (_newElement as BaseLayoutElement).setElement(
-                                    route.component
-                                );
-                            } else if (
-                                !route.layout &&
-                                child.tagName !== route.component
-                            ) {
-                                const _newElement = document.createElement(
-                                    route.component
-                                );
-                                changed = true;
-                                _mainRoot.replaceChild(_newElement, child);
-                            }
-                        }
-                    );
-                } else {
-                    if (route.layout) {
+        const route = this.routerState;
+        if (path == route?.path || route?.path == "/not-found") {
+            if (route.middleware && typeof route.middleware == "function") {
+                if (route.middleware()) return;
+            }
+            let changed: boolean = false;
+            if (_mainRoot?.childNodes.length > 0) {
+                _mainRoot?.childNodes?.forEach?.((child: BaseLayoutElement) => {
+                    if (
+                        route.layout &&
+                        route.layout.toUpperCase() === child.tagName &&
+                        !child.compareTags(route.component.toUpperCase())
+                    ) {
+                        changed = true;
+                        child.setElement(route.component);
+                    } else if (
+                        route.layout &&
+                        route.layout.toUpperCase() !== child.tagName
+                    ) {
                         changed = true;
                         const _newElement = document.createElement(
                             route.layout
                         );
-                        _mainRoot.appendChild(_newElement);
+                        _mainRoot.replaceChild(_newElement, child);
                         (_newElement as BaseLayoutElement).setElement(
                             route.component
                         );
-                    } else {
+                    } else if (
+                        !route.layout &&
+                        child.tagName !== route.component
+                    ) {
                         const _newElement = document.createElement(
                             route.component
                         );
                         changed = true;
-                        _mainRoot.appendChild(_newElement);
+                        _mainRoot.replaceChild(_newElement, child);
                     }
+                });
+            } else {
+                if (route.layout) {
+                    changed = true;
+                    const _newElement = document.createElement(route.layout);
+                    _mainRoot.appendChild(_newElement);
+                    (_newElement as BaseLayoutElement).setElement(
+                        route.component
+                    );
+                } else {
+                    const _newElement = document.createElement(route.component);
+                    changed = true;
+                    _mainRoot.appendChild(_newElement);
                 }
-                return;
             }
+            return;
+        } else {
+            const newRoute = this.findByPath();
+            this.historyStack.push(newRoute);
+            this.update();
         }
-        _mainRoot.innerHTML = "404 - Not found";
     }
 
     goTo(path: string) {
@@ -130,8 +137,23 @@ class RouterService {
     @update
     init() {
         window.addEventListener("popstate", () => {
+            this.historyStack.pop();
             this.update();
         });
+    }
+
+    findByPath() {
+        const path = window.location.pathname;
+        const _index = this._routes.findIndex((route) => route.path === path);
+        const _indexOfEmpty = this._routes.findIndex(
+            (route) => route.path === "/not-found"
+        );
+        if (_index === -1 && _indexOfEmpty !== -1) {
+            return this._routes[_indexOfEmpty];
+        } else if (_index === -1 && _indexOfEmpty === -1) {
+            return new RouteState("/not-found", "not-found");
+        }
+        return this._routes[_index];
     }
 }
 
@@ -139,9 +161,9 @@ class RouteState {
     constructor(
         public path: string,
         public component: string,
-        public data: any,
-        public layout: string,
-        public middleware: any
+        public data?: any,
+        public layout?: string,
+        public middleware?: any
     ) {}
 }
 

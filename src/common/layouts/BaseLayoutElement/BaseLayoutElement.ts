@@ -19,7 +19,6 @@ class BaseLayoutElement extends HTMLElement {
     };
 
     setElement = (newTag: string) => {
-        console.log(this.innerHTML);
         this.slotted.innerHTML = `<${newTag}></${newTag}>`;
     };
 }
