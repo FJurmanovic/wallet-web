@@ -7,7 +7,7 @@ class RouterService {
     private domEvents: any = {
         routechanged: new Event("routechanged"),
     };
-    constructor(private mainRoot: Element) {}
+    constructor(private mainRoot: ShadowRoot | HTMLElement) {}
 
     get routerState() {
         const historyLen = this.historyStack?.length;
