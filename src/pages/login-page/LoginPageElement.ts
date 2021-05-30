@@ -5,7 +5,7 @@ import { AuthService, PingService } from "services/";
 import { AppMainElement, InputFieldElement } from "components/";
 
 @controller
-class RegisterPageElement extends HTMLElement {
+class LoginPageElement extends HTMLElement {
     @targets inputs: Array<InputFieldElement>;
     @closest appMain: AppMainElement;
     authService: AuthService;
@@ -31,12 +31,12 @@ class RegisterPageElement extends HTMLElement {
             if (!this.validate()) {
                 return;
             }
-            const response = await this.appMain.authStore.userRegister(
+            const response = await this.appMain.authStore.userLogin(
                 this.values
             );
 
-            if (response?.id) {
-                this.appMain.routerService.goTo("/login");
+            if (response?.token) {
+                this.appMain.routerService.goTo("/");
             }
         } catch (err) {}
     };
@@ -54,34 +54,30 @@ class RegisterPageElement extends HTMLElement {
         return html`
             <form>
                 <input-field
-                    data-type="text"
-                    data-name="username"
-                    data-label="Username"
-                    data-targets="register-page.inputs"
-                    data-rules="required"
-                ></input-field>
-                <input-field
                     data-type="email"
                     data-name="email"
                     data-label="E-mail"
-                    data-targets="register-page.inputs"
+                    data-targets="login-page.inputs"
                     data-rules="required|isEmail"
                 ></input-field>
                 <input-field
                     data-type="password"
                     data-name="password"
                     data-label="Password"
-                    data-targets="register-page.inputs"
+                    data-targets="login-page.inputs"
                     data-rules="required"
                 >
                 </input-field>
-                <button
-                    type="button"
-                    data-action="click:register-page#onSubmit"
-                >
-                    Register
+                <button type="button" data-action="click:login-page#onSubmit">
+                    Login
                 </button>
             </form>
+            <div>
+                <app-link
+                    data-to="/register"
+                    data-title="Create new account"
+                ></app-link>
+            </div>
         `;
     }
 

@@ -29,12 +29,15 @@ class HomePageElement extends HTMLElement {
         return html`<div>${until(this.getPong())}</div>`;
     };
 
+    render() {
+        return html`
+            <app-link data-to="/home" data-title="Home"></app-link> |
+            <app-link data-to="/" data-title="Main"></app-link> |
+            <app-link data-to="/login" data-title="Login"></app-link>
+        `;
+    }
+
     update() {
-        render(
-            html`<app-link data-to="/home" data-title="Home"></app-link> |
-                <app-link data-to="/" data-title="Main"></app-link> |
-                <app-link data-to="/rb" data-title="$1"></app-link>`,
-            this
-        );
+        render(this.render(), this);
     }
 }

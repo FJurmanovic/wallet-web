@@ -33,6 +33,10 @@ class InputFieldElement extends HTMLElement {
         return !!this.error;
     }
 
+    get required(): boolean {
+        return this.rules.includes("required");
+    }
+
     @update
     validate(): boolean {
         let _return = true;
@@ -67,12 +71,14 @@ class InputFieldElement extends HTMLElement {
 
     update() {
         render(
-            html`<span data-target="input-field.main">
+            html`<div data-target="input-field.main">
                 ${this.label &&
-                html`<label for="${this.randId}">${this.label}</label>`}
+                html`<label for="${this.randId}"
+                    >${this.label}${this.required ? " (*)" : ""}</label
+                >`}
                 <input type="${this.type}" data-target="input-field.inp" />
                 ${this.error && html`<span>${this.error}</span>`}
-            </span>`,
+            </div>`,
             this
         );
     }
