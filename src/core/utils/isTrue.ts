@@ -1,3 +1,3 @@
-export default function isTrue(bool: string) {
-    return bool === "true";
+export default function isTrue(text: string) {
+    return text === "true";
 }

@@ -11,11 +11,13 @@ class AppMainElement extends HTMLElement {
     public authStore: AuthStore;
     private httpClient: HttpClient;
     public appService: AppService;
+    @closest appMain;
 
     constructor() {
         super();
     }
     connectedCallback() {
+        if (this.appMain !== this) return;
         this.httpClient = new HttpClient();
         this.appService = new AppService(this, this.httpClient);
         this.routerService = new RouterService(this);
@@ -32,16 +34,22 @@ class AppMainElement extends HTMLElement {
                 component: "home-page",
             },
             {
-                path: "/rb",
+                path: "/register",
                 component: "register-page",
+                layout: "menu-layout",
+            },
+            {
+                path: "/login",
+                component: "login-page",
+                layout: "menu-layout",
             },
             {
                 path: "/unauthorized",
-                component: "register-page",
+                component: "login-page",
             },
             {
                 path: "token-expired",
-                component: "register-page",
+                component: "login-page",
             },
         ]);
         this.routerService.init();

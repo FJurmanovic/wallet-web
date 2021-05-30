@@ -6,6 +6,8 @@ import { BaseLayoutElement } from "common/layouts";
 
 @controller
 class MenuLayoutElement extends BaseLayoutElement {
+    @closest appMain;
+
     constructor() {
         super();
     }
@@ -13,13 +15,16 @@ class MenuLayoutElement extends BaseLayoutElement {
     @update
     connectedCallback() {}
 
+    render() {
+        return html`
+            <div>
+                <app-link data-go-back="true" data-title="Go back"></app-link>
+            </div>
+            <div data-target="menu-layout.slotted"></div>
+        `;
+    }
+
     update() {
-        render(
-            html`
-                <div>Menu</div>
-                <div data-target="menu-layout.slotted"></div>
-            `,
-            this
-        );
+        render(this.render(), this);
     }
 }

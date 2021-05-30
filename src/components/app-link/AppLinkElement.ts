@@ -9,6 +9,7 @@ import { RouterService } from "core/services";
 class AppLinkElement extends HTMLElement {
     @closest appMain: AppMainElement;
     @attr to: string;
+    @attr goBack: string;
     @attr title: string;
     @target main: Element;
     routerService: RouterService;
@@ -17,27 +18,44 @@ class AppLinkElement extends HTMLElement {
     }
 
     public connectedCallback(): void {
-        this.update();
         this.routerService = this.appMain?.routerService;
-        this.main.addEventListener("click", this.goTo);
+        this.update();
+        if (isTrue(this.goBack)) {
+            window.addEventListener("routechanged", () => {
+                this.update();
+            });
+        }
     }
 
-    public disconnectedCallback(): void {
-        this.main.removeEventListener("click", this.goTo);
-    }
+    public disconnectedCallback(): void {}
 
     goTo = () => {
-        this.routerService.goTo(this.to);
+        if (!isTrue(this.goBack) && this.to) {
+            this.routerService.goTo(this.to);
+        } else {
+            this.routerService.goBack();
+        }
+        this.update();
     };
 
+    get disabled() {
+        return isTrue(this.goBack) && this.routerService.emptyState;
+    }
+
+    render() {
+        return html`${this.disabled
+            ? html`<span data-target="app-link.main" style="color:grey"
+                  >${this.title}</span
+              >`
+            : html`<span
+                  data-target="app-link.main"
+                  data-action="click:app-link#goTo"
+                  style="text-decoration: underline; cursor: pointer;"
+                  >${this.title}</span
+              >`}`;
+    }
+
     update() {
-        render(
-            html`<span
-                data-target="app-link.main"
-                style="text-decoration: underline; cursor: pointer;"
-                >${this.title}</span
-            >`,
-            this
-        );
+        render(this.render(), this);
     }
 }

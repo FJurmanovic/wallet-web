@@ -46,7 +46,8 @@ class AuthStore {
 
     userRegister = async (formObject) => {
         try {
-            await this.authService.register(formObject);
+            const response = await this.authService.register(formObject);
+            return response;
         } catch (err) {
             throw err;
         }
