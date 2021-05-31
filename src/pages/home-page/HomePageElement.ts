@@ -35,6 +35,15 @@ class HomePageElement extends HTMLElement {
         return html`<div>${until(this.getPong())}</div>`;
     };
 
+    openModal = () => {
+        const _modal = this.appMain.appModal;
+        if (_modal) {
+            this.appMain.closeModal();
+        } else {
+            this.appMain.createModal("login-page");
+        }
+    };
+
     render() {
         return html`
             <app-link data-to="/" data-title="Main"></app-link> |
@@ -48,6 +57,7 @@ class HomePageElement extends HTMLElement {
                       data-to="/login"
                       data-title="Login"
                   ></app-link>`}
+            <button data-action="click:home-page#openModal">Test</button>
         `;
     }
 

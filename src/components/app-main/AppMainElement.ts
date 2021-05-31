@@ -1,7 +1,5 @@
-import { attr, targets, controller, target } from "@github/catalyst";
-import { closest, index, update, isTrue } from "core/utils";
-import { html, render, until } from "@github/jtml";
-import { PingService } from "services/";
+import { controller, target } from "@github/catalyst";
+import { closest } from "core/utils";
 import { AppService, HttpClient, RouterService } from "core/services";
 import { AuthStore } from "core/store";
 
@@ -12,15 +10,18 @@ class AppMainElement extends HTMLElement {
     private httpClient: HttpClient;
     public appService: AppService;
     @closest appMain;
+    @target appModal;
+    @target mainRoot;
 
     constructor() {
         super();
     }
     connectedCallback() {
         if (this.appMain !== this) return;
+        const mainRoot = this.createMainRoot();
         this.httpClient = new HttpClient();
         this.appService = new AppService(this, this.httpClient);
-        this.routerService = new RouterService(this);
+        this.routerService = new RouterService(mainRoot);
         this.authStore = new AuthStore(this.appService);
         this.routerService.setRoutes([
             {
@@ -67,6 +68,29 @@ class AppMainElement extends HTMLElement {
             this.routerService.goTo("/unauthorized");
             return true;
         }
+    };
+
+    createModal = (element: string) => {
+        console.log(this.appModal);
+        this.closeModal();
+        const _appModal = document.createElement("app-modal");
+        _appModal.setAttribute("data-target", "app-main.appModal");
+        const _modalElement = document.createElement(element);
+        _modalElement.setAttribute("data-target", "app-modal.modalElement");
+        _appModal.appendChild(_modalElement);
+        this.appendChild(_appModal);
+    };
+
+    createMainRoot = () => {
+        if (this.mainRoot) this.removeChild(this.mainRoot);
+        const _mainRoot = document.createElement("app-root");
+        _mainRoot.setAttribute("data-target", "app-main.mainRoot");
+        this.appendChild(_mainRoot);
+        return _mainRoot;
+    };
+
+    closeModal = () => {
+        if (this.appModal) this.removeChild(this.appModal);
     };
 
     get isAuth(): boolean {

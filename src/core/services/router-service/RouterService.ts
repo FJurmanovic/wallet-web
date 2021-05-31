@@ -68,6 +68,10 @@ class RouterService {
                         const _newElement = document.createElement(
                             route.layout
                         );
+                        _newElement.setAttribute(
+                            "data-target",
+                            "app-root.rootElement"
+                        );
                         _mainRoot.replaceChild(_newElement, child);
                         (_newElement as BaseLayoutElement).setElement(
                             route.component
@@ -79,6 +83,10 @@ class RouterService {
                         const _newElement = document.createElement(
                             route.component
                         );
+                        _newElement.setAttribute(
+                            "data-target",
+                            "app-root.rootElement"
+                        );
                         changed = true;
                         _mainRoot.replaceChild(_newElement, child);
                     }
@@ -87,12 +95,20 @@ class RouterService {
                 if (route.layout) {
                     changed = true;
                     const _newElement = document.createElement(route.layout);
+                    _newElement.setAttribute(
+                        "data-target",
+                        "app-root.rootElement"
+                    );
                     _mainRoot.appendChild(_newElement);
                     (_newElement as BaseLayoutElement).setElement(
                         route.component
                     );
                 } else {
                     const _newElement = document.createElement(route.component);
+                    _newElement.setAttribute(
+                        "data-target",
+                        "app-root.rootElement"
+                    );
                     changed = true;
                     _mainRoot.appendChild(_newElement);
                 }
