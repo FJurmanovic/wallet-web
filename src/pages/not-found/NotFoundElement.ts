@@ -9,17 +9,18 @@ class NotFoundElement extends HTMLElement {
     constructor() {
         super();
     }
-    @update
-    connectedCallback() {}
+    connectedCallback() {
+        this.update();
+    }
 
-    render() {
+    render = () => {
         return html`
             <div>404 - Page not found</div>
             <div><app-link data-to="/" data-title="Homepage"></app-link></div>
         `;
-    }
+    };
 
-    update() {
+    update = () => {
         render(this.render(), this);
-    }
+    };
 }

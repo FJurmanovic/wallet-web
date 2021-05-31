@@ -19,6 +19,11 @@ class AppLinkElement extends HTMLElement {
 
     public connectedCallback(): void {
         this.routerService = this.appMain?.routerService;
+        if (!this.title && this.innerText) {
+            const _slottedText = this.innerText;
+            this.innerText = null;
+            this.title = _slottedText;
+        }
         this.update();
         if (isTrue(this.goBack)) {
             window.addEventListener("routechanged", this.update);
@@ -44,7 +49,7 @@ class AppLinkElement extends HTMLElement {
         return isTrue(this.goBack) && this.routerService.emptyState;
     }
 
-    render() {
+    render = () => {
         return html`${this.disabled
             ? html`<span data-target="app-link.main" style="color:grey"
                   >${this.title}</span

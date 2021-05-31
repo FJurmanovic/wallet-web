@@ -12,9 +12,9 @@ class RegisterPageElement extends HTMLElement {
     constructor() {
         super();
     }
-    @update
     connectedCallback() {
         this.authService = new AuthService(this.appMain.appService);
+        this.update();
     }
 
     get values(): Object {
@@ -50,7 +50,7 @@ class RegisterPageElement extends HTMLElement {
         return _return;
     }
 
-    render() {
+    render = () => {
         return html`
             <form>
                 <input-field
@@ -83,9 +83,9 @@ class RegisterPageElement extends HTMLElement {
                 </button>
             </form>
         `;
-    }
+    };
 
-    update() {
+    update = () => {
         render(this.render(), this);
-    }
+    };
 }

@@ -3,8 +3,8 @@ import { AppService, HttpClient } from "core/services";
 class BaseService {
     constructor(public endpoint: string, public appService: AppService) {}
 
-    getAll = (headers?: HeadersInit) => {
-        return this.appService.get(this.endpoint, null, headers);
+    getAll = (params?: Object, headers?: HeadersInit) => {
+        return this.appService.get(this.endpoint, params, headers);
     };
 
     get = (params?: Object, headers?: HeadersInit) => {

@@ -24,9 +24,9 @@ class InputFieldElement extends HTMLElement {
         super();
     }
 
-    @update
     public connectedCallback(): void {
         this.randId = `${name}${randomId()}`;
+        this.update();
     }
 
     get valid(): boolean {
@@ -37,7 +37,6 @@ class InputFieldElement extends HTMLElement {
         return this.rules.includes("required");
     }
 
-    @update
     validate(): boolean {
         let _return = true;
         const rules = this.rules?.split("|").filter((a) => a);
@@ -66,22 +65,24 @@ class InputFieldElement extends HTMLElement {
         if (_return) {
             this.error = null;
         }
+        this.update();
         return _return;
     }
 
-    update() {
-        render(
-            html`<div data-target="input-field.main">
-                ${this.label &&
-                html`<label for="${this.randId}"
-                    >${this.label}${this.required ? " (*)" : ""}</label
-                >`}
-                <input type="${this.type}" data-target="input-field.inp" />
-                ${this.error && html`<span>${this.error}</span>`}
-            </div>`,
-            this
-        );
-    }
+    render = () => {
+        return html`<div data-target="input-field.main">
+            ${this.label &&
+            html`<label for="${this.randId}"
+                >${this.label}${this.required ? " (*)" : ""}</label
+            >`}
+            <input type="${this.type}" data-target="input-field.inp" />
+            ${this.error && html`<span>${this.error}</span>`}
+        </div>`;
+    };
+
+    update = () => {
+        render(this.render(), this);
+    };
 }
 
 export type { InputFieldElement };

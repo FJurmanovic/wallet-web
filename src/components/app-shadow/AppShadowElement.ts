@@ -11,16 +11,16 @@ class AppShadowElement extends HTMLElement {
         super();
     }
 
-    @update
     connectedCallback() {
         this.attachShadow({ mode: "open" });
+        this.update();
     }
 
-    render() {
+    render = () => {
         return html` <app-main></app-main> `;
-    }
+    };
 
-    update() {
+    update = () => {
         render(this.render(), this.shadowRoot!);
-    }
+    };
 }

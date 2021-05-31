@@ -36,6 +36,12 @@ class AppMainElement extends HTMLElement {
                 middleware: this.middleAuth,
             },
             {
+                path: "/history",
+                component: "history-page",
+                layout: "menu-layout",
+                middleware: this.middleAuth,
+            },
+            {
                 path: "/register",
                 component: "register-page",
                 layout: "menu-layout",

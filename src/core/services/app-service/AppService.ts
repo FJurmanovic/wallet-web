@@ -120,8 +120,8 @@ class AppService {
                 response?.statusCode == 401
             ) {
                 if (response?.statusCode == 401) {
-                    this.appMain.authStore.token = null;
                     this.appMain.routerService.goTo("/token-expired");
+                    this.appMain.authStore.token = null;
                 }
                 throw response;
             }

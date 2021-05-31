@@ -11,13 +11,14 @@ class LoginPageElement extends HTMLElement {
     @closest appMain: AppMainElement;
     authService: AuthService;
     routerService: RouterService;
+    errorMessage: string;
     constructor() {
         super();
     }
-    @update
     connectedCallback() {
         this.authService = new AuthService(this.appMain.appService);
         this.routerService = this.appMain.routerService;
+        this.update();
     }
 
     get emailInput() {
@@ -65,6 +66,9 @@ class LoginPageElement extends HTMLElement {
             } else if (err?.errorCode == 400104) {
                 this.passwordInput.error = err?.message;
                 this.passwordInput.update();
+            } else {
+                this.errorMessage = "Unable to log in!";
+                this.update();
             }
         }
     };
@@ -78,7 +82,7 @@ class LoginPageElement extends HTMLElement {
         return _return;
     }
 
-    render() {
+    render = () => {
         return html`
             <form>
                 <input-field
@@ -96,6 +100,7 @@ class LoginPageElement extends HTMLElement {
                     data-rules="required"
                 >
                 </input-field>
+                ${this.errorMessage && html`<div>${this.errorMessage}</div>`}
                 <button type="button" data-action="click:login-page#onSubmit">
                     Login
                 </button>
@@ -107,7 +112,7 @@ class LoginPageElement extends HTMLElement {
                 ></app-link>
             </div>
         `;
-    }
+    };
 
     update() {
         render(this.render(), this);

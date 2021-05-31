@@ -136,7 +136,6 @@ class RouterService {
         }
     }
 
-    @update
     goBack() {
         if (!Array.isArray(this.historyStack)) this.historyStack = [];
         const lenHistory = this.historyStack.length;
@@ -147,14 +146,15 @@ class RouterService {
             window.history.pushState({}, "", url.toString());
             this.historyStack.pop();
         }
+        this.update();
     }
 
-    @update
     init() {
         window.addEventListener("popstate", () => {
             this.historyStack.pop();
             this.update();
         });
+        this.update();
     }
 
     findByPath() {
