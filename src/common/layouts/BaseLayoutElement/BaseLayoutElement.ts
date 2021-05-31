@@ -1,15 +1,15 @@
 import { target } from "@github/catalyst";
 
 class BaseLayoutElement extends HTMLElement {
-    @target slotted: HTMLElement;
+    @target appSlot: HTMLElement;
     public isLayout: boolean = true;
-    public _slotted: string;
+    public _appSlot: string;
     constructor() {
         super();
     }
 
     get slotTag() {
-        return this.slotted?.firstElementChild?.tagName;
+        return this.appSlot?.firstElementChild?.tagName;
     }
 
     compareTags = (tag: string | HTMLElement): boolean => {
@@ -20,9 +20,9 @@ class BaseLayoutElement extends HTMLElement {
     };
 
     setElement = (newTag: string) => {
-        const _slotted = `<${newTag}></${newTag}>`;
-        this._slotted = _slotted;
-        this.slotted.innerHTML = _slotted;
+        const _appSlot = `<${newTag}></${newTag}>`;
+        this._appSlot = _appSlot;
+        this.appSlot.innerHTML = _appSlot;
     };
 }
 

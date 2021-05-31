@@ -37,15 +37,15 @@ class MenuLayoutElement extends BaseLayoutElement {
             html`<div>
                 <app-link data-go-back="true" data-title="Go back"></app-link>
             </div>`}
-            <div data-target="menu-layout.slotted"></div>
+            <app-slot data-target="menu-layout.appSlot"></app-slot>
         `;
     }
 
     update = () => {
         render(this.render(), this);
-        const _slotted = this._slotted;
-        if (_slotted && this.slotted) {
-            this.slotted.innerHTML = _slotted;
+        const _appSlot = this._appSlot;
+        if (_appSlot && this.appSlot) {
+            this.appSlot.innerHTML = _appSlot;
         }
     };
 }
