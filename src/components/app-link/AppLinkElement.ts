@@ -21,13 +21,15 @@ class AppLinkElement extends HTMLElement {
         this.routerService = this.appMain?.routerService;
         this.update();
         if (isTrue(this.goBack)) {
-            window.addEventListener("routechanged", () => {
-                this.update();
-            });
+            window.addEventListener("routechanged", this.update);
         }
     }
 
-    public disconnectedCallback(): void {}
+    public disconnectedCallback(): void {
+        if (isTrue(this.goBack)) {
+            window.removeEventListener("routechanged", this.update);
+        }
+    }
 
     goTo = () => {
         if (!isTrue(this.goBack) && this.to) {
@@ -55,7 +57,7 @@ class AppLinkElement extends HTMLElement {
               >`}`;
     }
 
-    update() {
+    update = () => {
         render(this.render(), this);
-    }
+    };
 }

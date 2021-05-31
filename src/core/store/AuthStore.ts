@@ -5,6 +5,9 @@ class AuthStore {
     private _token;
     private _userDetails;
     private authService: AuthService;
+    private domEvents: any = {
+        tokenchange: new Event("tokenchange"),
+    };
     constructor(private appService: AppService) {
         this.token = localStorage.getItem("token");
         this.authService = new AuthService(this.appService);
@@ -19,6 +22,7 @@ class AuthStore {
     set token(token) {
         this._token = token;
         localStorage.setItem("token", token);
+        window.dispatchEvent(this.domEvents.tokenchange);
     }
 
     get user() {
@@ -51,6 +55,11 @@ class AuthStore {
         } catch (err) {
             throw err;
         }
+    };
+
+    userLogout = () => {
+        this.token = null;
+        localStorage.removeItem("token");
     };
 }
 

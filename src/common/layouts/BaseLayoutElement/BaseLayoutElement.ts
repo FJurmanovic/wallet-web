@@ -3,6 +3,7 @@ import { target } from "@github/catalyst";
 class BaseLayoutElement extends HTMLElement {
     @target slotted: HTMLElement;
     public isLayout: boolean = true;
+    public _slotted: string;
     constructor() {
         super();
     }
@@ -19,7 +20,9 @@ class BaseLayoutElement extends HTMLElement {
     };
 
     setElement = (newTag: string) => {
-        this.slotted.innerHTML = `<${newTag}></${newTag}>`;
+        const _slotted = `<${newTag}></${newTag}>`;
+        this._slotted = _slotted;
+        this.slotted.innerHTML = _slotted;
     };
 }
 

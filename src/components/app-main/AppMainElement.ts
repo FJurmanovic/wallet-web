@@ -27,11 +27,12 @@ class AppMainElement extends HTMLElement {
                 path: "/",
                 component: "home-page",
                 layout: "menu-layout",
-                middleware: this.middleAuth,
             },
             {
                 path: "/home",
                 component: "home-page",
+                layout: "menu-layout",
+                middleware: this.middleAuth,
             },
             {
                 path: "/register",
@@ -46,10 +47,16 @@ class AppMainElement extends HTMLElement {
             {
                 path: "/unauthorized",
                 component: "login-page",
+                layout: "menu-layout",
             },
             {
-                path: "token-expired",
+                path: "/token-expired",
                 component: "login-page",
+                layout: "menu-layout",
+            },
+            {
+                path: "/logout",
+                component: "logout-page",
             },
         ]);
         this.routerService.init();

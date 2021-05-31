@@ -3,18 +3,37 @@ import { closest, index, update, isTrue } from "core/utils";
 import { html, render, until } from "@github/jtml";
 import { AuthService, PingService } from "services/";
 import { AppMainElement, InputFieldElement } from "components/";
+import { RouterService } from "core/services";
 
 @controller
 class LoginPageElement extends HTMLElement {
     @targets inputs: Array<InputFieldElement>;
     @closest appMain: AppMainElement;
     authService: AuthService;
+    routerService: RouterService;
     constructor() {
         super();
     }
     @update
     connectedCallback() {
         this.authService = new AuthService(this.appMain.appService);
+        this.routerService = this.appMain.routerService;
+    }
+
+    get emailInput() {
+        for (const i in this.inputs) {
+            if (this.inputs[i]?.name == "email") {
+                return this.inputs[i];
+            }
+        }
+    }
+
+    get passwordInput() {
+        for (const i in this.inputs) {
+            if (this.inputs[i]?.name == "password") {
+                return this.inputs[i];
+            }
+        }
     }
 
     get values(): Object {
@@ -36,9 +55,18 @@ class LoginPageElement extends HTMLElement {
             );
 
             if (response?.token) {
-                this.appMain.routerService.goTo("/");
+                console.log(this.appMain);
+                this.routerService.goTo("/");
             }
-        } catch (err) {}
+        } catch (err) {
+            if (err?.errorCode == 400103) {
+                this.emailInput.error = err?.message;
+                this.emailInput.update();
+            } else if (err?.errorCode == 400104) {
+                this.passwordInput.error = err?.message;
+                this.passwordInput.update();
+            }
+        }
     };
 
     validate(): boolean {

@@ -43,7 +43,6 @@ class RouterService {
 
     update() {
         if (!this._routes) return;
-        window.dispatchEvent(this.domEvents.routechanged);
         const path = window.location.pathname;
         const _mainRoot = this.mainRoot;
         const route = this.routerState;
@@ -98,12 +97,12 @@ class RouterService {
                     _mainRoot.appendChild(_newElement);
                 }
             }
-            return;
         } else {
             const newRoute = this.findByPath();
             this.historyStack.push(newRoute);
             this.update();
         }
+        window.dispatchEvent(this.domEvents.routechanged);
     }
 
     goTo(path: string) {

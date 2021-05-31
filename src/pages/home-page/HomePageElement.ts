@@ -11,10 +11,16 @@ class HomePageElement extends HTMLElement {
     constructor() {
         super();
     }
-    @update
+
     connectedCallback() {
         this.pingService = new PingService(this.appMain?.appService);
         if (this.appMain.isAuth) this.getPong();
+        this.update();
+        window.addEventListener("tokenchange", this.update);
+    }
+
+    disconnectedCallback(): void {
+        window.removeEventListener("tokenchange", this.update);
     }
 
     getPong = async () => {
@@ -31,13 +37,21 @@ class HomePageElement extends HTMLElement {
 
     render() {
         return html`
-            <app-link data-to="/home" data-title="Home"></app-link> |
             <app-link data-to="/" data-title="Main"></app-link> |
-            <app-link data-to="/login" data-title="Login"></app-link>
+            ${this.appMain.isAuth
+                ? html`<app-link data-to="/home" data-title="Home"></app-link>
+                      |<app-link
+                          data-to="/logout"
+                          data-title="Logout"
+                      ></app-link>`
+                : html`<app-link
+                      data-to="/login"
+                      data-title="Login"
+                  ></app-link>`}
         `;
     }
 
-    update() {
+    update = () => {
         render(this.render(), this);
-    }
+    };
 }
