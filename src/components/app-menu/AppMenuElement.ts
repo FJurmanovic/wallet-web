@@ -1,5 +1,5 @@
 import { controller, target } from "@github/catalyst";
-import { html, render } from "@github/jtml";
+import { html, render, TemplateResult } from "@github/jtml";
 import { AppMainElement } from "components/app-main/AppMainElement";
 import { closest, update } from "core/utils";
 import { WalletService } from "services/";
@@ -16,8 +16,11 @@ class AppMenuElement extends HTMLElement {
 
     connectedCallback() {
         this.walletService = new WalletService(this.appMain?.appService);
-        this.update();
-        if (this.appMain.isAuth) this.getWallets();
+        if (this.appMain.isAuth) {
+            this.getWallets();
+        } else {
+            this.update();
+        }
         window.addEventListener("tokenchange", this.updateToken);
     }
 
@@ -34,12 +37,11 @@ class AppMenuElement extends HTMLElement {
         }
     };
 
-    setWallets(wallets: Array<any>, totalWallets: number) {
+    setWallets = (wallets: Array<any>, totalWallets: number) => {
         this.walletData = wallets;
         this.totalWallets = totalWallets;
-        console.log("eh");
         this.update();
-    }
+    };
 
     updateToken = () => {
         if (this.isAuth) {
@@ -53,60 +55,63 @@ class AppMenuElement extends HTMLElement {
         render(this.render(), this);
     };
 
-    get isAuth() {
-        return this.appMain.isAuth;
+    get isAuth(): boolean {
+        if (this.appMain?.isAuth) {
+            console.log(true);
+            return true;
+        }
+        return false;
     }
 
+    renderWallets = () => {
+        if (this.isAuth && this.totalWallets > 0) {
+            return this.walletData.map(
+                (wallet) => html`<menu-item data-path="/wallet/${wallet.id}"
+                    >${wallet.name}</menu-item
+                >`
+            );
+        }
+        return null;
+    };
+
     render = () => {
+        const { isAuth, totalWallets, walletData } = this;
+
+        const regularMenu = (path: string, title: string): TemplateResult =>
+            html`<menu-item data-path="${path}">${title}</menu-item>`;
+        const authMenu = (path: string, title: string): TemplateResult => {
+            if (isAuth) {
+                return regularMenu(path, title);
+            }
+            return html``;
+        };
+        const notAuthMenu = (path: string, title: string): TemplateResult => {
+            if (!isAuth) {
+                return regularMenu(path, title);
+            }
+            return html``;
+        };
+        const renderWallets = (wallets: Array<any>) => {
+            if (isAuth && totalWallets > 0) {
+                return html`${wallets.map((wallet) =>
+                    regularMenu(`wallet/${wallet.id}`, wallet.name)
+                )}`;
+            }
+            return html``;
+        };
+        const otherWallets = () => {
+            if (isAuth && totalWallets > 2) {
+                return regularMenu("/wallet/all", "Other");
+            }
+            return html``;
+        };
         return html`
             <div data-target="app-menu.sidebar">
-                <ul>
-                    <li>
-                        <app-link data-to="/">Home</app-link>
-                    </li>
-                    ${this.isAuth
-                        ? html` <li>
-                              <app-link data-to="/history">History</app-link>
-                          </li>`
-                        : null}
-                    ${this.isAuth && this.totalWallets > 0
-                        ? this.walletData.map((wallet) => {
-                              return html`
-                                  <li>
-                                      <app-link data-to="/wallet/${wallet.id}"
-                                          >${wallet.name}</app-link
-                                      >
-                                  </li>
-                              `;
-                          })
-                        : null}
-                    ${this.isAuth && this.totalWallets > 2
-                        ? html`
-                              <li>
-                                  <app-link data-to="/wallet/all"
-                                      >Other</app-link
-                                  >
-                              </li>
-                          `
-                        : null}
-                    ${this.isAuth
-                        ? html` <li>
-                              <app-link data-to="/logout">Logout</app-link>
-                          </li>`
-                        : null}
-                    ${!this.isAuth
-                        ? html`
-                              <li>
-                                  <app-link data-to="/login">Login</app-link>
-                              </li>
-                              <li>
-                                  <app-link data-to="/register"
-                                      >Register</app-link
-                                  >
-                              </li>
-                          `
-                        : null}
-                </ul>
+                ${regularMenu("/", "Home")} ${authMenu("/history", "History")}
+                ${renderWallets(walletData)} ${otherWallets()}
+                ${authMenu("/logout", "Logout")}
+                ${notAuthMenu("/login", "Login")}
+                ${notAuthMenu("/register", "Register")}
             </div>
         `;
     };

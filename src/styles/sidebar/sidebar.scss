@@ -9,6 +9,33 @@ app-menu {
         overflow: auto;
         top: 0;
         left: 0;
+
+        menu-item {
+            [data-target="menu-item.itemEl"] {
+                app-link {
+                    [data-target="app-link.main"] {
+                        width: 100%;
+                        height: 25px;
+                        background-color: #828282;
+                        color: #d5d5d5;
+                        border-radius: 0;
+                        padding-bottom: 25px;
+                        margin: 1px auto;
+                        &:hover {
+                            background-color: #82878a;
+                        }
+                    }
+                }
+                &.selected {
+                    app-link {
+                        [data-target="app-link.main"] {
+                            color: #1a1a1a;
+                            background-color: #6e838d;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

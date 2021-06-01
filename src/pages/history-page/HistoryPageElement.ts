@@ -30,7 +30,7 @@ class HistoryPageElement extends HTMLElement {
         try {
             const response = await this.transactionsService.getAll();
             if (response) {
-                this.setTransactions(response);
+                this.setTransactions(response?.items);
             }
         } catch (err) {
             throw err;
@@ -39,6 +39,7 @@ class HistoryPageElement extends HTMLElement {
 
     setTransactions(transactions: Array<any>) {
         this.transactions = transactions;
+        console.log(transactions);
         this.update();
     }
 
@@ -56,7 +57,7 @@ class HistoryPageElement extends HTMLElement {
             <ul>
                 ${this.transactions
                     ? this.transactions.map((transaction) => {
-                          html` <li>${transaction.description}</li> `;
+                          return html` <li>${transaction.description}</li> `;
                       })
                     : null}
             </ul>
