@@ -14,7 +14,6 @@ class HomePageElement extends HTMLElement {
 
     connectedCallback() {
         this.pingService = new PingService(this.appMain?.appService);
-        if (this.appMain.isAuth) this.getPong();
         this.update();
         window.addEventListener("tokenchange", this.update);
     }

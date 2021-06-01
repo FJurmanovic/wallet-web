@@ -9,7 +9,7 @@ class RouterService {
     };
     constructor(private mainRoot: ShadowRoot | HTMLElement) {}
 
-    get routerState() {
+    get routerState(): RouteState {
         const historyLen = this.historyStack?.length;
         if (historyLen < 1) {
             return null;
@@ -17,7 +17,7 @@ class RouterService {
         return this.historyStack[historyLen - 1];
     }
 
-    get emptyState() {
+    get emptyState(): boolean {
         const historyLen = this.historyStack?.length;
         if (historyLen < 2) {
             return true;
@@ -26,7 +26,7 @@ class RouterService {
         }
     }
 
-    setRoutes = (routes: Array<any>) => {
+    public setRoutes = (routes: Array<any>): void => {
         if (!Array.isArray(this._routes)) this._routes = [];
         routes.forEach((route) => {
             const { path, component, data, layout, middleware } = route;
@@ -41,7 +41,7 @@ class RouterService {
         });
     };
 
-    update() {
+    public update = (): void => {
         if (!this._routes) return;
         const path = window.location.pathname;
         const _mainRoot = this.mainRoot;
@@ -119,9 +119,9 @@ class RouterService {
             this.update();
         }
         window.dispatchEvent(this.domEvents.routechanged);
-    }
+    };
 
-    goTo(path: string) {
+    public goTo = (path: string): void => {
         if (!Array.isArray(this.historyStack)) this.historyStack = [];
         const currentPath = window.location.pathname;
         if (path == currentPath) return;
@@ -134,9 +134,9 @@ class RouterService {
             window.history.pushState({}, "", url.toString());
             this.update();
         }
-    }
+    };
 
-    goBack() {
+    public goBack = (): void => {
         if (!Array.isArray(this.historyStack)) this.historyStack = [];
         const lenHistory = this.historyStack.length;
         if (lenHistory > 1) {
@@ -147,17 +147,17 @@ class RouterService {
             this.historyStack.pop();
         }
         this.update();
-    }
+    };
 
-    init() {
+    public init = (): void => {
         window.addEventListener("popstate", () => {
             this.historyStack.pop();
             this.update();
         });
         this.update();
-    }
+    };
 
-    findByPath() {
+    public findByPath = (): RouteState => {
         const path = window.location.pathname;
         const _index = this._routes.findIndex((route) => route.path === path);
         const _indexOfEmpty = this._routes.findIndex(
@@ -169,7 +169,14 @@ class RouterService {
             return new RouteState("/not-found", "not-found");
         }
         return this._routes[_index];
-    }
+    };
+
+    public comparePath = (path: string): boolean => {
+        if (this.routerState?.path === path) {
+            return true;
+        }
+        return false;
+    };
 }
 
 class RouteState {
