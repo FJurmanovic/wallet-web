@@ -77,22 +77,53 @@ class AppMainElement extends HTMLElement {
     };
 
     createModal = (element: string) => {
-        console.log(this.appModal);
         this.closeModal();
-        const _appModal = document.createElement("app-modal");
-        _appModal.setAttribute("data-target", "app-main.appModal");
-        const _modalElement = document.createElement(element);
-        _modalElement.setAttribute("data-target", "app-modal.modalElement");
-        _appModal.appendChild(_modalElement);
+
+        const _appModal = this.createAppModal();
+        const _modalContent = this.createModalContent(element);
+        const _modalOverlay = this.createModalOverlay();
+
+        _modalOverlay.appendChild(_modalContent);
+        _appModal.appendChild(_modalOverlay);
         this.appendChild(_appModal);
     };
 
-    createMainRoot = () => {
+    private createAppModal = () => {
+        const _appModal = document.createElement("app-modal");
+        _appModal.setAttribute("data-target", "app-main.appModal");
+        return _appModal;
+    };
+
+    private createModalContent = (element: string) => {
+        const _modalElement = document.createElement(element);
+        const _divEl = document.createElement("div");
+        _modalElement.setAttribute("data-target", "app-modal.modalElement");
+        _modalElement.setAttribute(
+            "data-action",
+            "click:app-main#preventClosing"
+        );
+        _divEl.setAttribute("data-target", "app-modal.modalContent");
+        _divEl.appendChild(_modalElement);
+        return _divEl;
+    };
+
+    private createModalOverlay = () => {
+        const _divOverlay = document.createElement("div");
+        _divOverlay.setAttribute("data-target", "app-modal.modalOverlay");
+        _divOverlay.setAttribute("data-action", "click:app-main#closeModal");
+        return _divOverlay;
+    };
+
+    private createMainRoot = () => {
         if (this.mainRoot) this.removeChild(this.mainRoot);
         const _mainRoot = document.createElement("app-root");
         _mainRoot.setAttribute("data-target", "app-main.mainRoot");
         this.appendChild(_mainRoot);
         return _mainRoot;
+    };
+
+    preventClosing = (e: Event) => {
+        e.stopPropagation();
     };
 
     closeModal = () => {
