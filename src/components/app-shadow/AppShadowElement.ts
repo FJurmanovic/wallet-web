@@ -1,9 +1,5 @@
-import { attr, targets, controller, target } from "@github/catalyst";
-import { closest, index, update, isTrue } from "core/utils";
-import { html, render, until } from "@github/jtml";
-import { PingService } from "services/";
-import { AppService, HttpClient, RouterService } from "core/services";
-import { AuthStore } from "core/store";
+import { controller } from "@github/catalyst";
+import style from "styles/main.scss";
 
 @controller
 class AppShadowElement extends HTMLElement {
@@ -13,14 +9,11 @@ class AppShadowElement extends HTMLElement {
 
     connectedCallback() {
         this.attachShadow({ mode: "open" });
-        this.update();
+        const _appMain = document.createElement("app-main");
+        const _style = document.createElement("style");
+        _style.innerHTML = style;
+
+        this.shadowRoot.appendChild(_style);
+        this.shadowRoot.appendChild(_appMain);
     }
-
-    render = () => {
-        return html` <app-main></app-main> `;
-    };
-
-    update = () => {
-        render(this.render(), this.shadowRoot!);
-    };
 }

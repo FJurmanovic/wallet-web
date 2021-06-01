@@ -30,7 +30,8 @@
                     "pages": "./src/pages",
                     "configs": "./src/configs",
                     "services": "./src/services",
-                    "layouts": "./src/layouts"
+                    "layouts": "./src/layouts",
+                    "styles": "./src/styles"
                 }
             }
         ],

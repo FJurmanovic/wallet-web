@@ -33,7 +33,10 @@
                 "src/services*"
             ],
             "layouts*": [
-                "src/layouts"
+                "src/layouts*"
+            ],
+            "styles*": [
+                "src/styles*"
             ],
             "@src*": [
                 "src*"

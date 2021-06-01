@@ -1,0 +1,24 @@
+app-modal {
+    [data-target="app-modal.modalOverlay"] {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1001;
+        background: rgba(0, 0, 0, 0.5);
+        overflow-x: auto;
+        overflow-y: auto;
+
+        [data-target="app-modal.modalContent"] {
+            z-index: 1005;
+            top: 5%;
+            width: 1080px;
+            padding-bottom: 10px;
+            margin: 25px auto;
+            background: #ffffff;
+            box-shadow: 1px 1px 5px -5px #868686;
+            border-radius: 0.5em;
+        }
+    }
+}
