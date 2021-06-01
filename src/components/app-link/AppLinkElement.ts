@@ -36,7 +36,8 @@ class AppLinkElement extends HTMLElement {
         }
     }
 
-    goTo = () => {
+    goTo = (e: Event) => {
+        e.preventDefault();
         if (!isTrue(this.goBack) && this.to) {
             this.routerService.goTo(this.to);
         } else {
@@ -51,18 +52,19 @@ class AppLinkElement extends HTMLElement {
 
     render = () => {
         return html`${this.disabled
-            ? html`<span
+            ? html`<a
                   class="btn btn-link btn-disabled"
                   data-target="app-link.main"
                   style="color:grey"
-                  >${this.title}</span
+                  >${this.title}</a
               >`
-            : html`<span
+            : html`<a
                   class="btn btn-link btn-disabled"
                   data-target="app-link.main"
                   data-action="click:app-link#goTo"
+                  href="${this.to}"
                   style="text-decoration: underline; cursor: pointer;"
-                  >${this.title}</span
+                  >${this.title}</a
               >`}`;
     };
 
