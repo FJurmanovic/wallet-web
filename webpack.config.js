@@ -8,7 +8,8 @@ const alias = {
     components: path.resolve(__dirname, '/components'),
     pages: path.resolve(__dirname, '/pages'),
     services: path.resolve(__dirname, '/services'),
-    layouts: path.resolve(__dirname, "/layouts")
+    layouts: path.resolve(__dirname, "/layouts"),
+    styles: path.resolve(__dirname, "/styles"),
 };
 
 module.exports = {
@@ -29,7 +30,7 @@ module.exports = {
                 },
                 styles: {
                     name: 'styles',
-                    test: /\.css$/,
+                    test: /\.scss$/,
                     chunks: 'all'
                 }
             }
@@ -54,6 +55,27 @@ module.exports = {
                 resolve: {
                     fullySpecified: false
                 }
+            },
+            {
+                test: /\.css$/,
+                use: {
+                    loader: 'css-loader'
+                }
+            },
+            {
+                test: /\.(scss|css)$/,
+                exclude: /node_modules/,
+                use: [
+                    "sass-to-string",
+                    {
+                        loader: "sass-loader",
+                        options: {
+                            sassOptions: {
+                                outputStyle: "compressed",
+                            },
+                        }
+                    },
+                ]
             }
         ]
     },

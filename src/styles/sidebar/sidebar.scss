@@ -1,0 +1,20 @@
+app-menu {
+    [data-target="app-menu.sidebar"] {
+        margin: 0;
+        padding: 0;
+        width: 200px;
+        background-color: #f1f1f1;
+        position: fixed;
+        height: 100%;
+        overflow: auto;
+        top: 0;
+        left: 0;
+    }
+}
+
+app-slot {
+    [data-target="base-layout.content"] {
+        margin-left: 200px;
+        padding: 1px 16px;
+    }
+}
