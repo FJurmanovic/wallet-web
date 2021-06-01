@@ -20,7 +20,7 @@ class BaseLayoutElement extends HTMLElement {
     };
 
     setElement = (newTag: string) => {
-        const _appSlot = `<${newTag}></${newTag}>`;
+        const _appSlot = `<div data-target="base-layout.content"><${newTag}></${newTag}></div>`;
         this._appSlot = _appSlot;
         this.appSlot.innerHTML = _appSlot;
     };

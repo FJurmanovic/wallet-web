@@ -59,49 +59,55 @@ class AppMenuElement extends HTMLElement {
 
     render = () => {
         return html`
-            <ul>
-                <li>
-                    <app-link data-to="/">Home</app-link>
-                </li>
-                ${this.isAuth
-                    ? html` <li>
-                          <app-link data-to="/history">History</app-link>
-                      </li>`
-                    : null}
-                ${this.isAuth && this.totalWallets > 0
-                    ? this.walletData.map((wallet) => {
-                          return html`
+            <div data-target="app-menu.sidebar">
+                <ul>
+                    <li>
+                        <app-link data-to="/">Home</app-link>
+                    </li>
+                    ${this.isAuth
+                        ? html` <li>
+                              <app-link data-to="/history">History</app-link>
+                          </li>`
+                        : null}
+                    ${this.isAuth && this.totalWallets > 0
+                        ? this.walletData.map((wallet) => {
+                              return html`
+                                  <li>
+                                      <app-link data-to="/wallet/${wallet.id}"
+                                          >${wallet.name}</app-link
+                                      >
+                                  </li>
+                              `;
+                          })
+                        : null}
+                    ${this.isAuth && this.totalWallets > 2
+                        ? html`
                               <li>
-                                  <app-link data-to="/wallet/${wallet.id}"
-                                      >${wallet.name}</app-link
+                                  <app-link data-to="/wallet/all"
+                                      >Other</app-link
                                   >
                               </li>
-                          `;
-                      })
-                    : null}
-                ${this.isAuth && this.totalWallets > 2
-                    ? html`
-                          <li>
-                              <app-link data-to="/wallet/all">Other</app-link>
-                          </li>
-                      `
-                    : null}
-                ${this.isAuth
-                    ? html` <li>
-                          <app-link data-to="/logout">Logout</app-link>
-                      </li>`
-                    : null}
-                ${!this.isAuth
-                    ? html`
-                          <li>
-                              <app-link data-to="/login">Login</app-link>
-                          </li>
-                          <li>
-                              <app-link data-to="/register">Register</app-link>
-                          </li>
-                      `
-                    : null}
-            </ul>
+                          `
+                        : null}
+                    ${this.isAuth
+                        ? html` <li>
+                              <app-link data-to="/logout">Logout</app-link>
+                          </li>`
+                        : null}
+                    ${!this.isAuth
+                        ? html`
+                              <li>
+                                  <app-link data-to="/login">Login</app-link>
+                              </li>
+                              <li>
+                                  <app-link data-to="/register"
+                                      >Register</app-link
+                                  >
+                              </li>
+                          `
+                        : null}
+                </ul>
+            </div>
         `;
     };
 }
