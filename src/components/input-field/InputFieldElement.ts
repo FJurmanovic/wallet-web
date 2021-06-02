@@ -1,8 +1,6 @@
-import { attr, targets, controller, target } from "@github/catalyst";
-import { closest, index, update, isTrue, firstUpper } from "core/utils";
-import { html, render, until } from "@github/jtml";
-import { PingService } from "services/";
-import { AppMainElement } from "components/app-main/AppMainElement";
+import { attr, controller, target } from "@github/catalyst";
+import { firstUpper } from "core/utils";
+import { html, TemplateResult } from "@github/jtml";
 import { RouterService } from "core/services";
 import randomId from "core/utils/random-id";
 import validator from "validator";
@@ -24,7 +22,7 @@ class InputFieldElement extends BaseComponentElement {
         super();
     }
 
-    public elementConnected = () => {
+    public elementConnected = (): void => {
         this.randId = `${name}${randomId()}`;
         this.update();
     };
@@ -69,7 +67,7 @@ class InputFieldElement extends BaseComponentElement {
         return _return;
     }
 
-    render = () => {
+    render = (): TemplateResult => {
         return html`<div data-target="input-field.main">
             ${this.label &&
             html`<label for="${this.randId}"

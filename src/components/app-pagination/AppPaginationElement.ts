@@ -1,8 +1,6 @@
-import { attr, controller, target } from "@github/catalyst";
-import { html, render } from "@github/jtml";
+import { attr, controller } from "@github/catalyst";
+import { html, TemplateResult } from "@github/jtml";
 import { BaseComponentElement } from "common/";
-import { AppMainElement } from "components/app-main/AppMainElement";
-import { closest, isTrue } from "core/utils";
 
 @controller
 class AppPaginationElement extends BaseComponentElement {
@@ -16,18 +14,18 @@ class AppPaginationElement extends BaseComponentElement {
         super();
     }
 
-    elementConnected = () => {};
+    elementConnected = (): void => {};
 
-    attributeChangedCallback() {
+    attributeChangedCallback(): void {
         this.update();
     }
 
-    setItems = (items) => {
+    setItems = (items): void => {
         this.items = items;
         this.update();
     };
 
-    setFetchFunc = async (fetchFunc: Function, autoInit?) => {
+    setFetchFunc = async (fetchFunc: Function, autoInit?): Promise<void> => {
         this.fetchFunc = fetchFunc;
         if (autoInit) {
             const options = {
@@ -38,8 +36,7 @@ class AppPaginationElement extends BaseComponentElement {
         }
     };
 
-    executeFetch = async (options?) => {
-        console.log(this.page);
+    executeFetch = async (options?): Promise<void> => {
         if (!options) {
             options = {
                 rpp: this.rpp || 5,
@@ -53,13 +50,12 @@ class AppPaginationElement extends BaseComponentElement {
             this.totalItems = response?.totalRecords;
             this.page = response?.page;
             this.rpp = response?.rpp;
-            console.log(this.page);
         } catch (err) {
             console.error(err);
         }
     };
 
-    pageBack = () => {
+    pageBack = (): void => {
         const { page } = this;
         if (page > 1) {
             this.page--;
@@ -67,9 +63,8 @@ class AppPaginationElement extends BaseComponentElement {
         }
     };
 
-    pageNext = () => {
+    pageNext = (): void => {
         const { rpp, totalItems, page } = this;
-        console.log(this.page);
         const pageRange = Math.ceil(totalItems / rpp);
         if (page < pageRange) {
             this.page++;
@@ -77,7 +72,7 @@ class AppPaginationElement extends BaseComponentElement {
         }
     };
 
-    render = () => {
+    render = (): TemplateResult => {
         const { rpp, totalItems, page, items } = this;
 
         const renderItem = (item) => html`<tr>
@@ -97,7 +92,6 @@ class AppPaginationElement extends BaseComponentElement {
         const renderPagination = () => {
             if (totalItems > items?.length) {
                 const pageRange = Math.ceil(totalItems / rpp);
-                console.log(pageRange);
                 return html`
                     <div>
                         <button

@@ -1,5 +1,5 @@
 import { BaseLayoutElement } from "common/layouts";
-import { update } from "core/utils";
+import { AppMainElement } from "components/";
 
 class RouterService {
     private historyStack: Array<RouteState> = [];
@@ -7,7 +7,10 @@ class RouterService {
     private domEvents: any = {
         routechanged: new Event("routechanged"),
     };
-    constructor(private mainRoot: ShadowRoot | HTMLElement) {}
+    constructor(
+        private appMain: AppMainElement,
+        private mainRoot: ShadowRoot | HTMLElement
+    ) {}
 
     get routerState(): RouteState {
         const historyLen = this.historyStack?.length;
@@ -115,7 +118,7 @@ class RouterService {
             this.historyStack.push(newRoute);
             this.update();
         }
-        window.dispatchEvent(this.domEvents.routechanged);
+        this.appMain.dispatchEvent(this.domEvents.routechanged);
     };
 
     public goTo = (path: string): void => {

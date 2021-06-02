@@ -1,13 +1,6 @@
-import {
-    attr,
-    targets,
-    controller,
-    target,
-    listenForBind,
-} from "@github/catalyst";
-import { closest, index, update, isTrue } from "core/utils";
-import { html, render, until } from "@github/jtml";
-import { PingService } from "services/";
+import { attr, controller, target } from "@github/catalyst";
+import { isTrue } from "core/utils";
+import { html, TemplateResult } from "@github/jtml";
 import { AppMainElement } from "components/app-main/AppMainElement";
 import { RouterService } from "core/services";
 import { BaseComponentElement } from "common/";
@@ -32,17 +25,17 @@ class AppLinkElement extends BaseComponentElement {
         }
         this.update();
         if (isTrue(this.goBack)) {
-            window.addEventListener("routechanged", this.update);
+            this.appMain.addEventListener("routechanged", this.update);
         }
     };
 
-    elementDisconnected = (): void => {
+    elementDisconnected = (appMain: AppMainElement): void => {
         if (isTrue(this.goBack)) {
-            window.removeEventListener("routechanged", this.update);
+            appMain?.removeEventListener("routechanged", this.update);
         }
     };
 
-    goTo = (e: Event) => {
+    goTo = (e: Event): void => {
         e.preventDefault();
         if (!isTrue(this.goBack) && this.to) {
             this.routerService.goTo(this.to);
@@ -52,11 +45,11 @@ class AppLinkElement extends BaseComponentElement {
         this.update();
     };
 
-    get disabled() {
+    get disabled(): boolean {
         return isTrue(this.goBack) && this.routerService.emptyState;
     }
 
-    render = () => {
+    render = (): TemplateResult => {
         return html`${this.disabled
             ? html`<a
                   class="btn btn-link btn-disabled"
@@ -74,3 +67,5 @@ class AppLinkElement extends BaseComponentElement {
               >`}`;
     };
 }
+
+export type { AppLinkElement };

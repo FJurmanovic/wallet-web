@@ -1,4 +1,4 @@
-import { AppService, HttpClient } from "core/services";
+import { AppService } from "core/services";
 
 class BaseService {
     constructor(public endpoint: string, public appService: AppService) {}

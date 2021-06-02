@@ -1,8 +1,7 @@
-import { attr, targets, controller, target } from "@github/catalyst";
-import { closest, index, update, isTrue } from "core/utils";
-import { html, render, until } from "@github/jtml";
-import { AuthService, PingService } from "services/";
-import { AppMainElement, InputFieldElement } from "components/";
+import { targets, controller } from "@github/catalyst";
+import { html, TemplateResult } from "@github/jtml";
+import { AuthService } from "services/";
+import { InputFieldElement } from "components/";
 import { BasePageElement } from "common/";
 
 @controller
@@ -12,7 +11,7 @@ class RegisterPageElement extends BasePageElement {
     constructor() {
         super();
     }
-    elementConnected = () => {
+    elementConnected = (): void => {
         this.authService = new AuthService(this.appMain.appService);
         this.update();
     };
@@ -26,7 +25,7 @@ class RegisterPageElement extends BasePageElement {
         return formObject;
     }
 
-    onSubmit = async () => {
+    onSubmit = async (): Promise<void> => {
         try {
             if (!this.validate()) {
                 return;
@@ -50,7 +49,7 @@ class RegisterPageElement extends BasePageElement {
         return _return;
     }
 
-    render = () => {
+    render = (): TemplateResult => {
         return html`
             <form>
                 <input-field
@@ -85,3 +84,5 @@ class RegisterPageElement extends BasePageElement {
         `;
     };
 }
+
+export type { RegisterPageElement };

@@ -1,14 +1,7 @@
-import {
-    attr,
-    targets,
-    controller,
-    target,
-    listenForBind,
-} from "@github/catalyst";
-import { closest, index, update, isTrue } from "core/utils";
-import { html, render, until } from "@github/jtml";
-import { AuthService, PingService } from "services/";
-import { AppMainElement, InputFieldElement } from "components/";
+import { targets, controller } from "@github/catalyst";
+import { html, TemplateResult } from "@github/jtml";
+import { AuthService } from "services/";
+import { InputFieldElement } from "components/";
 import { RouterService } from "core/services";
 import { BasePageElement } from "common/";
 
@@ -21,13 +14,13 @@ class LoginPageElement extends BasePageElement {
     constructor() {
         super();
     }
-    elementConnected = () => {
+    elementConnected = (): void => {
         this.authService = new AuthService(this.appMain.appService);
         this.routerService = this.appMain.routerService;
         this.update();
     };
 
-    get emailInput() {
+    get emailInput(): InputFieldElement {
         for (const i in this.inputs) {
             if (this.inputs[i]?.name == "email") {
                 return this.inputs[i];
@@ -35,7 +28,7 @@ class LoginPageElement extends BasePageElement {
         }
     }
 
-    get passwordInput() {
+    get passwordInput(): InputFieldElement {
         for (const i in this.inputs) {
             if (this.inputs[i]?.name == "password") {
                 return this.inputs[i];
@@ -44,7 +37,7 @@ class LoginPageElement extends BasePageElement {
     }
 
     get values(): Object {
-        const formObject = {};
+        const formObject: any = {};
         this.inputs.forEach((input: InputFieldElement) => {
             const inputType = input.inp;
             formObject[input.name] = (inputType as HTMLInputElement).value;
@@ -52,9 +45,8 @@ class LoginPageElement extends BasePageElement {
         return formObject;
     }
 
-    onSubmit = async () => {
+    onSubmit = async (): Promise<void> => {
         try {
-            console.log("test");
             if (!this.validate()) {
                 return;
             }
@@ -63,7 +55,6 @@ class LoginPageElement extends BasePageElement {
             );
 
             if (response?.token) {
-                console.log(this.appMain);
                 this.routerService.goTo("/");
             }
         } catch (err) {
@@ -89,7 +80,7 @@ class LoginPageElement extends BasePageElement {
         return _return;
     }
 
-    render = () => {
+    render = (): TemplateResult => {
         return html`
             <form>
                 <input-field
@@ -121,3 +112,5 @@ class LoginPageElement extends BasePageElement {
         `;
     };
 }
+
+export type { LoginPageElement };

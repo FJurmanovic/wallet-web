@@ -1,6 +1,6 @@
 import { toKebabCase } from "core/utils";
 
-export default function closest(proto, key) {
+export default function closest(proto: Object, key: string): any {
     const kebab: string = toKebabCase(key);
     return Object.defineProperty(proto, key, {
         configurable: true,
@@ -10,6 +10,6 @@ export default function closest(proto, key) {
     });
 }
 
-function findClosest(element: HTMLElement, key: string) {
+function findClosest(element: HTMLElement, key: string): HTMLElement {
     return element.closest(key);
 }

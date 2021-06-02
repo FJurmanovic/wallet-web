@@ -1,15 +1,18 @@
-import { html, render } from "@github/jtml";
+import { html, render, TemplateResult } from "@github/jtml";
 import { AppMainElement } from "components/";
 import { closest } from "core/utils";
 
 class BaseElement extends HTMLElement {
     @closest appMain: AppMainElement;
+    private _appMain: AppMainElement;
     private elementDisconnectCallbacks: Array<Function> = [];
     constructor() {
         super();
+        this.connectedCallback = this.connectedCallback.bind(this);
+        this.disconnectedCallback = this.disconnectedCallback.bind(this);
     }
 
-    bindEvents = () => {
+    bindEvents = (): void => {
         const _elems = this.querySelectorAll("[data-action]");
         _elems?.forEach((el) => {
             for (const action of (el.getAttribute("data-action") || "")
@@ -41,35 +44,37 @@ class BaseElement extends HTMLElement {
         });
     };
 
-    render = () => {
+    render = (): TemplateResult => {
         return html``;
     };
 
-    update = () => {
+    update = (): void => {
         render(this.render(), this);
         this.bindEvents();
     };
 
-    connectedCallback() {
+    connectedCallback(): void {
         this.elementConnected();
+        this._appMain = this.appMain;
     }
 
-    disconnectedCallback() {
-        this.elementDisconnected();
+    disconnectedCallback(): void {
+        const { _appMain } = this;
+        this.elementDisconnected(_appMain);
         if (Array.isArray(this.elementDisconnectCallbacks)) {
             this.elementDisconnectCallbacks.forEach((callback: Function) => {
                 if (typeof callback == "function") {
-                    callback();
+                    callback(_appMain);
                 }
             });
         }
     }
 
-    elementConnected = () => {
+    elementConnected = (): void => {
         this.update();
     };
 
-    elementDisconnected = () => {};
+    elementDisconnected = (appMain: AppMainElement): void => {};
 }
 
 export default BaseElement;
