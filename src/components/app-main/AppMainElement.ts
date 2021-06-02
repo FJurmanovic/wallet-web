@@ -16,7 +16,7 @@ class AppMainElement extends BaseComponentElement {
     constructor() {
         super();
     }
-    connectedCallback() {
+    elementConnected = () => {
         if (this.appMain !== this) return;
         const mainRoot = this.createMainRoot();
         this.httpClient = new HttpClient();
@@ -70,7 +70,7 @@ class AppMainElement extends BaseComponentElement {
             },
         ]);
         this.routerService.init();
-    }
+    };
 
     middleAuth = () => {
         if (!this.isAuth) {

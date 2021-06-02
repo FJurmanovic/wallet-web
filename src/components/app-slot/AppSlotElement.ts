@@ -10,5 +10,5 @@ class AppSlotElement extends BaseComponentElement {
         super();
     }
 
-    connectedCallback() {}
+    elementConnected = () => {};
 }

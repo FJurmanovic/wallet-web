@@ -9,9 +9,9 @@ class NotFoundElement extends BasePageElement {
     constructor() {
         super();
     }
-    connectedCallback() {
+    elementConnected = () => {
         this.update();
-    }
+    };
 
     render = () => {
         return html`

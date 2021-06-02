@@ -14,7 +14,7 @@ class AppMenuElement extends BaseComponentElement {
         super();
     }
 
-    connectedCallback() {
+    elementConnected = () => {
         this.walletService = new WalletService(this.appMain?.appService);
         if (this.appMain.isAuth) {
             this.getWallets();
@@ -22,11 +22,11 @@ class AppMenuElement extends BaseComponentElement {
             this.update();
         }
         window.addEventListener("tokenchange", this.updateToken);
-    }
+    };
 
-    disconnectedCallback(): void {
+    elementDisconnected = () => {
         window.removeEventListener("tokenchange", this.updateToken);
-    }
+    };
 
     getWallets = async () => {
         try {

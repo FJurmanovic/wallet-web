@@ -16,7 +16,7 @@ class MenuItemElement extends BaseComponentElement {
         super();
     }
 
-    public connectedCallback(): void {
+    public elementConnected = () => {
         this.routerService = this.appMain?.routerService;
         if (!this.title && this.innerText) {
             const _slottedText = this.innerText;
@@ -25,11 +25,11 @@ class MenuItemElement extends BaseComponentElement {
         }
         this.update();
         window.addEventListener("routechanged", this.update);
-    }
+    };
 
-    public disconnectedCallback(): void {
+    public elementDisconnected = () => {
         window.removeEventListener("routechanged", this.update);
-    }
+    };
 
     get current() {
         return this.routerService.comparePath(this.path);

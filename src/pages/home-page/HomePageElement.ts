@@ -12,15 +12,15 @@ class HomePageElement extends BasePageElement {
         super();
     }
 
-    connectedCallback() {
+    elementConnected = () => {
         this.pingService = new PingService(this.appMain?.appService);
         this.update();
         window.addEventListener("tokenchange", this.update);
-    }
+    };
 
-    disconnectedCallback(): void {
+    elementDisconnected = (): void => {
         window.removeEventListener("tokenchange", this.update);
-    }
+    };
 
     getPong = async () => {
         try {
