@@ -1,7 +1,5 @@
 import { controller, target } from "@github/catalyst";
 import { BaseComponentElement } from "common/";
-import { AppMainElement } from "components/app-main/AppMainElement";
-import { closest } from "core/utils";
 
 @controller
 class AppModalElement extends BaseComponentElement {
@@ -10,5 +8,7 @@ class AppModalElement extends BaseComponentElement {
         super();
     }
 
-    elementConnected = () => {};
+    elementConnected = (): void => {};
 }
+
+export type { AppModalElement };

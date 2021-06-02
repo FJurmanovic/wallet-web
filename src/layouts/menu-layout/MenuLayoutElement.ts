@@ -1,6 +1,6 @@
 import { controller } from "@github/catalyst";
 import { closest } from "core/utils";
-import { html, render } from "@github/jtml";
+import { html, TemplateResult } from "@github/jtml";
 import { BaseLayoutElement } from "common/layouts";
 import { AppMainElement } from "components/";
 
@@ -12,18 +12,18 @@ class MenuLayoutElement extends BaseLayoutElement {
         super();
     }
 
-    elementConnected = () => {
+    elementConnected = (): void => {
         this.update();
-        window.addEventListener("tokenchange", this.updateAuth);
-        window.addEventListener("routechanged", this.updateAuth);
+        this.appMain.addEventListener("tokenchange", this.updateAuth);
+        this.appMain.addEventListener("routechanged", this.updateAuth);
     };
 
-    elementDisconnected = () => {
-        window.removeEventListener("tokenchange", this.updateAuth);
-        window.removeEventListener("routechanged", this.updateAuth);
+    elementDisconnected = (appMain: AppMainElement): void => {
+        appMain?.removeEventListener("tokenchange", this.updateAuth);
+        appMain?.removeEventListener("routechanged", this.updateAuth);
     };
 
-    get isAuth() {
+    get isAuth(): boolean {
         const _is = this.appMain?.routerService?.routerState?.middleware;
         if (typeof _is == "function") {
             return _is();
@@ -31,11 +31,11 @@ class MenuLayoutElement extends BaseLayoutElement {
         return !!_is;
     }
 
-    updateAuth = () => {
+    updateAuth = (): void => {
         this.update();
     };
 
-    render = () => {
+    render = (): TemplateResult => {
         const _isAuth = this.isAuth;
         return html`
             ${_isAuth ? html`<app-menu></app-menu>` : html``}
@@ -43,3 +43,5 @@ class MenuLayoutElement extends BaseLayoutElement {
         `;
     };
 }
+
+export type { MenuLayoutElement };

@@ -9,7 +9,7 @@ class BaseLayoutElement extends BaseElement {
         super();
     }
 
-    get slotTag() {
+    get slotTag(): string {
         return this.appSlot?.firstElementChild?.tagName;
     }
 
@@ -20,7 +20,7 @@ class BaseLayoutElement extends BaseElement {
         return tag?.tagName === this.slotTag;
     };
 
-    setElement = (newTag: string) => {
+    setElement = (newTag: string): void => {
         const _appSlot = `<div data-target="base-layout.content"><${newTag}></${newTag}></div>`;
         this._appSlot = _appSlot;
         this.appSlot.innerHTML = _appSlot;

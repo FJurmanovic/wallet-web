@@ -1,6 +1,5 @@
-import { attr, targets, controller, target } from "@github/catalyst";
-import { closest, index, update, isTrue } from "core/utils";
-import { html, render, until } from "@github/jtml";
+import { controller, target } from "@github/catalyst";
+import { html, TemplateResult } from "@github/jtml";
 import { TransactionsService } from "services/";
 import { AppMainElement, AppPaginationElement } from "components/";
 import { BasePageElement } from "common/";
@@ -13,20 +12,20 @@ class HistoryPageElement extends BasePageElement {
         super();
     }
 
-    elementConnected = () => {
+    elementConnected = (): void => {
         this.transactionsService = new TransactionsService(
             this.appMain?.appService
         );
         this.update();
         this.pagination?.setFetchFunc?.(this.getTransactions, true)!;
-        window.addEventListener("tokenchange", this.update);
+        this.appMain.addEventListener("tokenchange", this.update);
     };
 
-    elementDisconnected = () => {
-        window.removeEventListener("tokenchange", this.update);
+    elementDisconnected = (appMain: AppMainElement): void => {
+        appMain?.removeEventListener("tokenchange", this.update);
     };
 
-    getTransactions = async (options) => {
+    getTransactions = async (options): Promise<any> => {
         try {
             const response = await this.transactionsService.getAll(options);
             return response;
@@ -35,7 +34,7 @@ class HistoryPageElement extends BasePageElement {
         }
     };
 
-    render = () => {
+    render = (): TemplateResult => {
         return html`
             <app-pagination
                 data-target="history-page.pagination"
@@ -43,3 +42,5 @@ class HistoryPageElement extends BasePageElement {
         `;
     };
 }
+
+export type { HistoryPageElement };

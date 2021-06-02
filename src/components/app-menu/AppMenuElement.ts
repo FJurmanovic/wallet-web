@@ -1,8 +1,7 @@
-import { controller, target } from "@github/catalyst";
-import { html, render, TemplateResult } from "@github/jtml";
+import { controller } from "@github/catalyst";
+import { html, TemplateResult } from "@github/jtml";
 import { BaseComponentElement } from "common/";
 import { AppMainElement } from "components/app-main/AppMainElement";
-import { closest, update } from "core/utils";
 import { WalletService } from "services/";
 
 @controller
@@ -14,21 +13,21 @@ class AppMenuElement extends BaseComponentElement {
         super();
     }
 
-    elementConnected = () => {
+    elementConnected = (): void => {
         this.walletService = new WalletService(this.appMain?.appService);
         if (this.appMain.isAuth) {
             this.getWallets();
         } else {
             this.update();
         }
-        window.addEventListener("tokenchange", this.updateToken);
+        this.appMain.addEventListener("tokenchange", this.updateToken);
     };
 
-    elementDisconnected = () => {
-        window.removeEventListener("tokenchange", this.updateToken);
+    elementDisconnected = (appMain: AppMainElement): void => {
+        appMain?.removeEventListener("tokenchange", this.updateToken);
     };
 
-    getWallets = async () => {
+    getWallets = async (): Promise<void> => {
         try {
             const response = await this.walletService.getAll({ rpp: 2 });
             this.setWallets(response.items, response.totalRecords);
@@ -37,13 +36,13 @@ class AppMenuElement extends BaseComponentElement {
         }
     };
 
-    setWallets = (wallets: Array<any>, totalWallets: number) => {
+    setWallets = (wallets: Array<any>, totalWallets: number): void => {
         this.walletData = wallets;
         this.totalWallets = totalWallets;
         this.update();
     };
 
-    updateToken = () => {
+    updateToken = (): void => {
         if (this.isAuth) {
             this.getWallets();
         } else {
@@ -58,7 +57,7 @@ class AppMenuElement extends BaseComponentElement {
         return false;
     }
 
-    renderWallets = () => {
+    renderWallets = (): Array<TemplateResult> => {
         if (this.isAuth && this.totalWallets > 0) {
             return this.walletData.map(
                 (wallet) => html`<menu-item data-path="/wallet/${wallet.id}"
@@ -69,7 +68,7 @@ class AppMenuElement extends BaseComponentElement {
         return null;
     };
 
-    render = () => {
+    render = (): TemplateResult => {
         const { isAuth, totalWallets, walletData } = this;
 
         const regularMenu = (path: string, title: string): TemplateResult =>
@@ -111,3 +110,5 @@ class AppMenuElement extends BaseComponentElement {
         `;
     };
 }
+
+export type { AppMenuElement };

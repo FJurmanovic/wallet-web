@@ -1,6 +1,5 @@
-import { attr, targets, controller, target } from "@github/catalyst";
-import { closest, index, update, isTrue } from "core/utils";
-import { html, render, until } from "@github/jtml";
+import { controller } from "@github/catalyst";
+import { html, TemplateResult, until } from "@github/jtml";
 import { PingService } from "services/";
 import { AppMainElement } from "components/";
 import { BasePageElement } from "common/";
@@ -12,17 +11,17 @@ class HomePageElement extends BasePageElement {
         super();
     }
 
-    elementConnected = () => {
+    elementConnected = (): void => {
         this.pingService = new PingService(this.appMain?.appService);
         this.update();
-        window.addEventListener("tokenchange", this.update);
+        this.appMain.addEventListener("tokenchange", this.update);
     };
 
-    elementDisconnected = (): void => {
-        window.removeEventListener("tokenchange", this.update);
+    elementDisconnected = (appMain: AppMainElement): void => {
+        appMain?.removeEventListener("tokenchange", this.update);
     };
 
-    getPong = async () => {
+    getPong = async (): Promise<void> => {
         try {
             const response = await this.pingService.getAll();
         } catch (err) {
@@ -30,11 +29,11 @@ class HomePageElement extends BasePageElement {
         }
     };
 
-    pongEl = () => {
+    pongEl = (): TemplateResult => {
         return html`<div>${until(this.getPong())}</div>`;
     };
 
-    openModal = () => {
+    openModal = (): void => {
         const _modal = this.appMain.appModal;
         if (_modal) {
             this.appMain.closeModal();
@@ -43,9 +42,11 @@ class HomePageElement extends BasePageElement {
         }
     };
 
-    render = () => {
+    render = (): TemplateResult => {
         return html`
             <button data-action="click:home-page#openModal">Test</button>
         `;
     };
 }
+
+export { HomePageElement };

@@ -1,8 +1,8 @@
 import { controller, target } from "@github/catalyst";
-import { closest } from "core/utils";
 import { AppService, HttpClient, RouterService } from "core/services";
 import { AuthStore } from "core/store";
 import { BaseComponentElement } from "common/";
+import { AppModalElement, AppRootElement } from "components/";
 
 @controller
 class AppMainElement extends BaseComponentElement {
@@ -10,8 +10,8 @@ class AppMainElement extends BaseComponentElement {
     public authStore: AuthStore;
     private httpClient: HttpClient;
     public appService: AppService;
-    @target appModal;
-    @target mainRoot;
+    @target appModal: AppModalElement;
+    @target mainRoot: AppRootElement;
 
     constructor() {
         super();
@@ -21,8 +21,8 @@ class AppMainElement extends BaseComponentElement {
         const mainRoot = this.createMainRoot();
         this.httpClient = new HttpClient();
         this.appService = new AppService(this, this.httpClient);
-        this.routerService = new RouterService(mainRoot);
-        this.authStore = new AuthStore(this.appService);
+        this.routerService = new RouterService(this, mainRoot);
+        this.authStore = new AuthStore(this, this.appService);
         this.routerService.setRoutes([
             {
                 path: "/",
@@ -134,7 +134,7 @@ class AppMainElement extends BaseComponentElement {
     };
 
     isAuth = (): boolean => {
-        return this.authStore && this.authStore.token;
+        return this.authStore && !!this.authStore.token;
     };
 }
 

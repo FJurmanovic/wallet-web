@@ -1,7 +1,5 @@
-import { attr, targets, controller, target } from "@github/catalyst";
-import { closest, index, update, isTrue } from "core/utils";
-import { html, render, until } from "@github/jtml";
-import { PingService } from "services/";
+import { attr, controller, target } from "@github/catalyst";
+import { html, TemplateResult } from "@github/jtml";
 import { AppMainElement } from "components/app-main/AppMainElement";
 import { RouterService } from "core/services";
 import { BaseComponentElement } from "common/";
@@ -16,7 +14,7 @@ class MenuItemElement extends BaseComponentElement {
         super();
     }
 
-    public elementConnected = () => {
+    public elementConnected = (): void => {
         this.routerService = this.appMain?.routerService;
         if (!this.title && this.innerText) {
             const _slottedText = this.innerText;
@@ -24,18 +22,18 @@ class MenuItemElement extends BaseComponentElement {
             this.title = _slottedText;
         }
         this.update();
-        window.addEventListener("routechanged", this.update);
+        this.appMain.addEventListener("routechanged", this.update);
     };
 
-    public elementDisconnected = () => {
-        window.removeEventListener("routechanged", this.update);
+    public elementDisconnected = (appMain: AppMainElement): void => {
+        appMain?.removeEventListener("routechanged", this.update);
     };
 
-    get current() {
+    get current(): boolean {
         return this.routerService.comparePath(this.path);
     }
 
-    render = () => {
+    render = (): TemplateResult => {
         return html`
             <div
                 class="${this.current ? "selected " : ""}menu-item"
@@ -46,3 +44,5 @@ class MenuItemElement extends BaseComponentElement {
         `;
     };
 }
+
+export type { MenuItemElement };
