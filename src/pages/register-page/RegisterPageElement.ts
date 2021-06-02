@@ -3,11 +3,11 @@ import { closest, index, update, isTrue } from "core/utils";
 import { html, render, until } from "@github/jtml";
 import { AuthService, PingService } from "services/";
 import { AppMainElement, InputFieldElement } from "components/";
+import { BasePageElement } from "common/";
 
 @controller
-class RegisterPageElement extends HTMLElement {
+class RegisterPageElement extends BasePageElement {
     @targets inputs: Array<InputFieldElement>;
-    @closest appMain: AppMainElement;
     authService: AuthService;
     constructor() {
         super();
@@ -83,9 +83,5 @@ class RegisterPageElement extends HTMLElement {
                 </button>
             </form>
         `;
-    };
-
-    update = () => {
-        render(this.render(), this);
     };
 }

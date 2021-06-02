@@ -1,3 +1,3 @@
 import "layouts";
-import "pages";
 import "components";
+import "pages";

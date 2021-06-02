@@ -47,9 +47,6 @@ class RouterService {
         const _mainRoot = this.mainRoot;
         const route = this.routerState;
         if (path == route?.path || route?.path == "/not-found") {
-            if (route.middleware && typeof route.middleware == "function") {
-                if (route.middleware()) return;
-            }
             let changed: boolean = false;
             if (_mainRoot?.childNodes.length > 0) {
                 _mainRoot?.childNodes?.forEach?.((child: BaseLayoutElement) => {

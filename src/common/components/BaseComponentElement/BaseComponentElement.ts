@@ -1,34 +1,9 @@
-import { target } from "@github/catalyst";
 import { html, render } from "@github/jtml";
 import { AppMainElement } from "components/";
 import { closest } from "core/utils";
 
-class BaseLayoutElement extends HTMLElement {
-    @target appSlot: HTMLElement;
+class BaseComponentElement extends HTMLElement {
     @closest appMain: AppMainElement;
-    public isLayout: boolean = true;
-    public _appSlot: string;
-    constructor() {
-        super();
-    }
-
-    get slotTag() {
-        return this.appSlot?.firstElementChild?.tagName;
-    }
-
-    compareTags = (tag: string | HTMLElement): boolean => {
-        if (typeof tag === "string") {
-            return this.slotTag === tag;
-        }
-        return tag?.tagName === this.slotTag;
-    };
-
-    setElement = (newTag: string) => {
-        const _appSlot = `<div data-target="base-layout.content"><${newTag}></${newTag}></div>`;
-        this._appSlot = _appSlot;
-        this.appSlot.innerHTML = _appSlot;
-    };
-
     bindEvents = () => {
         const _elems = this.querySelectorAll("[data-action]");
         _elems?.forEach((el) => {
@@ -43,7 +18,13 @@ class BaseLayoutElement extends HTMLElement {
                 const method = action.slice(methodSep + 1);
 
                 if (tag.toUpperCase() === this.tagName) {
-                    this.addEventListener(type, this[method]);
+                    el.addEventListener(type, this?.[method]);
+                } else {
+                    this.childNodes.forEach((child: HTMLElement) => {
+                        if (child.tagName == tag.toUpperCase()) {
+                            el.addEventListener(type, child?.[method]);
+                        }
+                    });
                 }
             }
         });
@@ -59,4 +40,4 @@ class BaseLayoutElement extends HTMLElement {
     };
 }
 
-export default BaseLayoutElement;
+export default BaseComponentElement;

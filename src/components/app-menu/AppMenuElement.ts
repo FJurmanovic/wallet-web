@@ -1,15 +1,15 @@
 import { controller, target } from "@github/catalyst";
 import { html, render, TemplateResult } from "@github/jtml";
+import { BaseComponentElement } from "common/";
 import { AppMainElement } from "components/app-main/AppMainElement";
 import { closest, update } from "core/utils";
 import { WalletService } from "services/";
 
 @controller
-class AppMenuElement extends HTMLElement {
+class AppMenuElement extends BaseComponentElement {
     private walletService: WalletService;
     private walletData: Array<any>;
     private totalWallets: number;
-    @closest appMain: AppMainElement;
     constructor() {
         super();
     }
@@ -51,13 +51,8 @@ class AppMenuElement extends HTMLElement {
         }
     };
 
-    update = () => {
-        render(this.render(), this);
-    };
-
     get isAuth(): boolean {
         if (this.appMain?.isAuth) {
-            console.log(true);
             return true;
         }
         return false;

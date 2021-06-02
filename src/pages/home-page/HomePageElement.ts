@@ -3,11 +3,11 @@ import { closest, index, update, isTrue } from "core/utils";
 import { html, render, until } from "@github/jtml";
 import { PingService } from "services/";
 import { AppMainElement } from "components/";
+import { BasePageElement } from "common/";
 
 @controller
-class HomePageElement extends HTMLElement {
+class HomePageElement extends BasePageElement {
     private pingService: PingService;
-    @closest appMain: AppMainElement;
     constructor() {
         super();
     }
@@ -47,9 +47,5 @@ class HomePageElement extends HTMLElement {
         return html`
             <button data-action="click:home-page#openModal">Test</button>
         `;
-    };
-
-    update = () => {
-        render(this.render(), this);
     };
 }

@@ -1,19 +1,24 @@
 import { controller } from "@github/catalyst";
 import style from "styles/main.scss";
 
-@controller
-class AppShadowElement extends HTMLElement {
-    constructor() {
-        super();
-    }
+(function () {
+    const _shadow = new WeakMap();
 
-    connectedCallback() {
-        this.attachShadow({ mode: "open" });
-        const _appMain = document.createElement("app-main");
-        const _style = document.createElement("style");
-        _style.innerHTML = style;
+    @controller
+    class AppShadowElement extends HTMLElement {
+        constructor() {
+            super();
+            _shadow.set(this, this.attachShadow({ mode: "closed" }));
+        }
 
-        this.shadowRoot.appendChild(_style);
-        this.shadowRoot.appendChild(_appMain);
+        connectedCallback() {
+            const _root = _shadow.get(this);
+            const _appMain = document.createElement("app-main");
+            const _style = document.createElement("style");
+            _style.innerHTML = style;
+
+            _root.appendChild(_style);
+            _root.appendChild(_appMain);
+        }
     }
-}
+})();

@@ -3,11 +3,11 @@ import { closest, index, update, isTrue } from "core/utils";
 import { html, render, until } from "@github/jtml";
 import { TransactionsService } from "services/";
 import { AppMainElement, AppPaginationElement } from "components/";
+import { BasePageElement } from "common/";
 
 @controller
-class HistoryPageElement extends HTMLElement {
+class HistoryPageElement extends BasePageElement {
     private transactionsService: TransactionsService;
-    @closest appMain: AppMainElement;
     @target pagination: AppPaginationElement;
     constructor() {
         super();
@@ -41,9 +41,5 @@ class HistoryPageElement extends HTMLElement {
                 data-target="history-page.pagination"
             ></app-pagination>
         `;
-    };
-
-    update = () => {
-        render(this.render(), this);
     };
 }

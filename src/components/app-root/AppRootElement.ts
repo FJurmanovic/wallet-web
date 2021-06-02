@@ -1,11 +1,11 @@
 import { controller, target } from "@github/catalyst";
+import { BaseComponentElement } from "common/";
 import { AppMainElement } from "components/app-main/AppMainElement";
 import { closest } from "core/utils";
 
 @controller
-class AppRootElement extends HTMLElement {
+class AppRootElement extends BaseComponentElement {
     @target rootElement: HTMLElement;
-    @closest appMain: AppMainElement;
     constructor() {
         super();
     }

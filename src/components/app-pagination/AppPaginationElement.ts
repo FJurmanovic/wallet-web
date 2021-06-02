@@ -1,11 +1,11 @@
 import { attr, controller, target } from "@github/catalyst";
 import { html, render } from "@github/jtml";
+import { BaseComponentElement } from "common/";
 import { AppMainElement } from "components/app-main/AppMainElement";
 import { closest, isTrue } from "core/utils";
 
 @controller
-class AppPaginationElement extends HTMLElement {
-    @closest appMain: AppMainElement;
+class AppPaginationElement extends BaseComponentElement {
     public items: Array<any>;
     @attr page: number;
     @attr rpp: number;
@@ -39,6 +39,7 @@ class AppPaginationElement extends HTMLElement {
     };
 
     executeFetch = async (options?) => {
+        console.log(this.page);
         if (!options) {
             options = {
                 rpp: this.rpp || 5,
@@ -52,6 +53,7 @@ class AppPaginationElement extends HTMLElement {
             this.totalItems = response?.totalRecords;
             this.page = response?.page;
             this.rpp = response?.rpp;
+            console.log(this.page);
         } catch (err) {
             console.error(err);
         }
@@ -67,6 +69,7 @@ class AppPaginationElement extends HTMLElement {
 
     pageNext = () => {
         const { rpp, totalItems, page } = this;
+        console.log(this.page);
         const pageRange = Math.ceil(totalItems / rpp);
         if (page < pageRange) {
             this.page++;
@@ -84,7 +87,9 @@ class AppPaginationElement extends HTMLElement {
 
         const renderItems = () => {
             if (items?.length > 0) {
-                return html`${items?.map((item) => renderItem(item))}`;
+                return html`<span>
+                    ${items?.map((item) => renderItem(item))}
+                </span>`;
             }
             return html``;
         };
@@ -92,6 +97,7 @@ class AppPaginationElement extends HTMLElement {
         const renderPagination = () => {
             if (totalItems > items?.length) {
                 const pageRange = Math.ceil(totalItems / rpp);
+                console.log(pageRange);
                 return html`
                     <div>
                         <button
@@ -115,16 +121,7 @@ class AppPaginationElement extends HTMLElement {
             }
         };
 
-        return html`<div>
-            <table>
-                ${renderItems()}
-            </table>
-            ${renderPagination()}
-        </div>`;
-    };
-
-    update = () => {
-        render(this.render(), this);
+        return html`<div>${renderItems()} ${renderPagination()}</div>`;
     };
 }
 

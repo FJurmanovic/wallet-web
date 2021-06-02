@@ -1,14 +1,20 @@
-import { attr, targets, controller, target } from "@github/catalyst";
+import {
+    attr,
+    targets,
+    controller,
+    target,
+    listenForBind,
+} from "@github/catalyst";
 import { closest, index, update, isTrue } from "core/utils";
 import { html, render, until } from "@github/jtml";
 import { AuthService, PingService } from "services/";
 import { AppMainElement, InputFieldElement } from "components/";
 import { RouterService } from "core/services";
+import { BasePageElement } from "common/";
 
 @controller
-class LoginPageElement extends HTMLElement {
+class LoginPageElement extends BasePageElement {
     @targets inputs: Array<InputFieldElement>;
-    @closest appMain: AppMainElement;
     authService: AuthService;
     routerService: RouterService;
     errorMessage: string;
@@ -48,6 +54,7 @@ class LoginPageElement extends HTMLElement {
 
     onSubmit = async () => {
         try {
+            console.log("test");
             if (!this.validate()) {
                 return;
             }
@@ -113,8 +120,4 @@ class LoginPageElement extends HTMLElement {
             </div>
         `;
     };
-
-    update() {
-        render(this.render(), this);
-    }
 }
