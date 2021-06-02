@@ -2,10 +2,10 @@ import { controller } from "@github/catalyst";
 import { closest, update } from "core/utils";
 import { AuthService } from "services/";
 import { AppMainElement } from "components/";
+import { BasePageElement } from "common/";
 
 @controller
-class LogoutPageElement extends HTMLElement {
-    @closest appMain: AppMainElement;
+class LogoutPageElement extends BasePageElement {
     authService: AuthService;
     constructor() {
         super();

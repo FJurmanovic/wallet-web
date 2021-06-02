@@ -1,13 +1,19 @@
-import { attr, targets, controller, target } from "@github/catalyst";
+import {
+    attr,
+    targets,
+    controller,
+    target,
+    listenForBind,
+} from "@github/catalyst";
 import { closest, index, update, isTrue } from "core/utils";
 import { html, render, until } from "@github/jtml";
 import { PingService } from "services/";
 import { AppMainElement } from "components/app-main/AppMainElement";
 import { RouterService } from "core/services";
+import { BaseComponentElement } from "common/";
 
 @controller
-class AppLinkElement extends HTMLElement {
-    @closest appMain: AppMainElement;
+class AppLinkElement extends BaseComponentElement {
     @attr to: string;
     @attr goBack: string;
     @attr title: string;
@@ -66,9 +72,5 @@ class AppLinkElement extends HTMLElement {
                   style="text-decoration: underline; cursor: pointer;"
                   >${this.title}</a
               >`}`;
-    };
-
-    update = () => {
-        render(this.render(), this);
     };
 }

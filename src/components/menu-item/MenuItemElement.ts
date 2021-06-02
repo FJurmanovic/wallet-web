@@ -4,10 +4,10 @@ import { html, render, until } from "@github/jtml";
 import { PingService } from "services/";
 import { AppMainElement } from "components/app-main/AppMainElement";
 import { RouterService } from "core/services";
+import { BaseComponentElement } from "common/";
 
 @controller
-class MenuItemElement extends HTMLElement {
-    @closest appMain: AppMainElement;
+class MenuItemElement extends BaseComponentElement {
     @attr path: string;
     @attr title: string;
     @target itemEl: HTMLElement;
@@ -44,9 +44,5 @@ class MenuItemElement extends HTMLElement {
                 <app-link data-to="${this.path}">${this.title}</app-link>
             </div>
         `;
-    };
-
-    update = () => {
-        render(this.render(), this);
     };
 }

@@ -15,16 +15,20 @@ class MenuLayoutElement extends BaseLayoutElement {
     connectedCallback() {
         this.update();
         window.addEventListener("tokenchange", this.updateAuth);
+        window.addEventListener("routechanged", this.updateAuth);
     }
 
     disconnectedCallback(): void {
         window.removeEventListener("tokenchange", this.updateAuth);
+        window.removeEventListener("routechanged", this.updateAuth);
     }
 
     get isAuth() {
-        const _hasToken = this.appMain?.isAuth;
-        const _hasData = this.appMain?.authStore?.user;
-        return _hasToken;
+        const _is = this.appMain?.routerService?.routerState?.middleware;
+        if (typeof _is == "function") {
+            return _is();
+        }
+        return !!_is;
     }
 
     updateAuth = () => {
@@ -32,13 +36,10 @@ class MenuLayoutElement extends BaseLayoutElement {
     };
 
     render = () => {
+        const _isAuth = this.isAuth;
         return html`
-            <app-menu></app-menu>
+            ${_isAuth ? html`<app-menu></app-menu>` : html``}
             <app-slot data-target="menu-layout.appSlot"></app-slot>
         `;
-    };
-
-    update = () => {
-        render(this.render(), this);
     };
 }

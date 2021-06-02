@@ -2,14 +2,14 @@ import { controller, target } from "@github/catalyst";
 import { closest } from "core/utils";
 import { AppService, HttpClient, RouterService } from "core/services";
 import { AuthStore } from "core/store";
+import { BaseComponentElement } from "common/";
 
 @controller
-class AppMainElement extends HTMLElement {
+class AppMainElement extends BaseComponentElement {
     public routerService: RouterService;
     public authStore: AuthStore;
     private httpClient: HttpClient;
     public appService: AppService;
-    @closest appMain;
     @target appModal;
     @target mainRoot;
 
@@ -28,28 +28,31 @@ class AppMainElement extends HTMLElement {
                 path: "/",
                 component: "home-page",
                 layout: "menu-layout",
+                middleware: this.isAuth,
             },
             {
                 path: "/home",
                 component: "home-page",
                 layout: "menu-layout",
-                middleware: this.middleAuth,
+                middleware: this.isAuth,
             },
             {
                 path: "/history",
                 component: "history-page",
                 layout: "menu-layout",
-                middleware: this.middleAuth,
+                middleware: this.isAuth,
             },
             {
                 path: "/register",
                 component: "register-page",
                 layout: "menu-layout",
+                middleware: this.isAuth,
             },
             {
                 path: "/login",
                 component: "login-page",
                 layout: "menu-layout",
+                middleware: this.isAuth,
             },
             {
                 path: "/unauthorized",
@@ -130,9 +133,9 @@ class AppMainElement extends HTMLElement {
         if (this.appModal) this.removeChild(this.appModal);
     };
 
-    get isAuth(): boolean {
+    isAuth = (): boolean => {
         return this.authStore && this.authStore.token;
-    }
+    };
 }
 
 export type { AppMainElement };

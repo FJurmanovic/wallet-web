@@ -7,10 +7,10 @@ import { RouterService } from "core/services";
 import randomId from "core/utils/random-id";
 import validator from "validator";
 import { validatorErrors } from "core/constants";
+import { BaseComponentElement } from "common/";
 
 @controller
-class InputFieldElement extends HTMLElement {
-    @closest appMain: AppMainElement;
+class InputFieldElement extends BaseComponentElement {
     @attr name: string;
     @attr type: string;
     @attr label: string;
@@ -78,10 +78,6 @@ class InputFieldElement extends HTMLElement {
             <input type="${this.type}" data-target="input-field.inp" />
             ${this.error && html`<span>${this.error}</span>`}
         </div>`;
-    };
-
-    update = () => {
-        render(this.render(), this);
     };
 }
 
