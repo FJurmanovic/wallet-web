@@ -12,10 +12,10 @@ class RegisterPageElement extends BasePageElement {
     constructor() {
         super();
     }
-    connectedCallback() {
+    elementConnected = () => {
         this.authService = new AuthService(this.appMain.appService);
         this.update();
-    }
+    };
 
     get values(): Object {
         const formObject = {};

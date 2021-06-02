@@ -12,16 +12,16 @@ class MenuLayoutElement extends BaseLayoutElement {
         super();
     }
 
-    connectedCallback() {
+    elementConnected = () => {
         this.update();
         window.addEventListener("tokenchange", this.updateAuth);
         window.addEventListener("routechanged", this.updateAuth);
-    }
+    };
 
-    disconnectedCallback(): void {
+    elementDisconnected = () => {
         window.removeEventListener("tokenchange", this.updateAuth);
         window.removeEventListener("routechanged", this.updateAuth);
-    }
+    };
 
     get isAuth() {
         const _is = this.appMain?.routerService?.routerState?.middleware;

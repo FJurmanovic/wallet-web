@@ -21,11 +21,11 @@ class LoginPageElement extends BasePageElement {
     constructor() {
         super();
     }
-    connectedCallback() {
+    elementConnected = () => {
         this.authService = new AuthService(this.appMain.appService);
         this.routerService = this.appMain.routerService;
         this.update();
-    }
+    };
 
     get emailInput() {
         for (const i in this.inputs) {

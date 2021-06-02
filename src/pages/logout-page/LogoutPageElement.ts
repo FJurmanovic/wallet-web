@@ -10,9 +10,9 @@ class LogoutPageElement extends BasePageElement {
     constructor() {
         super();
     }
-    connectedCallback() {
+    elementConnected = () => {
         this.authService = new AuthService(this.appMain.appService);
         this.appMain?.authStore?.userLogout();
         this.appMain?.routerService.goTo("/login");
-    }
+    };
 }

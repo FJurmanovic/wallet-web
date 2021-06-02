@@ -16,7 +16,7 @@ class AppPaginationElement extends BaseComponentElement {
         super();
     }
 
-    connectedCallback() {}
+    elementConnected = () => {};
 
     attributeChangedCallback() {
         this.update();

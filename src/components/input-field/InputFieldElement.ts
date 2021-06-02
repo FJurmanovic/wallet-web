@@ -24,10 +24,10 @@ class InputFieldElement extends BaseComponentElement {
         super();
     }
 
-    public connectedCallback(): void {
+    public elementConnected = () => {
         this.randId = `${name}${randomId()}`;
         this.update();
-    }
+    };
 
     get valid(): boolean {
         return !!this.error;

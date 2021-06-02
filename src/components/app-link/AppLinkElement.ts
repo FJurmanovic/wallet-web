@@ -23,7 +23,7 @@ class AppLinkElement extends BaseComponentElement {
         super();
     }
 
-    public connectedCallback(): void {
+    elementConnected = (): void => {
         this.routerService = this.appMain?.routerService;
         if (!this.title && this.innerText) {
             const _slottedText = this.innerText;
@@ -34,13 +34,13 @@ class AppLinkElement extends BaseComponentElement {
         if (isTrue(this.goBack)) {
             window.addEventListener("routechanged", this.update);
         }
-    }
+    };
 
-    public disconnectedCallback(): void {
+    elementDisconnected = (): void => {
         if (isTrue(this.goBack)) {
             window.removeEventListener("routechanged", this.update);
         }
-    }
+    };
 
     goTo = (e: Event) => {
         e.preventDefault();

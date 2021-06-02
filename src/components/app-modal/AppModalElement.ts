@@ -10,5 +10,5 @@ class AppModalElement extends BaseComponentElement {
         super();
     }
 
-    connectedCallback() {}
+    elementConnected = () => {};
 }

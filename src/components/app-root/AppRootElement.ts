@@ -10,5 +10,5 @@ class AppRootElement extends BaseComponentElement {
         super();
     }
 
-    connectedCallback() {}
+    elementConnected = () => {};
 }

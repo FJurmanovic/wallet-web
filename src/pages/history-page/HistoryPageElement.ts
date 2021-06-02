@@ -13,18 +13,18 @@ class HistoryPageElement extends BasePageElement {
         super();
     }
 
-    connectedCallback() {
+    elementConnected = () => {
         this.transactionsService = new TransactionsService(
             this.appMain?.appService
         );
         this.update();
         this.pagination?.setFetchFunc?.(this.getTransactions, true)!;
         window.addEventListener("tokenchange", this.update);
-    }
+    };
 
-    disconnectedCallback(): void {
+    elementDisconnected = () => {
         window.removeEventListener("tokenchange", this.update);
-    }
+    };
 
     getTransactions = async (options) => {
         try {
