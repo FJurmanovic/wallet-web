@@ -2,13 +2,13 @@ import { attr, targets, controller, target } from "@github/catalyst";
 import { closest, index, update, isTrue } from "core/utils";
 import { html, render, until } from "@github/jtml";
 import { TransactionsService } from "services/";
-import { AppMainElement } from "components/";
+import { AppMainElement, AppPaginationElement } from "components/";
 
 @controller
 class HistoryPageElement extends HTMLElement {
     private transactionsService: TransactionsService;
-    private transactions: Array<any> = [];
     @closest appMain: AppMainElement;
+    @target pagination: AppPaginationElement;
     constructor() {
         super();
     }
@@ -17,8 +17,8 @@ class HistoryPageElement extends HTMLElement {
         this.transactionsService = new TransactionsService(
             this.appMain?.appService
         );
-        if (this.appMain.isAuth) this.getTransactions();
         this.update();
+        this.pagination?.setFetchFunc?.(this.getTransactions, true)!;
         window.addEventListener("tokenchange", this.update);
     }
 
@@ -26,41 +26,20 @@ class HistoryPageElement extends HTMLElement {
         window.removeEventListener("tokenchange", this.update);
     }
 
-    getTransactions = async () => {
+    getTransactions = async (options) => {
         try {
-            const response = await this.transactionsService.getAll();
-            if (response) {
-                this.setTransactions(response?.items);
-            }
+            const response = await this.transactionsService.getAll(options);
+            return response;
         } catch (err) {
             throw err;
         }
     };
 
-    setTransactions(transactions: Array<any>) {
-        this.transactions = transactions;
-        console.log(transactions);
-        this.update();
-    }
-
-    openModal = () => {
-        const _modal = this.appMain.appModal;
-        if (_modal) {
-            this.appMain.closeModal();
-        } else {
-            this.appMain.createModal("login-page");
-        }
-    };
-
     render = () => {
         return html`
-            <ul>
-                ${this.transactions
-                    ? this.transactions.map((transaction) => {
-                          return html` <li>${transaction.description}</li> `;
-                      })
-                    : null}
-            </ul>
+            <app-pagination
+                data-target="history-page.pagination"
+            ></app-pagination>
         `;
     };
 
