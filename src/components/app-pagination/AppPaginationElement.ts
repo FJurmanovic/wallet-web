@@ -9,6 +9,9 @@ class AppPaginationElement extends BaseComponentElement {
     @attr rpp: number;
     @attr totalItems: number;
     @attr autoInit: string;
+
+    private customRenderItems: () => TemplateResult;
+    private customRenderItem: (item: any) => TemplateResult;
     fetchFunc: Function = () => {};
     constructor() {
         super();
@@ -34,6 +37,16 @@ class AppPaginationElement extends BaseComponentElement {
             };
             this.executeFetch(options);
         }
+    };
+
+    setCustomRenderItems = (customRenderItems: () => TemplateResult) => {
+        this.customRenderItems = customRenderItems;
+        this.update();
+    };
+
+    setCustomRenderItem = (customRenderItem: (item: any) => TemplateResult) => {
+        this.customRenderItem = customRenderItem;
+        this.update();
     };
 
     executeFetch = async (options?): Promise<void> => {
@@ -75,19 +88,23 @@ class AppPaginationElement extends BaseComponentElement {
     render = (): TemplateResult => {
         const { rpp, totalItems, page, items } = this;
 
-        const renderItem = (item) => html`<tr>
-            <td>${item.description}</td>
-            <td>${item.amount}</td>
-        </tr>`;
+        const renderItem = this.customRenderItem
+            ? this.customRenderItem
+            : (item) => html`<tr>
+                  <td>${item.description}</td>
+                  <td>${item.amount}</td>
+              </tr>`;
 
-        const renderItems = () => {
-            if (items?.length > 0) {
-                return html`<span>
-                    ${items?.map((item) => renderItem(item))}
-                </span>`;
-            }
-            return html``;
-        };
+        const renderItems = this.customRenderItems
+            ? this.customRenderItems
+            : () => {
+                  if (items?.length > 0) {
+                      return html`<span>
+                          ${items?.map((item) => renderItem(item))}
+                      </span>`;
+                  }
+                  return html``;
+              };
 
         const renderPagination = () => {
             if (totalItems > items?.length) {
