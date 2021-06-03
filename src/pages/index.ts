@@ -5,3 +5,4 @@ export * from "./login-page/LoginPageElement";
 export * from "./not-found/NotFoundElement";
 export * from "./history-page/HistoryPageElement";
 export * from "./wallet-list/WalletListElement";
+export * from "./wallet-create/WalletCreateElement";
