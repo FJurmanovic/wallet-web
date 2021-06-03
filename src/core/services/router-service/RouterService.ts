@@ -161,6 +161,9 @@ class RouterService {
         if (!Array.isArray(this.historyStack)) this.historyStack = [];
         const currentPath = window.location.pathname;
         if (path == currentPath) return;
+        if (path.includes(":") && data) {
+            path = resolvePath(path, data);
+        }
         const _index = this._routes.findIndex((route) => route.path === path);
         const _indexOfEmpty = this._routes.findIndex(
             (route) => route.path === "/not-found"
@@ -170,7 +173,7 @@ class RouterService {
         if (isDynamic) {
             const [isCurrentDynamic, currIndex] =
                 this.hasDynamicPath(currentPath);
-            if (isCurrentDynamic && currIndex === _dynamicIndex) return;
+            if (path == currentPath) return;
         }
         let newRoute: RouteState;
         if (isDynamic && _dynamicIndex !== -1) {
@@ -227,7 +230,7 @@ class RouterService {
     };
 
     public comparePath = (path: string): boolean => {
-        if (this.routerState?.path === path) {
+        if (this.routerState?.fullPath === path) {
             return true;
         }
         return false;
@@ -263,7 +266,16 @@ class RouterService {
         let matchedIndex: number = 0;
         let matched: boolean = false;
         let dynamicProps: any = {};
+        let shouldSkip = false;
         this._routes.forEach((route, _routeId) => {
+            if (shouldSkip) {
+                return;
+            }
+            if (path == route.path) {
+                matched = path?.includes(":") ? true : false;
+                matchedIndex = _routeId;
+                shouldSkip = true;
+            }
             const _routeArr = route.path.split("/").filter((a) => a);
             if (_pathArr.length === _routeArr.length) {
                 let pathMatches: number = 0;
@@ -280,6 +292,7 @@ class RouterService {
                 if (pathMatches === _pathArr.length && hasDynamic) {
                     matchedIndex = _routeId;
                     matched = true;
+                    shouldSkip = true;
                 }
             }
         });
@@ -295,11 +308,32 @@ class RouteState {
         public layout?: string,
         public middleware?: any
     ) {}
+
+    get fullPath(): string {
+        return resolvePath(this.path, this.data);
+    }
 }
 
 type DynamicProp = {
     index: string;
     path: string;
 };
+
+function resolvePath(path: string, data: any): string {
+    const _pathArr = path
+        .split("/")
+        .filter((a) => a)
+        .map((pathPart) => {
+            if (pathPart.startsWith(":")) {
+                pathPart = data?.[pathPart.substr(1)];
+            }
+            return pathPart;
+        });
+    let _return = ["", ..._pathArr].join("/");
+    if (_return == "") {
+        _return = "/";
+    }
+    return _return;
+}
 
 export default RouterService;
