@@ -11,13 +11,11 @@ class AppLinkElement extends BaseComponentElement {
     @attr goBack: string;
     @attr title: string;
     @target main: Element;
-    routerService: RouterService;
     constructor() {
         super();
     }
 
     elementConnected = (): void => {
-        this.routerService = this.appMain?.routerService;
         if (!this.title && this.innerText) {
             const _slottedText = this.innerText;
             this.innerText = null;

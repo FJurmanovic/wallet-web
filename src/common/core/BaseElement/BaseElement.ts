@@ -1,5 +1,7 @@
 import { html, render, TemplateResult } from "@github/jtml";
-import { AppMainElement } from "components/";
+import { AppMainElement, AppModalElement, AppRootElement } from "components/";
+import { AppService, RouterService } from "core/services";
+import { AuthStore } from "core/store";
 import { closest } from "core/utils";
 
 class BaseElement extends HTMLElement {
@@ -12,7 +14,31 @@ class BaseElement extends HTMLElement {
         this.disconnectedCallback = this.disconnectedCallback.bind(this);
     }
 
-    bindEvents = (): void => {
+    public get routerService(): RouterService {
+        return this.appMain?.routerService;
+    }
+
+    public get authStore(): AuthStore {
+        return this.appMain?.authStore;
+    }
+
+    public get appService(): AppService {
+        return this.appMain?.appService;
+    }
+
+    public get appModal(): AppModalElement {
+        return this.appMain?.appModal;
+    }
+
+    public get mainRoot(): AppRootElement {
+        return this.appMain?.mainRoot;
+    }
+
+    public get isAuth(): boolean {
+        return this.appMain?.isAuth();
+    }
+
+    public bindEvents = (): void => {
         const _elems = this.querySelectorAll("[data-action]");
         _elems?.forEach((el) => {
             for (const action of (el.getAttribute("data-action") || "")

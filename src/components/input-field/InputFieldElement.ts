@@ -17,7 +17,6 @@ class InputFieldElement extends BaseComponentElement {
     @target inp: HTMLElement;
     error: string;
     randId: string;
-    routerService: RouterService;
     constructor() {
         super();
     }

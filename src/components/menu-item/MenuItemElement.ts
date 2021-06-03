@@ -1,7 +1,6 @@
 import { attr, controller, target } from "@github/catalyst";
 import { html, TemplateResult } from "@github/jtml";
 import { AppMainElement } from "components/app-main/AppMainElement";
-import { RouterService } from "core/services";
 import { BaseComponentElement } from "common/";
 
 @controller
@@ -9,13 +8,11 @@ class MenuItemElement extends BaseComponentElement {
     @attr path: string;
     @attr title: string;
     @target itemEl: HTMLElement;
-    routerService: RouterService;
     constructor() {
         super();
     }
 
     public elementConnected = (): void => {
-        this.routerService = this.appMain?.routerService;
         if (!this.title && this.innerText) {
             const _slottedText = this.innerText;
             this.innerText = null;
