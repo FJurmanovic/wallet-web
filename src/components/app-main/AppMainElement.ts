@@ -43,16 +43,27 @@ class AppMainElement extends BaseComponentElement {
                 middleware: this.isAuth,
             },
             {
+                path: "/wallet",
+                component: "history-page",
+                layout: "menu-layout",
+                middleware: this.isAuth,
+                children: [
+                    {
+                        path: "/:walletId",
+                        component: "history-page",
+                        layout: "menu-layout",
+                    },
+                ],
+            },
+            {
                 path: "/register",
                 component: "register-page",
                 layout: "menu-layout",
-                middleware: this.isAuth,
             },
             {
                 path: "/login",
                 component: "login-page",
                 layout: "menu-layout",
-                middleware: this.isAuth,
             },
             {
                 path: "/unauthorized",
@@ -62,6 +73,11 @@ class AppMainElement extends BaseComponentElement {
             {
                 path: "/token-expired",
                 component: "login-page",
+                layout: "menu-layout",
+            },
+            {
+                path: "/not-found",
+                component: "not-found",
                 layout: "menu-layout",
             },
             {
@@ -81,6 +97,7 @@ class AppMainElement extends BaseComponentElement {
 
     createModal = (element: string) => {
         this.closeModal();
+        this.appMain.addEventListener("routechanged", this.closeModal);
 
         const _appModal = this.createAppModal();
         const _modalContent = this.createModalContent(element);
@@ -131,6 +148,7 @@ class AppMainElement extends BaseComponentElement {
 
     closeModal = () => {
         if (this.appModal) this.removeChild(this.appModal);
+        this.appMain.removeEventListener("routechanged", this.closeModal);
     };
 
     isAuth = (): boolean => {
