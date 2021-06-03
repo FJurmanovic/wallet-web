@@ -27,6 +27,12 @@ class HistoryPageElement extends BasePageElement {
 
     getTransactions = async (options): Promise<any> => {
         try {
+            if (this?.routerService?.routerState?.data) {
+                const { walletId } = this?.routerService?.routerState?.data;
+                if (walletId) {
+                    options["walletId"] = walletId;
+                }
+            }
             const response = await this.transactionsService.getAll(options);
             return response;
         } catch (err) {
@@ -35,11 +41,20 @@ class HistoryPageElement extends BasePageElement {
     };
 
     render = (): TemplateResult => {
-        return html`
+        const renderWallet = () => {
+            if (this.routerService?.routerState?.data?.walletId) {
+                return html`<span
+                    >${this.routerService?.routerState?.data?.walletId}</span
+                >`;
+            }
+            return html``;
+        };
+        return html`<div>
+            ${renderWallet()}
             <app-pagination
                 data-target="history-page.pagination"
             ></app-pagination>
-        `;
+        </div>`;
     };
 }
 
