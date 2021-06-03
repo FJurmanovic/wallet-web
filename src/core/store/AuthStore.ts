@@ -1,5 +1,6 @@
 import { AppMainElement } from "components/";
 import { AppService } from "core/services";
+import { isTrue } from "core/utils";
 import { AuthService } from "services/";
 
 class AuthStore {
@@ -13,8 +14,10 @@ class AuthStore {
         private appMain: AppMainElement,
         private appService: AppService
     ) {
-        this.token = localStorage.getItem("token");
+        const _token = localStorage.getItem("token");
+        if (_token) this.token = _token;
         this.authService = new AuthService(this.appService);
+        this.checkToken(_token);
     }
 
     get token(): string {
@@ -26,6 +29,7 @@ class AuthStore {
     set token(token: string) {
         const { _token } = this;
         const _changed = token != _token;
+        console.log(token);
         if (_changed) {
             this._token = token;
             localStorage.setItem("token", token);
@@ -40,6 +44,19 @@ class AuthStore {
     set user(userDetails: UserDetails) {
         this._userDetails = userDetails;
     }
+
+    checkToken = async (token: string) => {
+        try {
+            const response = await this.authService.checkToken({ token });
+            if (!(response && response.valid)) {
+                this.token = null;
+                this.appMain.routerService.goTo("/token-expired");
+            }
+        } catch (err) {
+            this.token = null;
+            this.appMain.routerService.goTo("/token-expired");
+        }
+    };
 
     userLogin = async (formObject) => {
         try {
