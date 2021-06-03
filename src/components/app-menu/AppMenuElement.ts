@@ -88,7 +88,7 @@ class AppMenuElement extends BaseComponentElement {
         const renderWallets = (wallets: Array<any>) => {
             if (isAuth && totalWallets > 0) {
                 return html`${wallets.map((wallet) =>
-                    regularMenu(`wallet/${wallet.id}`, wallet.name)
+                    regularMenu(`/wallet/${wallet.id}`, wallet.name)
                 )}`;
             }
             return html``;

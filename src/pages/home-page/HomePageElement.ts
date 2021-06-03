@@ -38,13 +38,13 @@ class HomePageElement extends BasePageElement {
         if (_modal) {
             this.appMain.closeModal();
         } else {
-            this.appMain.createModal("login-page");
+            this.appMain.createModal("wallet-create");
         }
     };
 
     render = (): TemplateResult => {
         return html`
-            <button data-action="click:home-page#openModal">Test</button>
+            <button data-action="click:home-page#openModal">New Wallet</button>
         `;
     };
 }
