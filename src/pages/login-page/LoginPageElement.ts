@@ -9,14 +9,12 @@ import { BasePageElement } from "common/";
 class LoginPageElement extends BasePageElement {
     @targets inputs: Array<InputFieldElement>;
     authService: AuthService;
-    routerService: RouterService;
     errorMessage: string;
     constructor() {
         super();
     }
     elementConnected = (): void => {
         this.authService = new AuthService(this.appMain.appService);
-        this.routerService = this.appMain.routerService;
         this.update();
     };
 

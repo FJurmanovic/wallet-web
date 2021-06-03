@@ -1,22 +1,23 @@
 import { controller, target } from "@github/catalyst";
 import { AppService, HttpClient, RouterService } from "core/services";
 import { AuthStore } from "core/store";
-import { BaseComponentElement } from "common/";
 import { AppModalElement, AppRootElement } from "components/";
+import { closest } from "core/utils";
 
 @controller
-class AppMainElement extends BaseComponentElement {
+class AppMainElement extends HTMLElement {
     public routerService: RouterService;
     public authStore: AuthStore;
     private httpClient: HttpClient;
     public appService: AppService;
     @target appModal: AppModalElement;
     @target mainRoot: AppRootElement;
+    @closest appMain: AppMainElement;
 
     constructor() {
         super();
     }
-    elementConnected = () => {
+    connectedCallback() {
         if (this.appMain !== this) return;
         const mainRoot = this.createMainRoot();
         this.httpClient = new HttpClient();
@@ -48,6 +49,11 @@ class AppMainElement extends BaseComponentElement {
                 layout: "menu-layout",
                 middleware: this.isAuth,
                 children: [
+                    {
+                        path: "/all",
+                        component: "wallet-list",
+                        layout: "menu-layout",
+                    },
                     {
                         path: "/:walletId",
                         component: "history-page",
@@ -86,7 +92,7 @@ class AppMainElement extends BaseComponentElement {
             },
         ]);
         this.routerService.init();
-    };
+    }
 
     middleAuth = () => {
         if (!this.isAuth) {
