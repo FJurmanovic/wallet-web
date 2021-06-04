@@ -7,9 +7,6 @@ class AuthStore {
     private _token: string;
     private _userDetails: UserDetails;
     private authService: AuthService;
-    private domEvents: any = {
-        tokenchange: new Event("tokenchange"),
-    };
     constructor(
         private appMain: AppMainElement,
         private appService: AppService
@@ -33,7 +30,7 @@ class AuthStore {
         if (_changed) {
             this._token = token;
             localStorage.setItem("token", token);
-            this.appMain.dispatchEvent(this.domEvents.tokenchange);
+            this.appMain.dispatchEvent(this.appMain?.domEvents.tokenchange);
         }
     }
 

@@ -4,9 +4,6 @@ import { AppMainElement } from "components/";
 class RouterService {
     private historyStack: Array<RouteState> = [];
     private _routes: Array<RouteState> = [];
-    private domEvents: any = {
-        routechanged: new Event("routechanged"),
-    };
     constructor(
         private appMain: AppMainElement,
         private mainRoot: ShadowRoot | HTMLElement
@@ -154,7 +151,7 @@ class RouterService {
             this.historyStack.push(newRoute);
             this.update();
         }
-        this.appMain.dispatchEvent(this.domEvents.routechanged);
+        this.appMain.dispatchEvent(this.appMain?.domEvents.routechanged);
     };
 
     public goTo = (path: string, data?: any): void => {
