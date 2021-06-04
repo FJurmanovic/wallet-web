@@ -49,12 +49,16 @@ menu-item {
         }
         [data-target="menu-item.customButton"] {
             grid-area: custom;
-            display: none;
+            display: flex;
+            visibility: hidden;
+            width: 0px;
+            display: flex;
+            transition: width 0.3s;
         }
         &:hover {
             [data-target="menu-item.customButton"] {
                 grid-area: custom;
-                display: flex;
+                visibility: visible;
                 align-items: center;
                 justify-content: center;
                 width: 50px;
