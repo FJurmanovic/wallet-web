@@ -7,7 +7,9 @@ import { BaseComponentElement } from "common/";
 class MenuItemElement extends BaseComponentElement {
     @attr path: string;
     @attr title: string;
+    @attr customaction: string;
     @target itemEl: HTMLElement;
+    @target customButton: HTMLDivElement;
     constructor() {
         super();
     }
@@ -37,6 +39,14 @@ class MenuItemElement extends BaseComponentElement {
                 data-target="menu-item.itemEl"
             >
                 <app-link data-to="${this.path}">${this.title}</app-link>
+                ${this.customaction
+                    ? html`<div
+                          data-target="menu-item.customButton"
+                          data-action="${this.customaction}"
+                      >
+                          Add
+                      </div>`
+                    : html``}
             </div>
         `;
     };

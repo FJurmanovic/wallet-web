@@ -10,6 +10,13 @@ class PingService extends BaseService {
     register = (data?: Object, headers?: HeadersInit) => {
         return this.appService.post(this.endpoint + "/register", data, headers);
     };
+    checkToken = (params?: Object, headers?: HeadersInit) => {
+        return this.appService.get(
+            this.endpoint + "/check-token",
+            params,
+            headers
+        );
+    };
 }
 
 export default PingService;

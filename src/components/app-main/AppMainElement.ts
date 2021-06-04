@@ -124,11 +124,8 @@ class AppMainElement extends HTMLElement {
         const _modalElement = document.createElement(element);
         const _divEl = document.createElement("div");
         _modalElement.setAttribute("data-target", "app-modal.modalElement");
-        _modalElement.setAttribute(
-            "data-action",
-            "click:app-main#preventClosing"
-        );
         _divEl.setAttribute("data-target", "app-modal.modalContent");
+        _divEl.setAttribute("data-action", "click:app-main#preventClosing");
         _divEl.appendChild(_modalElement);
         return _divEl;
     };

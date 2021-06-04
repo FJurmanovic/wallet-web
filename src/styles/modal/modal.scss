@@ -11,14 +11,20 @@ app-modal {
         overflow-y: auto;
 
         [data-target="app-modal.modalContent"] {
+            position: absolute;
             z-index: 1005;
-            top: 5%;
-            width: 1080px;
+            width: 960px;
+            min-height: 320px;
+            max-height: 560px;
             padding-bottom: 10px;
-            margin: 25px auto;
-            background: #ffffff;
+            margin: 0;
+            top: 50%;
+            left: 50%;
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            background: $gray-08;
             box-shadow: 1px 1px 5px -5px #868686;
-            border-radius: 0.5em;
+            border-radius: 3px;
         }
     }
 }
