@@ -13,6 +13,11 @@ class AppMainElement extends HTMLElement {
     @target appModal: AppModalElement;
     @target mainRoot: AppRootElement;
     @closest appMain: AppMainElement;
+    public domEvents: any = {
+        routechanged: new Event("routechanged"),
+        tokenchange: new Event("tokenchange"),
+        walletupdate: new Event("walletupdate"),
+    };
 
     constructor() {
         super();
@@ -112,6 +117,10 @@ class AppMainElement extends HTMLElement {
         _modalOverlay.appendChild(_modalContent);
         _appModal.appendChild(_modalOverlay);
         this.appendChild(_appModal);
+    };
+
+    public triggerWalletUpdate = () => {
+        this.dispatchEvent(this.domEvents.walletupdate);
     };
 
     private createAppModal = () => {

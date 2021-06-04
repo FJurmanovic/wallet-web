@@ -23,15 +23,17 @@ class AppMenuElement extends BaseComponentElement {
             this.update();
         }
         this.appMain.addEventListener("tokenchange", this.updateToken);
+        this.appMain.addEventListener("walletupdate", this.updateToken);
     };
 
     elementDisconnected = (appMain: AppMainElement): void => {
         appMain?.removeEventListener("tokenchange", this.updateToken);
+        appMain?.removeEventListener("walletupdate", this.updateToken);
     };
 
     getWallets = async (): Promise<void> => {
         try {
-            const response = await this.walletService.getAll({ rpp: 2 });
+            const response = await this.walletService.getAll({ rpp: 3 });
             this.setWallets(response.items, response.totalRecords);
         } catch (err) {
             this.update();
@@ -96,15 +98,23 @@ class AppMenuElement extends BaseComponentElement {
             }
             return html`<menu-item data-path="${path}">${title}</menu-item>`;
         };
-        const authMenu = (path: string, title: string): TemplateResult => {
+        const authMenu = (
+            path: string,
+            title: string,
+            action?: string
+        ): TemplateResult => {
             if (isAuth) {
-                return regularMenu(path, title);
+                return regularMenu(path, title, action);
             }
             return html``;
         };
-        const notAuthMenu = (path: string, title: string): TemplateResult => {
+        const notAuthMenu = (
+            path: string,
+            title: string,
+            action?: string
+        ): TemplateResult => {
             if (!isAuth) {
-                return regularMenu(path, title);
+                return regularMenu(path, title, action);
             }
             return html``;
         };
@@ -117,12 +127,6 @@ class AppMenuElement extends BaseComponentElement {
             }
             return html``;
         };
-        const otherWallets = (action: string) => {
-            if (isAuth && totalWallets > 2) {
-                return regularMenu("/wallet/all", "Other Wallets", action);
-            }
-            return html``;
-        };
         const menuHeader = (title) =>
             html`<div class="menu-item menu-header">${title}</div>`;
 
@@ -130,8 +134,12 @@ class AppMenuElement extends BaseComponentElement {
             <div data-target="app-menu.sidebar">
                 ${menuHeader("Wallets")} ${regularMenu("/", "Home")}
                 ${authMenu("/history", "Transaction History")}
+                ${authMenu(
+                    "/wallet/all",
+                    "My Wallets",
+                    "click:app-menu#openModal"
+                )}
                 ${renderWallets(walletData)}
-                ${otherWallets("click:app-menu#openModal")}
                 <span class="menu-item divider"></span>
                 ${authMenu("/logout", "Logout")}
                 ${notAuthMenu("/login", "Login")}

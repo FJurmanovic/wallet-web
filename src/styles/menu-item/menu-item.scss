@@ -50,22 +50,29 @@ menu-item {
         [data-target="menu-item.customButton"] {
             grid-area: custom;
             display: flex;
-            visibility: hidden;
-            width: 0px;
-            display: flex;
+            width: 10px;
+            height: 50px;
+            background-color: $blue-09;
+            cursor: pointer;
+            user-select: none;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
             transition: width 0.3s;
+            color: transparent;
+            * {
+                visibility: hidden;
+            }
         }
         &:hover {
             [data-target="menu-item.customButton"] {
                 grid-area: custom;
-                visibility: visible;
-                align-items: center;
-                justify-content: center;
                 width: 50px;
-                height: 50px;
-                background-color: $blue-09;
-                cursor: pointer;
-                user-select: none;
+                transition: color 0.3s step-start;
+                color: $white;
+                * {
+                    transition: visibility 0.3s;
+                }
                 &:hover {
                     background-color: $blue-08;
                 }

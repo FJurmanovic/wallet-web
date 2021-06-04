@@ -45,11 +45,10 @@ class WalletCreateElement extends BasePageElement {
             const response = await this.walletService.post(this.values);
 
             if (response?.id) {
+                this.appMain.triggerWalletUpdate();
                 this.routerService.goTo("/wallet/:walletId", {
                     walletId: response.id,
                 });
-                const { token } = this.authStore;
-                this.authStore.token = token;
             }
         } catch (err) {
             this.errorMessage = "Unable to create wallet!";
