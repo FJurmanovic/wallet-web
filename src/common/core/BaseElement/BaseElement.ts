@@ -74,9 +74,12 @@ class BaseElement extends HTMLElement {
         return html``;
     };
 
+    updateCallback = (): void => {};
+
     update = (): void => {
         render(this.render(), this);
         this.bindEvents();
+        this.updateCallback();
     };
 
     connectedCallback(): void {
