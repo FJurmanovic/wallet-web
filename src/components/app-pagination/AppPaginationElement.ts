@@ -99,9 +99,9 @@ class AppPaginationElement extends BaseComponentElement {
             ? this.customRenderItems
             : () => {
                   if (items?.length > 0) {
-                      return html`<span>
+                      return html`<div class="table">
                           ${items?.map((item) => renderItem(item))}
-                      </span>`;
+                      </div>`;
                   }
                   return html``;
               };
