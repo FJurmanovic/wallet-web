@@ -3,6 +3,7 @@ import { AppService, HttpClient, RouterService } from "core/services";
 import { AuthStore } from "core/store";
 import { AppModalElement, AppRootElement } from "components/";
 import { closest } from "core/utils";
+import { AppLoaderElement } from "components/app-loader/AppLoaderElement";
 
 @controller
 class AppMainElement extends HTMLElement {
@@ -12,6 +13,7 @@ class AppMainElement extends HTMLElement {
     public appService: AppService;
     @target appModal: AppModalElement;
     @target mainRoot: AppRootElement;
+    @target appLoader: AppLoaderElement;
     @closest appMain: AppMainElement;
     public domEvents: any = {
         routechanged: new Event("routechanged"),
@@ -24,6 +26,7 @@ class AppMainElement extends HTMLElement {
     }
     connectedCallback() {
         if (this.appMain !== this) return;
+        this.createLoader();
         const mainRoot = this.createMainRoot();
         this.httpClient = new HttpClient();
         this.appService = new AppService(this, this.httpClient);
@@ -127,6 +130,12 @@ class AppMainElement extends HTMLElement {
         const _appModal = document.createElement("app-modal");
         _appModal.setAttribute("data-target", "app-main.appModal");
         return _appModal;
+    };
+
+    private createLoader = () => {
+        const _loader = document.createElement("app-loader");
+        _loader.setAttribute("data-target", "app-main.appLoader");
+        this.appendChild(_loader);
     };
 
     private createModalContent = (element: string) => {

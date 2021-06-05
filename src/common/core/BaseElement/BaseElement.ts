@@ -1,5 +1,10 @@
 import { html, render, TemplateResult } from "@github/jtml";
-import { AppMainElement, AppModalElement, AppRootElement } from "components/";
+import {
+    AppLoaderElement,
+    AppMainElement,
+    AppModalElement,
+    AppRootElement,
+} from "components/";
 import { AppService, RouterService } from "core/services";
 import { AuthStore } from "core/store";
 import { closest } from "core/utils";
@@ -32,6 +37,9 @@ class BaseElement extends HTMLElement {
 
     public get mainRoot(): AppRootElement {
         return this.appMain?.mainRoot;
+    }
+    public get appLoader(): AppLoaderElement {
+        return this.appMain?.appLoader;
     }
 
     public get isAuth(): boolean {

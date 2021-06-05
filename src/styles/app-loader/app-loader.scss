@@ -1,0 +1,27 @@
+.loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 5px;
+    width: 0;
+    background-color: $blue-09;
+    z-index: 2000;
+    &.--loading {
+        animation: animateBar 5s linear;
+    }
+
+    &.--removing {
+        width: 100%;
+    }
+}
+
+.progress .progress-bar {
+}
+@keyframes animateBar {
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%;
+    }
+}

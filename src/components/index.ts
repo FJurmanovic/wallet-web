@@ -6,5 +6,8 @@ export * from "./app-root/AppRootElement";
 export * from "./app-slot/AppSlotElement";
 export * from "./app-menu/AppMenuElement";
 export * from "./input-field/InputFieldElement";
+export * from "./app-loader/AppLoaderElement";
+
+// LAST
 export * from "./app-main/AppMainElement";
 export * from "./app-shadow/AppShadowElement";
