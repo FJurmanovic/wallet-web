@@ -19,9 +19,8 @@ class AppMenuElement extends BaseComponentElement {
         this.walletService = new WalletService(this.appMain?.appService);
         if (this.appMain.isAuth) {
             this.getWallets();
-        } else {
-            this.update();
         }
+        this.update();
         this.appMain.addEventListener("tokenchange", this.updateToken);
         this.appMain.addEventListener("walletupdate", this.updateToken);
     };

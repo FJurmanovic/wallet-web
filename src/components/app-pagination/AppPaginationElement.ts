@@ -1,6 +1,7 @@
-import { attr, controller } from "@github/catalyst";
+import { attr, controller, target } from "@github/catalyst";
 import { html, TemplateResult } from "@github/jtml";
 import { BaseComponentElement } from "common/";
+import { CircleLoaderElement } from "components/circle-loader/CircleLoaderElement";
 
 @controller
 class AppPaginationElement extends BaseComponentElement {
@@ -58,12 +59,15 @@ class AppPaginationElement extends BaseComponentElement {
         }
 
         try {
+            this.loader?.start?.();
             const response = await this.fetchFunc(options);
+            this.loader?.stop?.();
             this.setItems(response?.items);
             this.totalItems = response?.totalRecords;
             this.page = response?.page;
             this.rpp = response?.rpp;
         } catch (err) {
+            this.loader?.stop?.();
             console.error(err);
         }
     };
@@ -98,12 +102,16 @@ class AppPaginationElement extends BaseComponentElement {
         const renderItems = this.customRenderItems
             ? this.customRenderItems
             : () => {
-                  if (items?.length > 0) {
-                      return html`<div class="table">
-                          ${items?.map((item) => renderItem(item))}
-                      </div>`;
+                  if (this.loader && this.loader.loading) {
+                      return html`<circle-loader></circle-loader>`;
+                  } else {
+                      if (items?.length > 0) {
+                          return html`<div class="table">
+                              ${items?.map((item) => renderItem(item))}
+                          </div>`;
+                      }
+                      return html``;
                   }
-                  return html``;
               };
 
         const renderPagination = () => {

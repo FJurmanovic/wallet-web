@@ -12,11 +12,13 @@ import { closest } from "core/utils";
 class BaseElement extends HTMLElement {
     @closest appMain: AppMainElement;
     private _appMain: AppMainElement;
+    public loader: Loader;
     private elementDisconnectCallbacks: Array<Function> = [];
     constructor() {
         super();
         this.connectedCallback = this.connectedCallback.bind(this);
         this.disconnectedCallback = this.disconnectedCallback.bind(this);
+        this.loader = new Loader(this);
     }
 
     public get routerService(): RouterService {
@@ -115,3 +117,25 @@ class BaseElement extends HTMLElement {
 }
 
 export default BaseElement;
+
+class Loader {
+    private _loading: number = 0;
+
+    constructor(private _main: BaseElement) {}
+
+    public start = () => {
+        this._loading++;
+        this._main?.update?.();
+    };
+
+    public stop = () => {
+        if (this._loading > 0) {
+            this._loading--;
+            this._main?.update?.();
+        }
+    };
+
+    public get loading() {
+        return this._loading > 0;
+    }
+}
