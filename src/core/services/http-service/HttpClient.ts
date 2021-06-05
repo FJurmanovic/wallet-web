@@ -1,11 +1,9 @@
-import settings from "configs/development/app-settings.json";
-
 class HttpClient {
     private url: string;
     constructor() {
-        this.url = `${settings.ssl ? "https" : "http"}://${settings.apiUrl}/${
-            settings.apiVersion
-        }`;
+        this.url = `${__CONFIG__.ssl ? "https" : "http"}://${
+            __CONFIG__.apiUrl
+        }/${__CONFIG__.apiVersion}`;
     }
 
     post(url: string, data: Object, headersParam: HeadersInit): Promise<any> {

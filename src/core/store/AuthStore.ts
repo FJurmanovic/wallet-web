@@ -44,10 +44,12 @@ class AuthStore {
 
     checkToken = async (token: string) => {
         try {
-            const response = await this.authService.checkToken({ token });
-            if (!(response && response.valid)) {
-                this.token = null;
-                this.appMain.routerService.goTo("/token-expired");
+            if (token && token !== "null") {
+                const response = await this.authService.checkToken({ token });
+                if (!(response && response.valid)) {
+                    this.token = null;
+                    this.appMain.routerService.goTo("/token-expired");
+                }
             }
         } catch (err) {
             this.token = null;

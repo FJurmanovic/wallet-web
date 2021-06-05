@@ -17,11 +17,13 @@ class AppService {
             Authorization: `BEARER ${this.appMain?.authStore?.token}`,
         };
         try {
+            this?.appMain?.appLoader?.start?.();
             const response = await this.httpClient.post(
                 url,
                 data,
                 headersParam
             );
+            this?.appMain?.appLoader?.stop?.();
             if (
                 response?.statusCode == 400 ||
                 response?.statusCode == 500 ||
@@ -35,6 +37,7 @@ class AppService {
             }
             return response;
         } catch (err) {
+            this?.appMain?.appLoader?.stop?.();
             throw err;
         }
     };
@@ -49,7 +52,9 @@ class AppService {
             Authorization: `BEARER ${this.appMain?.authStore?.token}`,
         };
         try {
+            this?.appMain?.appLoader?.start?.();
             const response = await this.httpClient.put(url, data, headersParam);
+            this?.appMain?.appLoader?.stop?.();
             if (
                 response?.statusCode == 400 ||
                 response?.statusCode == 500 ||
@@ -63,6 +68,7 @@ class AppService {
             }
             return response;
         } catch (err) {
+            this?.appMain?.appLoader?.stop?.();
             throw err;
         }
     };
@@ -77,11 +83,13 @@ class AppService {
             Authorization: `BEARER ${this.appMain?.authStore?.token}`,
         };
         try {
+            this?.appMain?.appLoader?.start?.();
             const response = await this.httpClient.delete(
                 url,
                 data,
                 headersParam
             );
+            this?.appMain?.appLoader?.stop?.();
             if (
                 response?.statusCode == 400 ||
                 response?.statusCode == 500 ||
@@ -95,6 +103,7 @@ class AppService {
             }
             return response;
         } catch (err) {
+            this?.appMain?.appLoader?.stop?.();
             throw err;
         }
     };
@@ -109,11 +118,13 @@ class AppService {
             Authorization: `BEARER ${this.appMain?.authStore?.token}`,
         };
         try {
+            this?.appMain?.appLoader?.start?.();
             const response = await this.httpClient.get(
                 url,
                 params,
                 headersParam
             );
+            this?.appMain?.appLoader?.stop?.();
             if (
                 response?.statusCode == 400 ||
                 response?.statusCode == 500 ||
@@ -127,6 +138,7 @@ class AppService {
             }
             return response;
         } catch (err) {
+            this?.appMain?.appLoader?.stop?.();
             throw err;
         }
     };

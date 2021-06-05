@@ -1,5 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const settings = require("./src/configs/development/app-settings.json");
+const { DefinePlugin } = require('webpack');
 
 const alias = {
 	common: path.resolve(__dirname, '/common'),
@@ -83,6 +85,9 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './src/index.html'
         }),
+        new DefinePlugin({
+            __CONFIG__: JSON.stringify(settings)
+        })
     ],
     resolve: {
         extensions: ['.js', '.ts'],
