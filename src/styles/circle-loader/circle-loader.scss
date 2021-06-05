@@ -1,0 +1,44 @@
+.circle-loader {
+    $--loader-border: 6px;
+    $--loader-size: 45px;
+    border: $--loader-border solid $gray-02;
+    border-top: $--loader-border solid $blue-08;
+    width: $--loader-size;
+    height: $--loader-size;
+    border-radius: 50%;
+    animation: spin 2s linear infinite;
+    margin: 5px;
+    &.-sml {
+        $--loader-border: 3px;
+        $--loader-size: 22px;
+        border: $--loader-border solid $gray-02;
+        border-top: $--loader-border solid $blue-08;
+        width: $--loader-size;
+        height: $--loader-size;
+    }
+    &.-med {
+        $--loader-border: 9px;
+        $--loader-size: 67px;
+        border: $--loader-border solid $gray-02;
+        border-top: $--loader-border solid $blue-08;
+        width: $--loader-size;
+        height: $--loader-size;
+    }
+    &.-lrg {
+        $--loader-border: 12px;
+        $--loader-size: 90px;
+        border: $--loader-border solid $gray-02;
+        border-top: $--loader-border solid $blue-08;
+        width: $--loader-size;
+        height: $--loader-size;
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

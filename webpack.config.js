@@ -1,6 +1,5 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const settings = require("./src/configs/development/app-settings.json");
 const { DefinePlugin } = require('webpack');
 
 const alias = {
@@ -14,86 +13,102 @@ const alias = {
     styles: path.resolve(__dirname, "/styles"),
 };
 
-module.exports = {
-    entry: {
-        app: ['babel-polyfill', './src/index']
-    },
-    optimization: {
-        runtimeChunk: 'single',
-        splitChunks: {
-            chunks: 'all',
-            cacheGroups: {
-                commons: {
-                    test: /[\\/]node_modules[\\/]/,
-                    name: "vendor",
-                    chunks: "initial",
-                    minSize: 200000,
-                    maxSize: 400000
-                },
-                styles: {
-                    name: 'styles',
-                    test: /\.scss$/,
-                    chunks: 'all'
-                }
-            }
+
+module.exports = (env, args) => {
+    let settings = {}
+    if (env && env.env) {
+        switch (env.env) {
+            case "testing":
+                settings = require("./src/configs/testing/app-settings.json");
+                break;
+            case "develop":
+            default:
+                settings = require("./src/configs/development/app-settings.json");
         }
-    },
-    output: {
-        path: path.join(__dirname, 'public'),
-        filename: '[name].[contenthash].js',
-        publicPath: '/'
-    },
-    module: {
-        rules: [
-            {
-                test: /\.(js|ts)?$/,
-                exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader'
-                }
-            },
-            {
-                test: /\.m?js/,
-                resolve: {
-                    fullySpecified: false
-                }
-            },
-            {
-                test: /\.css$/,
-                use: {
-                    loader: 'css-loader'
-                }
-            },
-            {
-                test: /\.(scss|css)$/,
-                exclude: /node_modules/,
-                use: [
-                    "sass-to-string",
-                    {
-                        loader: "sass-loader",
-                        options: {
-                            sassOptions: {
-                                outputStyle: "compressed",
-                            },
-                        }
+    } else {
+                settings = require("./src/configs/development/app-settings.json");
+    }
+    return {
+        entry: {
+            app: ['babel-polyfill', './src/index']
+        },
+        optimization: {
+            runtimeChunk: 'single',
+            splitChunks: {
+                chunks: 'all',
+                cacheGroups: {
+                    commons: {
+                        test: /[\\/]node_modules[\\/]/,
+                        name: "vendor",
+                        chunks: "initial",
+                        minSize: 200000,
+                        maxSize: 400000
                     },
-                ]
+                    styles: {
+                        name: 'styles',
+                        test: /\.scss$/,
+                        chunks: 'all'
+                    }
+                }
             }
-        ]
-    },
-    plugins: [
-        new HtmlWebpackPlugin({
-            template: './src/index.html'
-        }),
-        new DefinePlugin({
-            __CONFIG__: JSON.stringify(settings)
-        })
-    ],
-    resolve: {
-        extensions: ['.js', '.ts'],
-        alias: alias
-    },
-    devServer: {
-        historyApiFallback: true,
-    }   
+        },
+        output: {
+            path: path.join(__dirname, 'public'),
+            filename: '[name].[contenthash].js',
+            publicPath: '/'
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.(js|ts)?$/,
+                    exclude: /node_modules/,
+                    use: {
+                        loader: 'babel-loader'
+                    }
+                },
+                {
+                    test: /\.m?js/,
+                    resolve: {
+                        fullySpecified: false
+                    }
+                },
+                {
+                    test: /\.css$/,
+                    use: {
+                        loader: 'css-loader'
+                    }
+                },
+                {
+                    test: /\.(scss|css)$/,
+                    exclude: /node_modules/,
+                    use: [
+                        "sass-to-string",
+                        {
+                            loader: "sass-loader",
+                            options: {
+                                sassOptions: {
+                                    outputStyle: "compressed",
+                                },
+                            }
+                        },
+                    ]
+                }
+            ]
+        },
+        plugins: [
+            new HtmlWebpackPlugin({
+                template: './src/index.html'
+            }),
+            new DefinePlugin({
+                __CONFIG__: JSON.stringify(settings)
+            })
+        ],
+        resolve: {
+            extensions: ['.js', '.ts'],
+            alias: alias
+        },
+        devServer: {
+            historyApiFallback: true,
+        }   
+    }
 }

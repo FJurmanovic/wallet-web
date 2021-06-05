@@ -21,7 +21,6 @@ class AppLoaderElement extends BaseComponentElement {
         if (this._loading > 0) {
             this._loading--;
         }
-        console.log(this._loading);
         if (this._loading == 0) {
             this.finishInitiate();
         }
@@ -43,15 +42,11 @@ class AppLoaderElement extends BaseComponentElement {
         this.update();
     };
 
-    public setFinished = () => {};
-
     render = () => {
         const renderLoader = (finished: boolean, loading: boolean) => {
             if (!finished && !loading) {
-                console.log("Removing");
                 return html`<div class="loader --removing"></div>`;
             } else if (loading) {
-                console.log("loading");
                 return html`<div class="loader --loading"></div>`;
             }
             return html``;
