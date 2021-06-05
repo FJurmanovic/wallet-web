@@ -1,15 +1,15 @@
-import { targets, controller } from "@github/catalyst";
+import { targets, controller, target } from "@github/catalyst";
 import { html, TemplateResult } from "@github/jtml";
 import { AuthService } from "services/";
-import { InputFieldElement } from "components/";
+import { AppFormElement, InputFieldElement } from "components/";
 import { RouterService } from "core/services";
 import { BasePageElement } from "common/";
 
 @controller
 class LoginPageElement extends BasePageElement {
     @targets inputs: Array<InputFieldElement>;
+    @target appForm: AppFormElement;
     authService: AuthService;
-    errorMessage: string;
     constructor() {
         super();
     }
@@ -63,8 +63,7 @@ class LoginPageElement extends BasePageElement {
                 this.passwordInput.error = err?.message;
                 this.passwordInput.update();
             } else {
-                this.errorMessage = "Unable to log in!";
-                this.update();
+                this.appForm?.setError("Unable to log in!");
             }
         }
     };
@@ -80,7 +79,10 @@ class LoginPageElement extends BasePageElement {
 
     render = (): TemplateResult => {
         return html`
-            <form>
+            <app-form
+                data-custom="login-page#onSubmit"
+                data-target="login-page.appForm"
+            >
                 <input-field
                     data-type="email"
                     data-name="email"
@@ -96,11 +98,7 @@ class LoginPageElement extends BasePageElement {
                     data-rules="required"
                 >
                 </input-field>
-                ${this.errorMessage && html`<div>${this.errorMessage}</div>`}
-                <button type="button" data-action="click:login-page#onSubmit">
-                    Login
-                </button>
-            </form>
+            </app-form>
             <div>
                 <app-link
                     data-to="/register"

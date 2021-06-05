@@ -194,7 +194,7 @@ class RouterService {
     public goBack = (): void => {
         if (!Array.isArray(this.historyStack)) this.historyStack = [];
         const lenHistory = this.historyStack.length;
-        if (lenHistory > 1) {
+        if (this.canGoBack) {
             const nextRoute = this.historyStack[lenHistory - 2];
             const url = new URL(window.location.toString());
             url.pathname = nextRoute.path;
@@ -203,6 +203,14 @@ class RouterService {
         }
         this.update();
     };
+
+    public get canGoBack(): boolean {
+        const lenHistory = this.historyStack.length;
+        if (lenHistory > 2) {
+            return true;
+        }
+        return false;
+    }
 
     public init = (): void => {
         window.addEventListener("popstate", () => {
