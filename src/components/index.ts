@@ -8,6 +8,7 @@ export * from "./app-menu/AppMenuElement";
 export * from "./input-field/InputFieldElement";
 export * from "./app-loader/AppLoaderElement";
 export * from "./circle-loader/CircleLoaderElement";
+export * from "./app-form/AppFormElement";
 
 // LAST
 export * from "./app-main/AppMainElement";

@@ -1,24 +1,21 @@
 import { attr, controller, target } from "@github/catalyst";
-import { closest, firstUpper } from "core/utils";
+import { firstUpper } from "core/utils";
 import { html, TemplateResult } from "@github/jtml";
 import { RouterService } from "core/services";
 import randomId from "core/utils/random-id";
 import validator from "validator";
 import { validatorErrors } from "core/constants";
 import { BaseComponentElement } from "common/";
-import { AppFormElement } from "components/app-form/AppFormElement";
 
 @controller
-class InputFieldElement extends BaseComponentElement {
+class AppDropdownElement extends BaseComponentElement {
     @attr name: string;
     @attr type: string;
     @attr label: string;
     @attr rules: string;
     @target main: HTMLElement;
     @target inp: HTMLElement;
-    @closest appForm: AppFormElement;
     error: string;
-    displayError: boolean;
     randId: string;
     constructor() {
         super();
@@ -37,7 +34,7 @@ class InputFieldElement extends BaseComponentElement {
         return this.rules.includes("required");
     }
 
-    validate = (): boolean => {
+    validate(): boolean {
         let _return = true;
         const rules = this.rules?.split("|").filter((a) => a);
         const value = (this.inp as HTMLInputElement)?.value;
@@ -65,57 +62,13 @@ class InputFieldElement extends BaseComponentElement {
         if (_return) {
             this.error = null;
         }
-        return _return;
-    };
-
-    validateDisplay = () => {
-        if (!this.validate()) {
-            this.displayError = true;
-        } else {
-            this.displayError = false;
-        }
         this.update();
-    };
-
-    inputChange = (e) => {
-        this.validate();
-        this.appForm?.inputChange(e);
-    };
+        return _return;
+    }
 
     render = (): TemplateResult => {
-        const renderMessage = (label: string) => {
-            if (this.label) {
-                return html`<label for="${this.randId}"
-                    >${this.label}${this.required ? " (*)" : ""}</label
-                >`;
-            }
-            return html``;
-        };
-
-        const renderError = (displayError: boolean, error: string) => {
-            if (displayError) {
-                return html`<span>${error}</span>`;
-            }
-            return html``;
-        };
-
-        const renderInput = (type) => {
-            return html` <input
-                type="${this.type}"
-                data-target="input-field.inp"
-                data-action="
-                    input:input-field#inputChange
-                    keyup:app-form#keyUp
-                    blur:input-field#validateDisplay
-                "
-            />`;
-        };
-
-        return html`<div data-target="input-field.main">
-            ${renderMessage(this.label)} ${renderInput(this.type)}
-            ${renderError(this.displayError, this.error)}
-        </div>`;
+        return html``;
     };
 }
 
-export type { InputFieldElement };
+export type { AppDropdownElement };
