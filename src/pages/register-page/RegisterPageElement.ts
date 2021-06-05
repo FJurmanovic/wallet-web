@@ -51,7 +51,10 @@ class RegisterPageElement extends BasePageElement {
 
     render = (): TemplateResult => {
         return html`
-            <form>
+            <app-form
+                data-custom="register-page#onSubmit"
+                data-has-cancel="true"
+            >
                 <input-field
                     data-type="text"
                     data-name="username"
@@ -74,13 +77,7 @@ class RegisterPageElement extends BasePageElement {
                     data-rules="required"
                 >
                 </input-field>
-                <button
-                    type="button"
-                    data-action="click:register-page#onSubmit"
-                >
-                    Register
-                </button>
-            </form>
+            </app-form>
         `;
     };
 }

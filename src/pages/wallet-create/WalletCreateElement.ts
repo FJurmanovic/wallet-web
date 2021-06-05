@@ -68,7 +68,10 @@ class WalletCreateElement extends BasePageElement {
     render = (): TemplateResult => {
         return html`
             <div>Create wallet</div>
-            <form>
+            <app-form
+                data-custom="wallet-create#onSubmit"
+                data-has-cancel="true"
+            >
                 <input-field
                     data-type="text"
                     data-name="name"
@@ -79,13 +82,7 @@ class WalletCreateElement extends BasePageElement {
                 ${this.errorMessage
                     ? html`<div>${this.errorMessage}</div>`
                     : html``}
-                <button
-                    type="button"
-                    data-action="click:wallet-create#onSubmit"
-                >
-                    Create
-                </button>
-            </form>
+            </app-form>
         `;
     };
 }
