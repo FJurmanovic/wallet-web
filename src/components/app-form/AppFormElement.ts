@@ -2,7 +2,7 @@ import { attr, controller, target } from "@github/catalyst";
 import { html, TemplateResult, unsafeHTML } from "@github/jtml";
 import { BaseComponentElement } from "common/";
 import { InputFieldElement } from "components/input-field/InputFieldElement";
-import { querys } from "core/utils";
+import { isTrue, querys } from "core/utils";
 
 @controller
 class AppFormElement extends BaseComponentElement {
@@ -10,6 +10,7 @@ class AppFormElement extends BaseComponentElement {
     @target innerSlot: HTMLElement;
     @querys inputField: NodeListOf<InputFieldElement>;
     @attr custom: string;
+    @attr hasCancel: string;
     slotted: any;
     isValid: boolean = false;
     error: string;
@@ -63,7 +64,14 @@ class AppFormElement extends BaseComponentElement {
 
     public goBack = (e) => {
         e.preventDefault();
-        this.routerService?.goBack();
+
+        if (this.appMain?.appModal) {
+            this.appMain?.closeModal?.();
+        } else if (this.routerService?.canGoBack) {
+            this.routerService?.goBack();
+        } else {
+            this.routerService?.goTo("/");
+        }
     };
 
     get valid() {
@@ -99,13 +107,16 @@ class AppFormElement extends BaseComponentElement {
             }
             return html``;
         };
-        const renderCancel = () => {
-            return html`<button
-                type="button"
-                data-action="click:app-form#goBack"
-            >
-                Cancel
-            </button>`;
+        const renderCancel = (hasCancel: boolean) => {
+            if (hasCancel) {
+                return html`<button
+                    type="button"
+                    data-action="click:app-form#goBack"
+                >
+                    Cancel
+                </button>`;
+            }
+            return html``;
         };
 
         return html`<form
@@ -115,7 +126,7 @@ class AppFormElement extends BaseComponentElement {
             <slot data-target="app-form.innerSlot"></slot>
             ${renderError(this.error)}${renderSubmit(
                 this.isValid
-            )}${renderCancel()}
+            )}${renderCancel(isTrue(this.hasCancel))}
         </form>`;
     };
 }
