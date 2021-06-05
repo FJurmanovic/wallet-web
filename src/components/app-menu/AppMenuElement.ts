@@ -132,7 +132,7 @@ class AppMenuElement extends BaseComponentElement {
 
         return html`
             <div data-target="app-menu.sidebar">
-                ${menuHeader("Wallets")} ${regularMenu("/", "Home")}
+                ${menuHeader(__CONFIG__.appName)} ${regularMenu("/", "Home")}
                 ${authMenu("/history", "Transaction History")}
                 ${authMenu(
                     "/wallet/all",

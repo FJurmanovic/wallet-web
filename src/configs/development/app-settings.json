@@ -1,5 +1,6 @@
 {
-    "apiUrl": "main-wallet--dtnyc2vcdgu2re9j-gtw.qovery.io",
+    "apiUrl": "localhost:4000",
     "apiVersion": "v1",
-    "ssl": true
+    "ssl": false,
+    "appName": "Wallets"
 }
