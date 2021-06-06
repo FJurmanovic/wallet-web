@@ -1,0 +1,36 @@
+$border-width: 1px;
+$border-style: solid;
+
+$font-weight-semibold: 400;
+$font-weight-bold: 600;
+
+$button-map: (
+    "primary": (
+        $blue-08,
+        $white,
+    ),
+    "disabled": (
+        $gray-08,
+        $white,
+    ),
+    "secondary": (
+        $orange-08,
+        $white,
+    ),
+    "alert": (
+        $red-08,
+        $white,
+    ),
+    "black": (
+        $black,
+        $white,
+    ),
+    "white": (
+        $white,
+        $black,
+    ),
+    "yellow": (
+        $yellow-06,
+        $white,
+    ),
+);
