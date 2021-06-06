@@ -1,5 +1,5 @@
 import { attr, controller, target } from "@github/catalyst";
-import { firstUpper } from "core/utils";
+import { findMethod, firstUpper } from "core/utils";
 import { html, TemplateResult } from "@github/jtml";
 import { RouterService } from "core/services";
 import randomId from "core/utils/random-id";
@@ -10,20 +10,98 @@ import { BaseComponentElement } from "common/";
 @controller
 class AppDropdownElement extends BaseComponentElement {
     @attr name: string;
-    @attr type: string;
     @attr label: string;
     @attr rules: string;
     @target main: HTMLElement;
     @target inp: HTMLElement;
+    @attr displaykey: string;
+    @attr valuekey: string;
+    @attr fetch: string;
+    fetchFunc: any;
     error: string;
     randId: string;
+
+    items: Array<any>;
+    totalItems: number;
+    page: number = 1;
+    rpp: number = 30;
+
     constructor() {
         super();
     }
+    getItems = async (options?: any): Promise<void> => {
+        if (typeof this.fetchFunc !== "function") return;
+        try {
+            const response = await this.fetchFunc(options);
+            this.setItems(response);
+        } catch (err) {
+            this.update();
+        }
+    };
+
+    setItems = (response): void => {
+        if (response) {
+            let items = [];
+            if (Array.isArray(response)) {
+                items = response;
+            } else if (Array.isArray(response.items)) {
+                items = response.items;
+                this.totalItems = response?.totalRecords;
+            } else {
+                items = [];
+            }
+            this.items = items;
+            this.renderOptions(items);
+            this.renderOptions(items);
+        }
+    };
+
+    private renderOptions = (items) => {
+        const displayKey = this.displaykey || "name";
+        const valueKey = this.valuekey || "id";
+
+        const options = items?.map((item) => {
+            const val = { name: item[displayKey], value: item[valueKey] };
+            if (
+                this.optionValues.some((value) => {
+                    if (value.name == val.name && value.value == val.value) {
+                        return true;
+                    }
+                    return false;
+                })
+            )
+                return;
+            const _option = document.createElement("option");
+            _option.setAttribute("value", val.value);
+            _option.innerText = val.name;
+            this.inp?.appendChild(_option);
+        });
+    };
+
+    get optionValues() {
+        let values = [];
+        this.inp.childNodes.forEach((item: HTMLElement) => {
+            const value = item.getAttribute("value");
+            const name = item.innerText;
+            values.push({ name, value });
+        });
+        return values;
+    }
+
+    onChange = () => {
+        this.renderOptions(this.items);
+    };
 
     public elementConnected = (): void => {
         this.randId = `${name}${randomId()}`;
+        this.fetchFunc = findMethod(this.fetch, this.appMain);
         this.update();
+
+        const options = {
+            rpp: this.rpp,
+            page: this.page,
+        };
+        this.getItems(options);
     };
 
     get valid(): boolean {
@@ -37,7 +115,8 @@ class AppDropdownElement extends BaseComponentElement {
     validate(): boolean {
         let _return = true;
         const rules = this.rules?.split("|").filter((a) => a);
-        const value = (this.inp as HTMLInputElement)?.value;
+        const value = (this.inp as HTMLSelectElement)?.value;
+        console.log(_return, rules, value);
         rules
             .slice()
             .reverse()
@@ -67,7 +146,12 @@ class AppDropdownElement extends BaseComponentElement {
     }
 
     render = (): TemplateResult => {
-        return html``;
+        return html`<div data-target="app-dropdown.main">
+            <select
+                data-target="app-dropdown.inp"
+                data-action="change:app-dropdown#onChange"
+            ></select>
+        </div>`;
     };
 }
 

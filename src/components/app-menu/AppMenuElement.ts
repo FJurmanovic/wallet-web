@@ -71,12 +71,21 @@ class AppMenuElement extends BaseComponentElement {
         return null;
     };
 
-    openModal = (): void => {
+    modalWallet = (): void => {
         const _modal = this.appMain.appModal;
         if (_modal) {
             this.appMain.closeModal();
         } else {
             this.appMain.createModal("wallet-create");
+        }
+    };
+
+    modalTransaction = (): void => {
+        const _modal = this.appMain.appModal;
+        if (_modal) {
+            this.appMain.closeModal();
+        } else {
+            this.appMain.createModal("transaction-create");
         }
     };
 
@@ -132,11 +141,15 @@ class AppMenuElement extends BaseComponentElement {
         return html`
             <div data-target="app-menu.sidebar">
                 ${menuHeader(__CONFIG__.appName)} ${regularMenu("/", "Home")}
-                ${authMenu("/history", "Transaction History")}
+                ${authMenu(
+                    "/history",
+                    "Transaction History",
+                    "click:app-menu#modalTransaction"
+                )}
                 ${authMenu(
                     "/wallet/all",
                     "My Wallets",
-                    "click:app-menu#openModal"
+                    "click:app-menu#modalWallet"
                 )}
                 ${renderWallets(walletData)}
                 <span class="menu-item divider"></span>

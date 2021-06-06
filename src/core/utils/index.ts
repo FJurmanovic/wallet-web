@@ -6,3 +6,4 @@ export { default as isTrue } from "./isTrue";
 export { default as firstUpper } from "./first-upper";
 export { default as query } from "./query-deco";
 export { default as querys } from "./querys-deco";
+export { default as findMethod } from "./find-method";
