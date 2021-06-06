@@ -8,7 +8,9 @@ import { BasePageElement } from "common/";
 class HomePageElement extends BasePageElement {
     private pingService: PingService;
     constructor() {
-        super();
+        super({
+            title: "Home",
+        });
     }
 
     elementConnected = (): void => {

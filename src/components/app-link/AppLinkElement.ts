@@ -44,7 +44,10 @@ class AppLinkElement extends BaseComponentElement {
     };
 
     get disabled(): boolean {
-        return isTrue(this.goBack) && this.routerService.emptyState;
+        if (isTrue(this.goBack)) {
+            return this.routerService.emptyState;
+        }
+        return false;
     }
 
     render = (): TemplateResult => {
@@ -56,7 +59,7 @@ class AppLinkElement extends BaseComponentElement {
                   >${this.title}</a
               >`
             : html`<a
-                  class="btn btn-link btn-disabled"
+                  class="btn btn-link"
                   data-target="app-link.main"
                   data-action="click:app-link#goTo"
                   href="${this.to}"

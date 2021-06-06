@@ -126,6 +126,11 @@ class AppMainElement extends HTMLElement {
         this.dispatchEvent(this.domEvents.walletupdate);
     };
 
+    public setTitle = (title: string): void => {
+        if (!title) title = __CONFIG__.appName;
+        window.document.title = title;
+    };
+
     private createAppModal = () => {
         const _appModal = document.createElement("app-modal");
         _appModal.setAttribute("data-target", "app-main.appModal");

@@ -23,12 +23,6 @@ class AppFormElement extends BaseComponentElement {
         this.update();
     };
 
-    public keyUp = (e) => {
-        if (e.keyCode === 13) {
-            this.onSubmit(e);
-        }
-    };
-
     public onSubmit = (e) => {
         e.preventDefault();
         if (!this.valid) {

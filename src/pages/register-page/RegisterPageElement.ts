@@ -9,7 +9,9 @@ class RegisterPageElement extends BasePageElement {
     @targets inputs: Array<InputFieldElement>;
     authService: AuthService;
     constructor() {
-        super();
+        super({
+            title: "Register",
+        });
     }
     elementConnected = (): void => {
         this.authService = new AuthService(this.appMain.appService);

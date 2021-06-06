@@ -6,7 +6,9 @@ import { BasePageElement } from "common/";
 class LogoutPageElement extends BasePageElement {
     authService: AuthService;
     constructor() {
-        super();
+        super({
+            title: "Logout",
+        });
     }
     elementConnected = (): void => {
         this.authService = new AuthService(this.appMain.appService);
