@@ -105,7 +105,6 @@ class InputFieldElement extends BaseComponentElement {
                 data-target="input-field.inp"
                 data-action="
                     input:input-field#inputChange
-                    keyup:app-form#keyUp
                     blur:input-field#validateDisplay
                 "
             />`;

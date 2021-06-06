@@ -120,7 +120,7 @@ class AppPaginationElement extends BaseComponentElement {
                 return html`
                     <div>
                         <button
-                            class="btn btn-blue btn-squared ${page <= 1
+                            class="btn btn-primary btn-squared ${page <= 1
                                 ? "disabled"
                                 : ""}"
                             data-action="click:app-pagination#pageBack"
@@ -128,7 +128,8 @@ class AppPaginationElement extends BaseComponentElement {
                             Prev
                         </button>
                         <button
-                            class="btn btn-blue btn-squared ${page >= pageRange
+                            class="btn btn-primary btn-squared ${page >=
+                            pageRange
                                 ? "disabled"
                                 : ""}"
                             data-action="click:app-pagination#pageNext"

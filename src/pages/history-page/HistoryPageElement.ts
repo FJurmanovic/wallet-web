@@ -9,7 +9,9 @@ class HistoryPageElement extends BasePageElement {
     private transactionsService: TransactionsService;
     @target pagination: AppPaginationElement;
     constructor() {
-        super();
+        super({
+            title: "Transaction History",
+        });
     }
 
     elementConnected = (): void => {

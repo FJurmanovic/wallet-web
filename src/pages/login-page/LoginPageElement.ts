@@ -11,7 +11,9 @@ class LoginPageElement extends BasePageElement {
     @target appForm: AppFormElement;
     authService: AuthService;
     constructor() {
-        super();
+        super({
+            title: "Login",
+        });
     }
     elementConnected = (): void => {
         this.authService = new AuthService(this.appMain.appService);

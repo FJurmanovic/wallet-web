@@ -5,7 +5,9 @@ import { BasePageElement } from "common/";
 @controller
 class NotFoundElement extends BasePageElement {
     constructor() {
-        super();
+        super({
+            title: "404 - Not Found",
+        });
     }
     elementConnected = (): void => {
         this.update();

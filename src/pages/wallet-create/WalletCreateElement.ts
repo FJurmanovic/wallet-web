@@ -12,7 +12,9 @@ class WalletCreateElement extends BasePageElement {
     authService: AuthService;
     errorMessage: string;
     constructor() {
-        super();
+        super({
+            title: "New Wallet",
+        });
     }
     elementConnected = (): void => {
         this.walletService = new WalletService(this.appMain?.appService);
