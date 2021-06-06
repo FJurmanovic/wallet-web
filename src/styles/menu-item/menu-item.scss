@@ -31,7 +31,7 @@ menu-item {
                 color: $gray-01;
                 border-radius: 0;
                 padding: 2px 0;
-                height: 50px;
+                height: 44px;
                 text-align: left;
                 padding-left: 80px;
                 &:hover {
@@ -51,7 +51,7 @@ menu-item {
             grid-area: custom;
             display: flex;
             width: 10px;
-            height: 50px;
+            height: 100%;
             background-color: $blue-09;
             cursor: pointer;
             user-select: none;

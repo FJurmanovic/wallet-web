@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin");
 const { DefinePlugin } = require('webpack');
 
 const alias = {
@@ -30,7 +31,11 @@ module.exports = (env, args) => {
     }
     return {
         entry: {
-            app: ['babel-polyfill', './src/index']
+            styles: ['./src/styles/main.scss'],
+            app: {
+                import: ['babel-polyfill', './src/index'],
+                dependOn: 'styles'
+            },
         },
         optimization: {
             runtimeChunk: 'single',
@@ -44,13 +49,10 @@ module.exports = (env, args) => {
                         minSize: 200000,
                         maxSize: 400000
                     },
-                    styles: {
-                        name: 'styles',
-                        test: /\.scss$/,
-                        chunks: 'all'
-                    }
                 }
-            }
+            },
+            minimize: true,
+            minimizer: [new TerserPlugin()],
         },
         output: {
             path: path.join(__dirname, 'public'),
@@ -101,7 +103,7 @@ module.exports = (env, args) => {
             }),
             new DefinePlugin({
                 __CONFIG__: JSON.stringify(settings)
-            })
+            }),
         ],
         resolve: {
             extensions: ['.js', '.ts'],

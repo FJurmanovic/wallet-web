@@ -8,13 +8,6 @@ h6 {
     margin-bottom: 0;
 }
 
-h1 { @include h1; }
-h2 { @include h2; }
-h3 { @include h3; }
-h4 { @include h4; }
-h5 { @include h5; }
-h6 { @include h6; }
-
 p {
     margin-top: 0;
     margin-bottom: 10px;
@@ -54,19 +47,6 @@ ol ol ol {
 
 dd {
     margin-left: 0;
-}
-
-tt,
-code {
-    font-family: $mono-font;
-    font-size: $font-size-small;
-}
-
-pre {
-    margin-top: 0;
-    margin-bottom: 0;
-    font-family: $mono-font;
-    font-size: $font-size-small
 }
 
 .icon {
