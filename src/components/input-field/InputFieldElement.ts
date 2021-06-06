@@ -27,6 +27,7 @@ class InputFieldElement extends BaseComponentElement {
     public elementConnected = (): void => {
         this.randId = `${name}${randomId()}`;
         this.update();
+        this.validate();
     };
 
     get valid(): boolean {

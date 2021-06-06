@@ -6,6 +6,7 @@ export * from "./app-root/AppRootElement";
 export * from "./app-slot/AppSlotElement";
 export * from "./app-menu/AppMenuElement";
 export * from "./input-field/InputFieldElement";
+export * from "./app-dropdown/AppDropdownElement";
 export * from "./app-loader/AppLoaderElement";
 export * from "./circle-loader/CircleLoaderElement";
 export * from "./app-form/AppFormElement";

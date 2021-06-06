@@ -2,7 +2,7 @@ import { attr, controller, target } from "@github/catalyst";
 import { html, TemplateResult, unsafeHTML } from "@github/jtml";
 import { BaseComponentElement } from "common/";
 import { InputFieldElement } from "components/input-field/InputFieldElement";
-import { isTrue, querys } from "core/utils";
+import { findMethod, isTrue, querys } from "core/utils";
 
 @controller
 class AppFormElement extends BaseComponentElement {
@@ -29,16 +29,8 @@ class AppFormElement extends BaseComponentElement {
             return;
         }
         const actionString = this.custom;
-        if (actionString) {
-            const methodSep = actionString.lastIndexOf("#");
-            const tag = actionString.slice(0, methodSep);
-            const method = actionString.slice(methodSep + 1);
-
-            const element = this.appMain.querySelector(tag);
-            if (element) {
-                element?.[method]?.(e);
-            }
-        }
+        const submitFunc = findMethod(actionString, this.appMain);
+        submitFunc?.(e);
         return false;
     };
 
@@ -71,7 +63,7 @@ class AppFormElement extends BaseComponentElement {
     get valid() {
         let _valid = 0;
         this.inputField?.forEach((input) => {
-            if (input.required && (input.inp as HTMLInputElement).value) {
+            if (input.required && (input.inp as HTMLSelectElement).value) {
                 _valid++;
             }
         });

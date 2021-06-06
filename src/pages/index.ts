@@ -6,3 +6,4 @@ export * from "./not-found/NotFoundElement";
 export * from "./history-page/HistoryPageElement";
 export * from "./wallet-list/WalletListElement";
 export * from "./wallet-create/WalletCreateElement";
+export * from "./transaction-create/TransactionCreateElement";
