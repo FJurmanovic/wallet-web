@@ -111,7 +111,7 @@ class InputFieldElement extends BaseComponentElement {
             />`;
         };
 
-        return html`<div data-target="input-field.main">
+        return html`<div class="input-main" data-target="input-field.main">
             ${renderMessage(this.label)} ${renderInput(this.type)}
             ${renderError(this.displayError, this.error)}
         </div>`;

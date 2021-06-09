@@ -51,15 +51,22 @@ class TransactionCreateElement extends BasePageElement {
         } catch (err) {}
     };
 
-    onSubmit = async (): Promise<void> => {
+    onSubmit = async (values): Promise<void> => {
         try {
             if (!this.validate()) {
                 return;
             }
-            const { name: description, wallet: walletId } = this.values;
+
+            const {
+                description: description,
+                wallet: walletId,
+                amount,
+            } = values;
+
             const response = await this.transactionService.post({
                 description,
                 walletId,
+                amount,
             });
 
             if (response?.id) {
@@ -91,9 +98,16 @@ class TransactionCreateElement extends BasePageElement {
                 data-has-cancel="true"
             >
                 <input-field
+                    data-type="number"
+                    data-name="amount"
+                    data-label="Amount"
+                    data-targets="transaction-create.inputs"
+                    data-rules="required"
+                ></input-field>
+                <input-field
                     data-type="text"
-                    data-name="name"
-                    data-label="Name"
+                    data-name="description"
+                    data-label="Description"
                     data-targets="transaction-create.inputs"
                     data-rules="required"
                 ></input-field>
