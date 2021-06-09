@@ -1,6 +1,7 @@
 import { attr, controller, target } from "@github/catalyst";
 import { html, TemplateResult, unsafeHTML } from "@github/jtml";
 import { BaseComponentElement } from "common/";
+import { AppDropdownElement } from "components/app-dropdown/AppDropdownElement";
 import { InputFieldElement } from "components/input-field/InputFieldElement";
 import { findMethod, isTrue, querys } from "core/utils";
 
@@ -9,6 +10,7 @@ class AppFormElement extends BaseComponentElement {
     @target formElement: HTMLElement;
     @target innerSlot: HTMLElement;
     @querys inputField: NodeListOf<InputFieldElement>;
+    @querys appDropdown: NodeListOf<AppDropdownElement>;
     @attr custom: string;
     @attr hasCancel: string;
     slotted: any;
@@ -30,7 +32,7 @@ class AppFormElement extends BaseComponentElement {
         }
         const actionString = this.custom;
         const submitFunc = findMethod(actionString, this.appMain);
-        submitFunc?.(e);
+        submitFunc?.(this.values);
         return false;
     };
 
@@ -59,6 +61,21 @@ class AppFormElement extends BaseComponentElement {
             this.routerService?.goTo("/");
         }
     };
+
+    get values(): any {
+        const formObject: any = {};
+        this.inputField.forEach((input: InputFieldElement) => {
+            const inputType = input.inp;
+            formObject[input.name] = (inputType as HTMLInputElement).value;
+        });
+        this.appDropdown?.forEach((input: AppDropdownElement) => {
+            if (input.required && (input.inp as HTMLSelectElement).value) {
+                const inputType = input.inp;
+                formObject[input.name] = (inputType as HTMLSelectElement).value;
+            }
+        });
+        return formObject;
+    }
 
     get valid() {
         let _valid = 0;

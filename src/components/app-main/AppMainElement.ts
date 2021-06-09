@@ -64,7 +64,7 @@ class AppMainElement extends HTMLElement {
                     },
                     {
                         path: "/:walletId",
-                        component: "history-page",
+                        component: "wallet-page",
                         layout: "menu-layout",
                     },
                 ],
@@ -72,27 +72,27 @@ class AppMainElement extends HTMLElement {
             {
                 path: "/register",
                 component: "register-page",
-                layout: "menu-layout",
+                layout: "initial-layout",
             },
             {
                 path: "/login",
                 component: "login-page",
-                layout: "menu-layout",
+                layout: "initial-layout",
             },
             {
                 path: "/unauthorized",
                 component: "login-page",
-                layout: "menu-layout",
+                layout: "initial-layout",
             },
             {
                 path: "/token-expired",
                 component: "login-page",
-                layout: "menu-layout",
+                layout: "initial-layout",
             },
             {
                 path: "/not-found",
                 component: "not-found",
-                layout: "menu-layout",
+                layout: "initial-layout",
             },
             {
                 path: "/logout",

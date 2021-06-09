@@ -10,6 +10,7 @@ export * from "./app-dropdown/AppDropdownElement";
 export * from "./app-loader/AppLoaderElement";
 export * from "./circle-loader/CircleLoaderElement";
 export * from "./app-form/AppFormElement";
+export * from "./wallet-header/WalletHeaderElement";
 
 // LAST
 export * from "./app-main/AppMainElement";

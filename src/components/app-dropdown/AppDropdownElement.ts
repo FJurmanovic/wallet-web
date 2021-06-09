@@ -116,7 +116,6 @@ class AppDropdownElement extends BaseComponentElement {
         let _return = true;
         const rules = this.rules?.split("|").filter((a) => a);
         const value = (this.inp as HTMLSelectElement)?.value;
-        console.log(_return, rules, value);
         rules
             .slice()
             .reverse()
@@ -146,7 +145,7 @@ class AppDropdownElement extends BaseComponentElement {
     }
 
     render = (): TemplateResult => {
-        return html`<div data-target="app-dropdown.main">
+        return html`<div class="input-main" data-target="app-dropdown.main">
             <select
                 data-target="app-dropdown.inp"
                 data-action="change:app-dropdown#onChange"

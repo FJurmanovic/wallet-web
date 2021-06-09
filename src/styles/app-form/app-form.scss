@@ -1,0 +1,20 @@
+app-form {
+    form[data-target="app-form.formElement"] {
+        width: 56%;
+        margin: 0 auto;
+
+        input-field,
+        app-dropdown > .input-main {
+            width: 100%;
+            display: block;
+            input,
+            select {
+                width: 100%;
+                padding: 2px 0;
+                margin: 6px 0;
+                display: block;
+                font-size: 16px;
+            }
+        }
+    }
+}
