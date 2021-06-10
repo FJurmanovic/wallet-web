@@ -42,7 +42,7 @@ class MenuItemElement extends BaseComponentElement {
                 ${this.customaction
                     ? html`<div
                           data-target="menu-item.customButton"
-                          data-action="${this.customaction}"
+                          app-action="${this.customaction}"
                       >
                           +
                       </div>`

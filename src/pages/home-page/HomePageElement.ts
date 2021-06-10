@@ -53,7 +53,7 @@ class HomePageElement extends BasePageElement {
 
     render = (): TemplateResult => {
         return html`
-            <button data-action="click:home-page#openModal">New Wallet</button>
+            <button app-action="click:home-page#openModal">New Wallet</button>
             <wallet-header
                 data-target="home-page.walletHeader"
                 data-current-balance="0"

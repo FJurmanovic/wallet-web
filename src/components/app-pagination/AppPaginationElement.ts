@@ -123,7 +123,7 @@ class AppPaginationElement extends BaseComponentElement {
                             class="btn btn-primary btn-squared ${page <= 1
                                 ? "disabled"
                                 : ""}"
-                            data-action="click:app-pagination#pageBack"
+                            app-action="click:app-pagination#pageBack"
                         >
                             Prev
                         </button>
@@ -132,7 +132,7 @@ class AppPaginationElement extends BaseComponentElement {
                             pageRange
                                 ? "disabled"
                                 : ""}"
-                            data-action="click:app-pagination#pageNext"
+                            app-action="click:app-pagination#pageNext"
                         >
                             Next
                         </button>

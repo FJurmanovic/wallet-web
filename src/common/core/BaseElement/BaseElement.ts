@@ -48,10 +48,10 @@ class BaseElement extends HTMLElement {
         return this.appMain?.isAuth();
     }
 
-    public bindEvents = (): void => {
-        const _elems = this.querySelectorAll("[data-action]");
+    public bindEvents = (attrName): void => {
+        const _elems = this.querySelectorAll(`[${attrName}]`);
         _elems?.forEach((el) => {
-            for (const action of (el.getAttribute("data-action") || "")
+            for (const action of (el.getAttribute(attrName) || "")
                 .trim()
                 .split(/\s+/)) {
                 const eventSep = action.lastIndexOf(":");
@@ -88,7 +88,8 @@ class BaseElement extends HTMLElement {
 
     update = (): void => {
         render(this.render(), this);
-        this.bindEvents();
+        this.bindEvents("data-action");
+        this.bindEvents("app-action");
         this.updateCallback();
     };
 

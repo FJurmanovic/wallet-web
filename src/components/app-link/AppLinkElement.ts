@@ -61,7 +61,7 @@ class AppLinkElement extends BaseComponentElement {
             : html`<a
                   class="btn btn-link"
                   data-target="app-link.main"
-                  data-action="click:app-link#goTo"
+                  app-action="click:app-link#goTo"
                   href="${this.to}"
                   style="text-decoration: underline; cursor: pointer;"
                   >${this.title}</a

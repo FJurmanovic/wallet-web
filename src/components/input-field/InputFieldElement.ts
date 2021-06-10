@@ -38,6 +38,10 @@ class InputFieldElement extends BaseComponentElement {
         return this.rules.includes("required");
     }
 
+    get _value() {
+        return (this.inp as HTMLInputElement)?.value;
+    }
+
     validate = (): boolean => {
         let _return = true;
         const rules = this.rules?.split("|").filter((a) => a);
@@ -104,7 +108,7 @@ class InputFieldElement extends BaseComponentElement {
             return html` <input
                 type="${this.type}"
                 data-target="input-field.inp"
-                data-action="
+                app-action="
                     input:input-field#inputChange
                     blur:input-field#validateDisplay
                 "

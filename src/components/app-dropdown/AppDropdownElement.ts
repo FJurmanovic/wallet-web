@@ -1,7 +1,6 @@
 import { attr, controller, target } from "@github/catalyst";
 import { findMethod, firstUpper } from "core/utils";
-import { html, TemplateResult } from "@github/jtml";
-import { RouterService } from "core/services";
+import { html } from "@github/jtml";
 import randomId from "core/utils/random-id";
 import validator from "validator";
 import { validatorErrors } from "core/constants";
@@ -14,12 +13,20 @@ class AppDropdownElement extends BaseComponentElement {
     @attr rules: string;
     @target main: HTMLElement;
     @target inp: HTMLElement;
-    @attr displaykey: string;
-    @attr valuekey: string;
+    @attr displaykey: string = "name";
+    @attr valuekey: string = "id";
     @attr fetch: string;
     fetchFunc: any;
-    error: string;
+
+    error: boolean;
+    errorMessage: string;
+
+    searchPhrase: string;
+
     randId: string;
+    value: string;
+
+    @attr isOpen: boolean = false;
 
     items: Array<any>;
     totalItems: number;
@@ -51,32 +58,20 @@ class AppDropdownElement extends BaseComponentElement {
                 items = [];
             }
             this.items = items;
-            this.renderOptions(items);
-            this.renderOptions(items);
+            this.update();
         }
     };
 
-    private renderOptions = (items) => {
-        const displayKey = this.displaykey || "name";
-        const valueKey = this.valuekey || "id";
-
-        const options = items?.map((item) => {
-            const val = { name: item[displayKey], value: item[valueKey] };
-            if (
-                this.optionValues.some((value) => {
-                    if (value.name == val.name && value.value == val.value) {
-                        return true;
-                    }
-                    return false;
-                })
-            )
-                return;
-            const _option = document.createElement("option");
-            _option.setAttribute("value", val.value);
-            _option.innerText = val.name;
-            this.inp?.appendChild(_option);
+    get selectedItem() {
+        const { value, valuekey, items } = this;
+        const item = items?.find((item) => {
+            return value == item[valuekey];
         });
-    };
+
+        console.log(item, value, valuekey);
+
+        return item;
+    }
 
     get optionValues() {
         let values = [];
@@ -87,10 +82,6 @@ class AppDropdownElement extends BaseComponentElement {
         });
         return values;
     }
-
-    onChange = () => {
-        this.renderOptions(this.items);
-    };
 
     public elementConnected = (): void => {
         this.randId = `${name}${randomId()}`;
@@ -103,6 +94,10 @@ class AppDropdownElement extends BaseComponentElement {
         };
         this.getItems(options);
     };
+
+    attributeChangedCallback(): void {
+        this.update();
+    }
 
     get valid(): boolean {
         return !!this.error;
@@ -144,13 +139,102 @@ class AppDropdownElement extends BaseComponentElement {
         return _return;
     }
 
-    render = (): TemplateResult => {
-        return html`<div class="input-main" data-target="app-dropdown.main">
-            <select
-                data-target="app-dropdown.inp"
-                data-action="change:app-dropdown#onChange"
-            ></select>
-        </div>`;
+    openDropdown = () => {
+        this.isOpen = true;
+    };
+
+    stopPropagation = (e) => {
+        e.stopPropagation();
+    };
+
+    toggleDropdown = () => {
+        const isOpen = this.isOpen;
+        this.isOpen = !isOpen;
+    };
+
+    itemSelected = (e) => {
+        const value = (e.target as HTMLSpanElement).getAttribute("data-value");
+        this.value = value;
+        this.isOpen = false;
+    };
+
+    get _value() {
+        return this.value;
+    }
+
+    render = () => {
+        const {
+            label,
+            error,
+            errorMessage,
+            isOpen,
+            searchPhrase,
+            items,
+            selectedItem,
+            displaykey,
+            valuekey,
+        } = this;
+
+        console.log(isOpen);
+
+        const renderItem = (item) => {
+            return html` <li
+                class="dropdown-custom-listitem ${selectedItem?.[valuekey] ==
+                item[valuekey]
+                    ? "--selected"
+                    : ""}"
+                app-action="click:app-dropdown#itemSelected"
+                data-value="${item[valuekey]}"
+            >
+                ${item[displaykey]}
+            </li>`;
+        };
+
+        const renderItems = (_items) => {
+            return _items.map((item) => renderItem(item));
+        };
+
+        return html`
+            <div>
+                <label app-action="click:app-dropdown#openDropdown">
+                    ${label ? html`<div>${label}</div>` : html``}
+                    <div
+                        class="dropdown-custom"
+                        app-action="click:app-dropdown#stopPropagation"
+                    >
+                        <div
+                            class="dropdown-custom-top"
+                            app-action="click:app-dropdown#toggleDropdown"
+                        >
+                            <span class="dropdown-custom-fieldname"
+                                >${selectedItem
+                                    ? selectedItem[displaykey]
+                                    : "Select"}</span
+                            >
+                        </div>
+                        ${isOpen
+                            ? html`
+                                  <div class="dropdown-custom-open">
+                                      <input
+                                          class="dropdown-custom-search"
+                                          type="text"
+                                          value="${searchPhrase}"
+                                          app-action="input:app-dropdown#phraseChange"
+                                          autofocus
+                                      />
+                                      <ul class="dropdown-custom-list">
+                                          ${renderItems(items)}
+                                      </ul>
+                                  </div>
+                              `
+                            : html``}
+                    </div>
+                    ${error
+                        ? html` <div class="h5 text-red">${errorMessage}</div>`
+                        : html``}
+                </label>
+            </div>
+        `;
     };
 }
 

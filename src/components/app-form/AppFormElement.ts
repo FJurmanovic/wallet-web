@@ -65,13 +65,11 @@ class AppFormElement extends BaseComponentElement {
     get values(): any {
         const formObject: any = {};
         this.inputField.forEach((input: InputFieldElement) => {
-            const inputType = input.inp;
-            formObject[input.name] = (inputType as HTMLInputElement).value;
+            formObject[input.name] = input._value;
         });
         this.appDropdown?.forEach((input: AppDropdownElement) => {
-            if (input.required && (input.inp as HTMLSelectElement).value) {
-                const inputType = input.inp;
-                formObject[input.name] = (inputType as HTMLSelectElement).value;
+            if (input.required && input.value) {
+                formObject[input.name] = input._value;
             }
         });
         return formObject;
@@ -114,7 +112,7 @@ class AppFormElement extends BaseComponentElement {
             if (hasCancel) {
                 return html`<button
                     type="button"
-                    data-action="click:app-form#goBack"
+                    app-action="click:app-form#goBack"
                 >
                     Cancel
                 </button>`;
@@ -123,7 +121,7 @@ class AppFormElement extends BaseComponentElement {
         };
 
         return html`<form
-            data-action="submit:app-form#onSubmit"
+            app-action="submit:app-form#onSubmit"
             data-target="app-form.formElement"
         >
             <slot data-target="app-form.innerSlot"></slot>
