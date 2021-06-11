@@ -1,1 +1,1 @@
-export { default as BasePageElement } from "./BasePageElement/BasePageElement";
+export { default as BasePageElement } from './BasePageElement/BasePageElement';

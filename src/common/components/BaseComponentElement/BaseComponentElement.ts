@@ -1,4 +1,4 @@
-import { BaseElement } from "common/";
+import { BaseElement } from 'common/';
 
 class BaseComponentElement extends BaseElement {}
 

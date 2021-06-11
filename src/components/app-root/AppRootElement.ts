@@ -1,14 +1,14 @@
-import { controller, target } from "@github/catalyst";
-import { BaseComponentElement } from "common/";
+import { controller, target } from '@github/catalyst';
+import { BaseComponentElement } from 'common/';
 
 @controller
 class AppRootElement extends BaseComponentElement {
-    @target rootElement: HTMLElement;
-    constructor() {
-        super();
-    }
+	@target rootElement: HTMLElement;
+	constructor() {
+		super();
+	}
 
-    elementConnected = (): void => {};
+	elementConnected = (): void => {};
 }
 
 export type { AppRootElement };
