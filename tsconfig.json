@@ -8,6 +8,8 @@
             "es2016"
         ],
         "moduleResolution": "node",
+        "jsx": "preserve",
+        "jsxFactory": "h",
         "resolveJsonModule": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,

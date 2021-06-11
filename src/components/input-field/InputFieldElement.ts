@@ -1,6 +1,6 @@
 import { attr, controller, target } from "@github/catalyst";
 import { closest, firstUpper } from "core/utils";
-import { html, TemplateResult } from "@github/jtml";
+import { html, TemplateResult } from "lit-html";
 import { RouterService } from "core/services";
 import randomId from "core/utils/random-id";
 import validator from "validator";

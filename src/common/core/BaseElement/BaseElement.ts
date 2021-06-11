@@ -1,4 +1,4 @@
-import { html, render, TemplateResult } from "@github/jtml";
+import { html, render, TemplateResult } from "lit-html";
 import {
     AppLoaderElement,
     AppMainElement,
@@ -80,7 +80,7 @@ class BaseElement extends HTMLElement {
         });
     };
 
-    render = (): TemplateResult => {
+    render = (): TemplateResult | Temp => {
         return html``;
     };
 

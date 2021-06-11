@@ -1,6 +1,6 @@
 import { controller, target } from "@github/catalyst";
 import { closest } from "core/utils";
-import { html, TemplateResult } from "@github/jtml";
+import { html, TemplateResult } from "lit-html";
 import { BaseLayoutElement } from "common/layouts";
 import { AppMainElement } from "components/";
 

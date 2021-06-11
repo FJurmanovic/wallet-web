@@ -62,7 +62,7 @@ module.exports = (env, args) => {
         module: {
             rules: [
                 {
-                    test: /\.(js|ts)?$/,
+                    test: /\.(js|ts)x?$/,
                     exclude: /node_modules/,
                     use: {
                         loader: 'babel-loader'
@@ -106,7 +106,7 @@ module.exports = (env, args) => {
             }),
         ],
         resolve: {
-            extensions: ['.js', '.ts'],
+            extensions: ['.js', '.ts', '.jsx', '.tsx'],
             alias: alias
         },
         devServer: {

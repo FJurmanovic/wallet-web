@@ -1,5 +1,5 @@
 import { attr, controller } from "@github/catalyst";
-import { html } from "@github/jtml";
+import { html } from "lit-html";
 import { BaseComponentElement } from "common/";
 
 @controller

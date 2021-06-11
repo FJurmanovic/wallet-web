@@ -1,6 +1,6 @@
 import { attr, controller, target } from "@github/catalyst";
 import { findMethod, firstUpper } from "core/utils";
-import { html } from "@github/jtml";
+import { html } from "lit-html";
 import randomId from "core/utils/random-id";
 import validator from "validator";
 import { validatorErrors } from "core/constants";

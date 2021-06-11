@@ -1,5 +1,5 @@
 import { controller } from "@github/catalyst";
-import { html, TemplateResult } from "@github/jtml";
+import { html, TemplateResult } from "lit-html";
 import { BasePageElement } from "common/";
 
 @controller

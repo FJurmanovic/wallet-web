@@ -1,6 +1,6 @@
 import { attr, controller, target } from "@github/catalyst";
 import { isTrue } from "core/utils";
-import { html, TemplateResult } from "@github/jtml";
+import { html, TemplateResult } from "lit-html";
 import { AppMainElement } from "components/app-main/AppMainElement";
 import { RouterService } from "core/services";
 import { BaseComponentElement } from "common/";

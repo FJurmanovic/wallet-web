@@ -1,5 +1,5 @@
 import { targets, controller } from "@github/catalyst";
-import { html, TemplateResult } from "@github/jtml";
+import { html, TemplateResult } from "lit-html";
 import { AuthService, WalletService } from "services/";
 import { InputFieldElement } from "components/";
 import { RouterService } from "core/services";

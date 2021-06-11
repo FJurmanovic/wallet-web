@@ -1,5 +1,5 @@
 import { attr, controller, target } from "@github/catalyst";
-import { html, TemplateResult, unsafeHTML } from "@github/jtml";
+import { html, TemplateResult, unsafeHTML } from "lit-html";
 import { BaseComponentElement } from "common/";
 import { AppDropdownElement } from "components/app-dropdown/AppDropdownElement";
 import { InputFieldElement } from "components/input-field/InputFieldElement";

@@ -1,5 +1,5 @@
 import { attr } from "@github/catalyst";
-import { html, render } from "@github/jtml";
+import { html, render } from "lit-html";
 import { BaseElement } from "common/";
 import { isTrue } from "core/utils";
 
@@ -28,7 +28,7 @@ class BasePageElement extends BaseElement {
     update = (): void => {
         const _render = () => html` ${this.renderTitle()} ${this.render()} `;
         render(_render(), this);
-        this.bindEvents();
+        this.bindEvents("app-action");
         this.updateCallback();
     };
 
