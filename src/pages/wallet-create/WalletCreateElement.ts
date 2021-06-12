@@ -48,6 +48,7 @@ class WalletCreateElement extends BasePageElement {
 
 			if (response?.id) {
 				this.appMain.triggerWalletUpdate();
+				this.appMain.pushToast('success', 'Wallet created successfully!');
 				this.routerService.goTo('/wallet/:walletId', {
 					walletId: response.id,
 				});

@@ -10,6 +10,8 @@ class AppPaginationElement extends BaseComponentElement {
 	@attr rpp: number;
 	@attr totalItems: number;
 	@attr autoInit: string;
+	@attr tableLayout: string = 'transactions-table';
+	initial: boolean = false;
 
 	private customRenderItems: () => TemplateResult;
 	private customRenderItem: (item: any) => TemplateResult;
@@ -69,6 +71,8 @@ class AppPaginationElement extends BaseComponentElement {
 		} catch (err) {
 			this.loader?.stop?.();
 			console.error(err);
+		} finally {
+			this.initial = true;
 		}
 	};
 
@@ -94,20 +98,29 @@ class AppPaginationElement extends BaseComponentElement {
 
 		const renderItem = this.customRenderItem
 			? this.customRenderItem
-			: (item) => html`<tr>
-					<td>${item.description}</td>
-					<td>${item.amount}</td>
+			: (item, iter) => html`<tr>
+					<td class="--left">${iter + 1 + rpp * (page - 1)}</td>
+					<td class="--left">${item.description}</td>
+					<td class="balance-cell --right">
+						<span class="balance ${item.amount > 0 ? '--positive' : '--negative'}">
+							${Number(item.amount).toLocaleString('en-US', {
+								maximumFractionDigits: 2,
+								minimumFractionDigits: 2,
+							})}
+						</span>
+						<span class="currency">(${item.currency ? item.currency : 'USD'})</span>
+					</td>
 			  </tr>`;
 
 		const renderItems = this.customRenderItems
 			? this.customRenderItems
 			: () => {
-					if (this.loader && this.loader.loading) {
-						return html`<circle-loader></circle-loader>`;
+					if (this.loader && this.loader.loading && !this.initial) {
+						return html``;
 					} else {
 						if (items?.length > 0) {
-							return html`<table>
-								${items?.map((item) => renderItem(item))}
+							return html`<table class="${this.tableLayout}">
+								${items?.map((item, iter) => renderItem(item, iter))} ${renderPagination()}
 							</table>`;
 						}
 						return html``;
@@ -118,25 +131,27 @@ class AppPaginationElement extends BaseComponentElement {
 			if (totalItems > items?.length) {
 				const pageRange = Math.ceil(totalItems / rpp);
 				return html`
-					<div>
-						<button
-							class="btn btn-primary btn-squared ${page <= 1 ? 'disabled' : ''}"
-							app-action="click:app-pagination#pageBack"
-						>
-							Prev
-						</button>
-						<button
-							class="btn btn-primary btn-squared ${page >= pageRange ? 'disabled' : ''}"
-							app-action="click:app-pagination#pageNext"
-						>
-							Next
-						</button>
+					<div class="paginate">
+						<div class="--footer">
+							<button
+								class="btn btn-primary btn-squared ${page <= 1 ? 'disabled' : ''}"
+								app-action="click:app-pagination#pageBack"
+							>
+								Prev
+							</button>
+							<button
+								class="btn btn-primary btn-squared ${page >= pageRange ? 'disabled' : ''}"
+								app-action="click:app-pagination#pageNext"
+							>
+								Next
+							</button>
+						</div>
 					</div>
 				`;
 			}
 		};
 
-		return html`<div>${renderItems()} ${renderPagination()}</div>`;
+		return html`<div class="app-pagination">${renderItems()}</div>`;
 	};
 }
 

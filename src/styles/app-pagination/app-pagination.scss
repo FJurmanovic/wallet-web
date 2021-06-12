@@ -1,0 +1,57 @@
+app-pagination {
+	.app-pagination {
+		table.transactions-table {
+			margin: 0 0 3em 0;
+			padding: 0;
+			width: 100%;
+			background-color: $gray-09;
+			border: 1px solid $gray-09;
+			border-radius: 4px;
+			display: block;
+			tr {
+				background-color: $gray-07;
+				padding: 4px 12px;
+				border-radius: 4px;
+				display: grid;
+				grid-template-columns: auto 1fr auto;
+				margin: 6px 8px;
+				td,
+				th {
+					margin: 0 12px;
+					overflow: hidden; // Or flex might break
+					list-style: none;
+					&.--left {
+						text-align: left;
+					}
+					&.--right {
+						text-align: right;
+					}
+					&.balance-cell {
+						.balance {
+							display: inline;
+							&.--positive {
+								color: $green-01;
+							}
+							&.--negative {
+								color: $red-01;
+							}
+						}
+						.currency {
+							display: inline;
+							color: $gray-10;
+						}
+					}
+				}
+			}
+			.paginate {
+				position: relative;
+				height: 33px;
+				margin-bottom: 7px;
+				.--footer {
+					position: absolute;
+					right: 7px;
+				}
+			}
+		}
+	}
+}

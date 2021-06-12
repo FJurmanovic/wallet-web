@@ -65,6 +65,7 @@ class TransactionCreateElement extends BasePageElement {
 
 			if (response?.id) {
 				this.appMain.triggerWalletUpdate();
+				this.appMain.pushToast('success', 'Transaction created successfully!');
 				this.routerService.goTo('/history', {
 					walletId: response.id,
 				});
