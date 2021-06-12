@@ -26,7 +26,17 @@ toast-portal {
 					background-color: $gray-07;
 					border: 1px solid $gray-08;
 				}
-				.toast-text {
+				&.--success {
+					background-color: $green-07;
+					border: 1px solid $green-08;
+				}
+				&.--error {
+					background-color: $red-07;
+					border: 1px solid $red-08;
+				}
+				&.--warning {
+					background-color: $yellow-07;
+					border: 1px solid $yellow-08;
 				}
 			}
 		}

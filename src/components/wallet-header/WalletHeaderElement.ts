@@ -11,6 +11,7 @@ class WalletHeaderElement extends BaseComponentElement {
 	@attr nextMonth: number;
 	@attr currency: string;
 	@attr custom: string;
+	initial: boolean = false;
 
 	fetchFunc: Function = () => {};
 	constructor() {
@@ -38,20 +39,26 @@ class WalletHeaderElement extends BaseComponentElement {
 		} catch (err) {
 			this.loader?.stop?.();
 			console.error(err);
+		} finally {
+			this.initial = true;
 		}
 	};
 
 	render = (): TemplateResult => {
 		const { currentBalance, currency, lastMonth, nextMonth } = this;
 
-		const renderItem = (header, balance, currency) => html`<div>
-			<div>${header}</div>
-			<div><span>${balance}</span><span>${currency}</span></div>
+		const renderItem = (header, balance, currency) => html`<div class="header-item">
+			<div class="--header">${header}</div>
+			<div class="--content">
+				<span class="--balance ${balance > 0 ? '--positive' : '--negative'}"
+					>${Number(balance).toLocaleString('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</span
+				><span class="--currency">(${currency})</span>
+			</div>
 		</div>`;
 
 		const renderHeader = () => {
-			if (this.loader && this.loader.loading) {
-				return html`<circle-loader></circle-loader>`;
+			if (this.loader && this.loader.loading && !this.initial) {
+				return html``;
 			}
 			return html`${renderItem('Last Month', lastMonth, currency)}${renderItem(
 				'Current Balance',
@@ -60,7 +67,7 @@ class WalletHeaderElement extends BaseComponentElement {
 			)}${renderItem('Next Month', nextMonth, currency)}`;
 		};
 
-		return html`<div>${renderHeader()}</div>`;
+		return html`<div class="wallet-header">${renderHeader()}</div>`;
 	};
 }
 
