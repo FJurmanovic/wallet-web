@@ -1,12 +1,11 @@
 import { attr, controller, target } from '@github/catalyst';
 import { closest, firstUpper } from 'core/utils';
-import { html, TemplateResult } from 'lit-html';
-import { RouterService } from 'core/services';
+import { html, TemplateResult } from 'core/utils';
 import randomId from 'core/utils/random-id';
-import validator from 'validator';
 import { validatorErrors } from 'core/constants';
-import { BaseComponentElement } from 'common/';
+import { BaseComponentElement, Validator } from 'common/';
 import { AppFormElement } from 'components/app-form/AppFormElement';
+import { validator } from 'core/utils';
 
 @controller
 class InputFieldElement extends BaseComponentElement {
@@ -17,21 +16,33 @@ class InputFieldElement extends BaseComponentElement {
 	@target main: HTMLElement;
 	@target inp: HTMLElement;
 	@closest appForm: AppFormElement;
-	error: string;
+	valid: boolean;
 	displayError: boolean;
 	randId: string;
+
+	validator: Validator;
+
 	constructor() {
 		super();
 	}
 
 	public elementConnected = (): void => {
+		this.validator = new Validator(this, this.appForm, this.rules);
 		this.randId = `${name}${randomId()}`;
 		this.update();
 		this.validate();
 	};
 
-	get valid(): boolean {
-		return !!this.error;
+	setError = (error) => {
+		this.validator.error = error;
+	};
+
+	get error(): string {
+		return this.validator.error;
+	}
+
+	get isValid(): boolean {
+		return this.validator.valid;
 	}
 
 	get required(): boolean {
@@ -43,31 +54,7 @@ class InputFieldElement extends BaseComponentElement {
 	}
 
 	validate = (): boolean => {
-		let _return = true;
-		const rules = this.rules?.split('|').filter((a) => a);
-		const value = (this.inp as HTMLInputElement)?.value;
-		rules
-			.slice()
-			.reverse()
-			.forEach((rule) => {
-				let valid = true;
-				if (rule == 'required') {
-					if (value === '') valid = false;
-				} else {
-					if (validator.hasOwnProperty(rule)) {
-						valid = validator?.[rule]?.(value);
-					}
-				}
-				if (!valid) {
-					const error = validatorErrors[rule]?.replaceAll('{- name}', firstUpper(this.name?.toString()));
-					_return = false;
-					this.error = error;
-				}
-			});
-		if (_return) {
-			this.error = null;
-		}
-		return _return;
+		return this.validator.validate();
 	};
 
 	validateDisplay = () => {

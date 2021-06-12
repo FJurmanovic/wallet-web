@@ -1,5 +1,5 @@
 import { attr } from '@github/catalyst';
-import { html, render } from 'lit-html';
+import { html, render } from 'core/utils';
 import { BaseElement } from 'common/';
 import { isTrue } from 'core/utils';
 

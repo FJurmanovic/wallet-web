@@ -1,10 +1,10 @@
 import { attr, controller, target } from '@github/catalyst';
-import { findMethod, firstUpper } from 'core/utils';
-import { html } from 'lit-html';
+import { closest, findMethod, firstUpper } from 'core/utils';
+import { html } from 'core/utils';
 import randomId from 'core/utils/random-id';
-import validator from 'validator';
 import { validatorErrors } from 'core/constants';
-import { BaseComponentElement } from 'common/';
+import { BaseComponentElement, Validator } from 'common/';
+import { AppFormElement } from 'components/app-form/AppFormElement';
 
 @controller
 class AppDropdownElement extends BaseComponentElement {
@@ -13,12 +13,12 @@ class AppDropdownElement extends BaseComponentElement {
 	@attr rules: string;
 	@target main: HTMLElement;
 	@target inp: HTMLElement;
+	@target dropdowncontainer: HTMLElement;
 	@attr displaykey: string = 'name';
 	@attr valuekey: string = 'id';
 	@attr fetch: string;
-	fetchFunc: any;
+	@closest appForm: AppFormElement;
 
-	error: boolean;
 	errorMessage: string;
 
 	searchPhrase: string;
@@ -32,10 +32,56 @@ class AppDropdownElement extends BaseComponentElement {
 	totalItems: number;
 	page: number = 1;
 	rpp: number = 30;
+	validator: Validator;
 
 	constructor() {
 		super();
 	}
+
+	updateCallback = () => {
+		this.dropdowncontainer?.scrollIntoView();
+	};
+
+	public elementConnected = (): void => {
+		this.validator = new Validator(this, this.appForm, this.rules);
+		this.randId = `${name}${randomId()}`;
+		this.update();
+
+		const options = {
+			rpp: this.rpp,
+			page: this.page,
+		};
+		this.getItems(options);
+	};
+
+	attributeChangedCallback(): void {
+		this.update();
+	}
+
+	setError = (error) => {
+		this.validator.error = error;
+	};
+
+	get error(): string {
+		return this.validator?.error;
+	}
+
+	get isValid(): boolean {
+		return this.validator?.valid;
+	}
+
+	get required(): boolean {
+		return this.rules.includes('required');
+	}
+
+	get _value() {
+		return this.value;
+	}
+
+	validate = (): boolean => {
+		return this.validator.validate();
+	};
+
 	getItems = async (options?: any): Promise<void> => {
 		if (typeof this.fetchFunc !== 'function') return;
 		try {
@@ -68,8 +114,6 @@ class AppDropdownElement extends BaseComponentElement {
 			return value == item[valuekey];
 		});
 
-		console.log(item, value, valuekey);
-
 		return item;
 	}
 
@@ -83,61 +127,16 @@ class AppDropdownElement extends BaseComponentElement {
 		return values;
 	}
 
-	public elementConnected = (): void => {
-		this.randId = `${name}${randomId()}`;
-		this.fetchFunc = findMethod(this.fetch, this.appMain);
-		this.update();
+	get fetchFunc() {
+		return findMethod(this.fetch, this.appMain);
+	}
 
-		const options = {
-			rpp: this.rpp,
-			page: this.page,
-		};
-		this.getItems(options);
+	setOpen = (isOpen) => {
+		this.isOpen = isOpen;
 	};
 
-	attributeChangedCallback(): void {
-		this.update();
-	}
-
-	get valid(): boolean {
-		return !!this.error;
-	}
-
-	get required(): boolean {
-		return this.rules.includes('required');
-	}
-
-	validate(): boolean {
-		let _return = true;
-		const rules = this.rules?.split('|').filter((a) => a);
-		const value = (this.inp as HTMLSelectElement)?.value;
-		rules
-			.slice()
-			.reverse()
-			.forEach((rule) => {
-				let valid = true;
-				if (rule == 'required') {
-					if (value === '') valid = false;
-				} else {
-					if (validator.hasOwnProperty(rule)) {
-						valid = validator?.[rule]?.(value);
-					}
-				}
-				if (!valid) {
-					const error = validatorErrors[rule]?.replaceAll('{- name}', firstUpper(this.name?.toString()));
-					_return = false;
-					this.error = error;
-				}
-			});
-		if (_return) {
-			this.error = null;
-		}
-		this.update();
-		return _return;
-	}
-
 	openDropdown = () => {
-		this.isOpen = true;
+		this.setOpen(true);
 	};
 
 	stopPropagation = (e) => {
@@ -146,23 +145,23 @@ class AppDropdownElement extends BaseComponentElement {
 
 	toggleDropdown = () => {
 		const isOpen = this.isOpen;
-		this.isOpen = !isOpen;
+		this.setOpen(!isOpen);
 	};
 
 	itemSelected = (e) => {
 		const value = (e.target as HTMLSpanElement).getAttribute('data-value');
-		this.value = value;
-		this.isOpen = false;
+		this.setOpen(false);
+		this.setValue(value);
+		this.appForm?.inputChange(e);
 	};
 
-	get _value() {
-		return this.value;
-	}
+	setValue = (value) => {
+		this.value = value;
+		this.update();
+	};
 
 	render = () => {
 		const { label, error, errorMessage, isOpen, searchPhrase, items, selectedItem, displaykey, valuekey } = this;
-
-		console.log(isOpen);
 
 		const renderItem = (item) => {
 			return html` <li
@@ -175,7 +174,7 @@ class AppDropdownElement extends BaseComponentElement {
 		};
 
 		const renderItems = (_items) => {
-			return _items.map((item) => renderItem(item));
+			return _items?.map((item) => renderItem(item));
 		};
 
 		return html`
@@ -183,12 +182,12 @@ class AppDropdownElement extends BaseComponentElement {
 				<label app-action="click:app-dropdown#openDropdown">
 					${label ? html`<div>${label}</div>` : html``}
 					<div class="dropdown-custom" app-action="click:app-dropdown#stopPropagation">
-						<div class="dropdown-custom-top" app-action="click:app-dropdown#toggleDropdown">
+						<div class="dropdown-custom-top${isOpen ? ' --open' : ''}" app-action="click:app-dropdown#toggleDropdown">
 							<span class="dropdown-custom-fieldname">${selectedItem ? selectedItem[displaykey] : 'Select'}</span>
 						</div>
 						${isOpen
 							? html`
-									<div class="dropdown-custom-open">
+									<div class="dropdown-custom-open" data-target="app-dropdown.dropdowncontainer">
 										<input
 											class="dropdown-custom-search"
 											type="text"

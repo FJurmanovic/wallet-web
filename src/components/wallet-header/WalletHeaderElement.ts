@@ -1,5 +1,5 @@
 import { attr, controller, target } from '@github/catalyst';
-import { html, TemplateResult } from 'lit-html';
+import { html, TemplateResult } from 'core/utils';
 import { BaseComponentElement } from 'common/';
 import { CircleLoaderElement } from 'components/circle-loader/CircleLoaderElement';
 import { findMethod } from 'core/utils';
@@ -26,13 +26,14 @@ class WalletHeaderElement extends BaseComponentElement {
 		this.update();
 	}
 
-	executeFetch = async (options?): Promise<void> => {
-		const actionString = this.custom;
-		const submitFunc = findMethod(actionString, this.appMain);
+	get submitFunc() {
+		return findMethod(this.custom, this.appMain);
+	}
 
+	executeFetch = async (options?): Promise<void> => {
 		try {
 			this.loader?.start?.();
-			await submitFunc(options);
+			await this.submitFunc(options);
 			this.loader?.stop?.();
 		} catch (err) {
 			this.loader?.stop?.();

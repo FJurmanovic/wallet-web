@@ -1,5 +1,5 @@
 import { controller, target } from '@github/catalyst';
-import { html, TemplateResult, until } from 'lit-html';
+import { html, TemplateResult, until } from 'core/utils';
 import { WalletService } from 'services/';
 import { AppMainElement, WalletHeaderElement } from 'components/';
 import { BasePageElement } from 'common/';

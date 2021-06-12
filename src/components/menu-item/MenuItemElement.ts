@@ -1,5 +1,5 @@
 import { attr, controller, target } from '@github/catalyst';
-import { html, TemplateResult } from 'lit-html';
+import { html, TemplateResult } from 'core/utils';
 import { AppMainElement } from 'components/app-main/AppMainElement';
 import { BaseComponentElement } from 'common/';
 

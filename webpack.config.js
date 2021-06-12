@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require("terser-webpack-plugin");
 const { DefinePlugin } = require('webpack');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const alias = {
 	common: path.resolve(__dirname, '/common'),
@@ -52,7 +53,7 @@ module.exports = (env, args) => {
                 }
             },
             minimize: true,
-            minimizer: [new TerserPlugin()],
+            minimizer: [new TerserPlugin(), new UglifyJsPlugin()],
         },
         output: {
             path: path.join(__dirname, 'public'),

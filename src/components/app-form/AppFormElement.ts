@@ -1,5 +1,5 @@
 import { attr, controller, target } from '@github/catalyst';
-import { html, TemplateResult, unsafeHTML } from 'lit-html';
+import { html, TemplateResult } from 'core/utils';
 import { BaseComponentElement } from 'common/';
 import { AppDropdownElement } from 'components/app-dropdown/AppDropdownElement';
 import { InputFieldElement } from 'components/input-field/InputFieldElement';
@@ -20,6 +20,10 @@ class AppFormElement extends BaseComponentElement {
 		super();
 	}
 
+	get submitFunc() {
+		return findMethod(this.custom, this.appMain);
+	}
+
 	public inputChange = (e) => {
 		this.validate();
 		this.update();
@@ -30,19 +34,19 @@ class AppFormElement extends BaseComponentElement {
 		if (!this.valid) {
 			return;
 		}
-		const actionString = this.custom;
-		const submitFunc = findMethod(actionString, this.appMain);
-		submitFunc?.(this.values);
+		this.submitFunc?.(this.values);
 		return false;
 	};
 
 	public validate = () => {
-		this.isValid = true;
+		const validArr = [];
 		this.inputField?.forEach((input) => {
-			if (input?.error) {
-				this.isValid = false;
-			}
+			validArr.push(input?.validate());
 		});
+		this.appDropdown?.forEach((input) => {
+			validArr.push(input?.validate());
+		});
+		this.isValid = !validArr?.includes(false);
 	};
 
 	public setError = (error) => {
@@ -74,6 +78,19 @@ class AppFormElement extends BaseComponentElement {
 		});
 		return formObject;
 	}
+
+	getInput = (name: string): InputFieldElement | AppDropdownElement => {
+		let formObject;
+		this.inputField.forEach((input: InputFieldElement) => {
+			const inputType = input;
+			if (inputType.name === name) formObject = inputType;
+		});
+		this.appDropdown.forEach((input: AppDropdownElement) => {
+			const inputType = input;
+			if (inputType.name === name) formObject = inputType;
+		});
+		return formObject;
+	};
 
 	get valid() {
 		let _valid = 0;

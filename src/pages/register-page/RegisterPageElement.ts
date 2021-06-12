@@ -1,12 +1,13 @@
-import { targets, controller } from '@github/catalyst';
-import { html, TemplateResult } from 'lit-html';
+import { targets, controller, target } from '@github/catalyst';
+import { html, TemplateResult } from 'core/utils';
 import { AuthService } from 'services/';
-import { InputFieldElement } from 'components/';
+import { AppFormElement, InputFieldElement } from 'components/';
 import { BasePageElement } from 'common/';
 
 @controller
 class RegisterPageElement extends BasePageElement {
 	@targets inputs: Array<InputFieldElement>;
+	@target appForm: AppFormElement;
 	authService: AuthService;
 	constructor() {
 		super({
@@ -37,7 +38,17 @@ class RegisterPageElement extends BasePageElement {
 			if (response?.id) {
 				this.appMain.routerService.goTo('/login');
 			}
-		} catch (err) {}
+		} catch (err) {
+			if (err?.errorCode == 400103) {
+				this.appForm?.getInput('email')?.setError(err?.message);
+				this.appForm?.getInput('email')?.update();
+			} else if (err?.errorCode == 400104) {
+				this.appForm?.getInput('password')?.setError(err?.message);
+				this.appForm?.getInput('password')?.update();
+			} else {
+				this.appForm?.setError('Unable to log in!');
+			}
+		}
 	};
 
 	validate(): boolean {
@@ -51,7 +62,7 @@ class RegisterPageElement extends BasePageElement {
 
 	render = (): TemplateResult => {
 		return html`
-			<app-form data-custom="register-page#onSubmit" data-has-cancel="true">
+			<app-form data-custom="register-page#onSubmit" data-has-cancel="true" data-target="register-page.appForm">
 				<input-field
 					data-type="text"
 					data-name="username"
@@ -64,7 +75,7 @@ class RegisterPageElement extends BasePageElement {
 					data-name="email"
 					data-label="E-mail"
 					data-targets="register-page.inputs"
-					data-rules="required|isEmail"
+					data-rules="required|is_email"
 				></input-field>
 				<input-field
 					data-type="password"
@@ -74,6 +85,13 @@ class RegisterPageElement extends BasePageElement {
 					data-rules="required"
 				>
 				</input-field>
+				<input-field
+					data-type="password"
+					data-name="confirmpassword"
+					data-label="Confirm Password"
+					data-targets="register-page.inputs"
+					data-rules="required|is_same[field(password)]"
+				>
 			</app-form>
 		`;
 	};

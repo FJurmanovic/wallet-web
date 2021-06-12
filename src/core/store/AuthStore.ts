@@ -23,7 +23,6 @@ class AuthStore {
 	set token(token: string) {
 		const { _token } = this;
 		const _changed = token != _token;
-		console.log(token);
 		if (_changed) {
 			this._token = token;
 			localStorage.setItem('token', token);

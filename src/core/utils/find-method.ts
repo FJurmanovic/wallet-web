@@ -1,7 +1,7 @@
 import { AppMainElement } from 'components/';
 
 export default function findMethod(actionString: string, appMain: AppMainElement): Function {
-	if (actionString) {
+	if (actionString && appMain) {
 		const methodSep = actionString.lastIndexOf('#');
 		const tag = actionString.slice(0, methodSep);
 		const method = actionString.slice(methodSep + 1);

@@ -1,5 +1,5 @@
 import { attr, controller, target } from '@github/catalyst';
-import { html, TemplateResult } from 'lit-html';
+import { html, TemplateResult } from 'core/utils';
 import { BaseComponentElement } from 'common/';
 import { CircleLoaderElement } from 'components/circle-loader/CircleLoaderElement';
 

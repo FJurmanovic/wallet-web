@@ -1,4 +1,4 @@
-import { html, render, TemplateResult } from 'lit-html';
+import { html, render, TemplateResult } from 'core/utils';
 import { AppLoaderElement, AppMainElement, AppModalElement, AppRootElement } from 'components/';
 import { AppService, RouterService } from 'core/services';
 import { AuthStore } from 'core/store';
@@ -71,7 +71,7 @@ class BaseElement extends HTMLElement {
 		});
 	};
 
-	render = (): TemplateResult | Temp => {
+	render = (): TemplateResult => {
 		return html``;
 	};
 

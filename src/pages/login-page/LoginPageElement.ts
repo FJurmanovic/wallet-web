@@ -1,6 +1,6 @@
 import { targets, controller, target } from '@github/catalyst';
-//import { html, TemplateResult } from "lit-html";
-import { html, render, TemplateResult } from 'lit-html';
+//import { html, TemplateResult } from "core/utils";
+import { html, render, TemplateResult } from 'core/utils';
 import { AuthService } from 'services/';
 import { AppFormElement, InputFieldElement } from 'components/';
 import { RouterService } from 'core/services';
@@ -58,10 +58,10 @@ class LoginPageElement extends BasePageElement {
 			}
 		} catch (err) {
 			if (err?.errorCode == 400103) {
-				this.emailInput.error = err?.message;
+				this.emailInput.setError(err?.message);
 				this.emailInput.update();
 			} else if (err?.errorCode == 400104) {
-				this.passwordInput.error = err?.message;
+				this.passwordInput.setError(err?.message);
 				this.passwordInput.update();
 			} else {
 				this.appForm?.setError('Unable to log in!');
@@ -86,7 +86,7 @@ class LoginPageElement extends BasePageElement {
 					data-name="email"
 					data-label="E-mail"
 					data-targets="login-page.inputs"
-					data-rules="required|isEmail"
+					data-rules="required|is_email"
 				></input-field>
 				<input-field
 					data-type="password"

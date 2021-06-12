@@ -1,5 +1,5 @@
 import { controller, target } from '@github/catalyst';
-import { html, TemplateResult } from 'lit-html';
+import { html, TemplateResult } from 'core/utils';
 import { BaseComponentElement } from 'common/';
 import { AppMainElement } from 'components/app-main/AppMainElement';
 import { MenuItemElement } from 'components/menu-item/MenuItemElement';
@@ -78,7 +78,7 @@ class AppMenuElement extends BaseComponentElement {
 		}
 	};
 
-	modalTransaction = (): void => {
+	modalTransaction = (s): void => {
 		const _modal = this.appMain.appModal;
 		if (_modal) {
 			this.appMain.closeModal();
