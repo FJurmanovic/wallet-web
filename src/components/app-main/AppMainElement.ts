@@ -4,6 +4,7 @@ import { AuthStore } from 'core/store';
 import { AppModalElement, AppRootElement } from 'components/';
 import { closest } from 'core/utils';
 import { AppLoaderElement } from 'components/app-loader/AppLoaderElement';
+import { ToastPortalElement } from 'components/toast-portal/ToastPortalElement';
 
 @controller
 class AppMainElement extends HTMLElement {
@@ -11,9 +12,11 @@ class AppMainElement extends HTMLElement {
 	public authStore: AuthStore;
 	private httpClient: HttpClient;
 	public appService: AppService;
+	public shadow: any;
 	@target appModal: AppModalElement;
 	@target mainRoot: AppRootElement;
 	@target appLoader: AppLoaderElement;
+	@target toastPortal;
 	@closest appMain: AppMainElement;
 	public domEvents: any = {
 		routechanged: new Event('routechanged'),
@@ -148,7 +151,7 @@ class AppMainElement extends HTMLElement {
 		const _divEl = document.createElement('div');
 		_modalElement.setAttribute('data-target', 'app-modal.modalElement');
 		_divEl.setAttribute('data-target', 'app-modal.modalContent');
-		_divEl.setAttribute('data-action', 'click:app-main#preventClosing');
+		//_divEl.setAttribute('data-action', 'click:app-main#preventClosing');
 		_divEl.appendChild(_modalElement);
 		return _divEl;
 	};
@@ -168,12 +171,36 @@ class AppMainElement extends HTMLElement {
 		return _mainRoot;
 	};
 
-	preventClosing = (e: Event) => {
-		e.stopPropagation();
+	private createToastPortal = () => {
+		const _toastPortal = document.createElement('toast-portal');
+		_toastPortal.setAttribute('data-target', 'app-main.toastPortal');
+		this.appendChild(_toastPortal);
+		return _toastPortal;
 	};
 
-	closeModal = () => {
-		if (this.appModal) this.removeChild(this.appModal);
+	removeToastPortal = () => {
+		if (this.toastPortal) this.removeChild(this.toastPortal);
+	};
+
+	pushToast = (type, message) => {
+		const toastPortal: ToastPortalElement = this.toastPortal
+			? this.toastPortal
+			: this.appendChild(this.createToastPortal());
+		toastPortal?.pushToast(type, message);
+	};
+
+	closeModal = (e?) => {
+		const selector = "[data-target='app-modal.modalContent']";
+		if (this.appModal) {
+			if (e?.target) {
+				if (e?.target?.closest(selector)) return;
+				if (e?.target?.closest('app-main')) {
+					this.removeChild(this.appModal);
+				}
+			} else {
+				this.removeChild(this.appModal);
+			}
+		}
 		this.appMain.removeEventListener('routechanged', this.closeModal);
 	};
 

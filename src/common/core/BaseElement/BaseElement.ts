@@ -8,7 +8,7 @@ class BaseElement extends HTMLElement {
 	@closest appMain: AppMainElement;
 	private _appMain: AppMainElement;
 	public loader: Loader;
-	private elementDisconnectCallbacks: Array<Function> = [];
+	public elementDisconnectCallbacks: Array<Function> = [];
 	constructor() {
 		super();
 		this.connectedCallback = this.connectedCallback.bind(this);

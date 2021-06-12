@@ -46,12 +46,24 @@ class AppDropdownElement extends BaseComponentElement {
 		this.validator = new Validator(this, this.appForm, this.rules);
 		this.randId = `${name}${randomId()}`;
 		this.update();
+		this.appMain.addEventListener('click', this.outsideClick);
+		this.elementDisconnectCallbacks.push((appMain) => {
+			console.log('oslo');
+			appMain.removeEventListener('click', this.outsideClick);
+		});
 
 		const options = {
 			rpp: this.rpp,
 			page: this.page,
 		};
 		this.getItems(options);
+	};
+
+	elementDisconnected = (): void => {};
+
+	outsideClick = (e) => {
+		console.log(e.target);
+		this.closeDropdown(e);
 	};
 
 	attributeChangedCallback(): void {
@@ -135,8 +147,14 @@ class AppDropdownElement extends BaseComponentElement {
 		this.isOpen = isOpen;
 	};
 
-	openDropdown = () => {
+	openDropdown = (e?) => {
+		if (e?.target?.closest('app-dropdown > .dropdown-custom')?.randId == this.randId) return;
 		this.setOpen(true);
+	};
+
+	closeDropdown = (e?) => {
+		if (e?.target?.closest('app-dropdown')?.randId == this.randId) return;
+		this.setOpen(false);
 	};
 
 	stopPropagation = (e) => {
@@ -179,9 +197,9 @@ class AppDropdownElement extends BaseComponentElement {
 
 		return html`
 			<div>
-				<label app-action="click:app-dropdown#openDropdown">
+				<label>
 					${label ? html`<div>${label}</div>` : html``}
-					<div class="dropdown-custom" app-action="click:app-dropdown#stopPropagation">
+					<div class="dropdown-custom">
 						<div class="dropdown-custom-top${isOpen ? ' --open' : ''}" app-action="click:app-dropdown#toggleDropdown">
 							<span class="dropdown-custom-fieldname">${selectedItem ? selectedItem[displaykey] : 'Select'}</span>
 						</div>

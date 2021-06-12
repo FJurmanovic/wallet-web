@@ -1,4 +1,5 @@
 import { controller } from '@github/catalyst';
+import { AppMainElement } from 'components/app-main/AppMainElement';
 import style from 'styles/main.scss';
 
 (function () {
@@ -14,6 +15,7 @@ import style from 'styles/main.scss';
 		connectedCallback() {
 			const _root = _shadow.get(this);
 			const _appMain = document.createElement('app-main');
+			(_appMain as AppMainElement).shadow = _root;
 			const _style = document.createElement('style');
 			_style.innerHTML = style;
 

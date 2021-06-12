@@ -1,0 +1,29 @@
+toast-portal {
+	.toast-portal {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 2500;
+		overflow: visible;
+		pointer-events: none;
+		background: none !important;
+		.toast-list {
+			position: absolute;
+			top: 5px;
+			right: 7px;
+			.toast {
+				&.--default {
+					position: relative;
+					width: 200px;
+					height: 40px;
+					background-color: $gray-07;
+					border: 1px solid $gray-08;
+					border-radius: 4px;
+                    
+				}
+			}
+		}
+	}
+}
