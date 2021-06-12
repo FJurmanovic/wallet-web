@@ -14,14 +14,19 @@ toast-portal {
 			top: 5px;
 			right: 7px;
 			.toast {
+				position: relative;
+				width: 200px;
+				height: 40px;
+				border-radius: 4px;
+				margin: 4px 3px;
+				padding: 2px 3px;
+				display: flex;
+				align-items: center;
 				&.--default {
-					position: relative;
-					width: 200px;
-					height: 40px;
 					background-color: $gray-07;
 					border: 1px solid $gray-08;
-					border-radius: 4px;
-                    
+				}
+				.toast-text {
 				}
 			}
 		}

@@ -1,20 +1,33 @@
-const Timer = function (callback, delay, ...args) {
-	var timerId,
-		start,
-		remaining = delay;
+class Timer {
+	private timerId: number;
+	private start: number;
+	private remaining: number;
+	private args: any;
+	constructor(private callback: () => any, private delay: number, ...args) {
+		this.remaining = delay;
+		this.args = args;
+		this.resume();
+	}
 
-	this.pause = function () {
-		window.clearTimeout(timerId);
-		remaining -= Date.now() - start;
+	pause = () => {
+		window.clearTimeout(this.timerId);
+		this.remaining -= Date.now() - this.start;
 	};
 
-	this.resume = function () {
-		start = Date.now();
-		window.clearTimeout(timerId);
-		timerId = window.setTimeout(callback, remaining, ...args);
+	resume = () => {
+		this.start = Date.now();
+		window.clearTimeout(this.timerId);
+		console.log(this.remaining);
+		this.timerId = window.setTimeout(this.callback, this.remaining, ...this.args);
 	};
 
-	this.resume();
-};
+	reset = (pause: boolean = false) => {
+		window.clearTimeout(this.timerId);
+		this.remaining = this.delay;
+		if (!pause) {
+			this.resume();
+		}
+	};
+}
 
 export default Timer;

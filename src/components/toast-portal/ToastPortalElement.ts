@@ -1,11 +1,12 @@
 import { controller, targets } from '@github/catalyst';
-import { delay, html, until } from 'core/utils';
+import { delay, html, Timer } from 'core/utils';
 import { BaseComponentElement } from 'common/';
 
 @controller
 class ToastPortalElement extends BaseComponentElement {
 	@targets toastElement: HTMLElement;
 	toasts: Array<Toast> = [];
+	timer: Timer;
 	constructor() {
 		super();
 	}
@@ -15,11 +16,20 @@ class ToastPortalElement extends BaseComponentElement {
 	};
 
 	pushToast = (type: string, message: string): void => {
+		const toastLen = this.toasts.length;
 		this.toasts = [{ type, message }, ...this.toasts];
-		const interval = setInterval(() => {
-			this.popToast();
-			clearInterval(interval);
-		}, 5000);
+		if (toastLen < 1) {
+			this.timer = new Timer(() => {
+				this.popToast();
+				if (this.toasts.length > 0) {
+					this.timer.reset();
+				}
+			}, 5000);
+		}
+		// const interval = setInterval(() => {
+		// 	this.popToast();
+		// 	clearInterval(interval);
+		// }, 5000);
 		this.update();
 	};
 
@@ -33,7 +43,12 @@ class ToastPortalElement extends BaseComponentElement {
 
 	render = () => {
 		const renderToast = (note: string, type: string) => {
-			const message = () => html` <div class="toast ${type ? `--${type}` : '--default'}">${note}</div> `;
+			const message = () =>
+				html`
+					<div class="toast ${type ? `--${type}` : '--default'}">
+						<span class="toast-text">${note}</span>
+					</div>
+				`;
 			return html`${message()}`;
 		};
 
