@@ -1,135 +1,142 @@
-import { attr, controller, target } from "@github/catalyst";
-import { html, TemplateResult, unsafeHTML } from "@github/jtml";
-import { BaseComponentElement } from "common/";
-import { AppDropdownElement } from "components/app-dropdown/AppDropdownElement";
-import { InputFieldElement } from "components/input-field/InputFieldElement";
-import { findMethod, isTrue, querys } from "core/utils";
+import { attr, controller, target } from '@github/catalyst';
+import { html, TemplateResult } from 'core/utils';
+import { BaseComponentElement } from 'common/';
+import { AppDropdownElement } from 'components/app-dropdown/AppDropdownElement';
+import { InputFieldElement } from 'components/input-field/InputFieldElement';
+import { findMethod, isTrue, querys } from 'core/utils';
 
 @controller
 class AppFormElement extends BaseComponentElement {
-    @target formElement: HTMLElement;
-    @target innerSlot: HTMLElement;
-    @querys inputField: NodeListOf<InputFieldElement>;
-    @querys appDropdown: NodeListOf<AppDropdownElement>;
-    @attr custom: string;
-    @attr hasCancel: string;
-    slotted: any;
-    isValid: boolean = false;
-    error: string;
-    constructor() {
-        super();
-    }
+	@target formElement: HTMLElement;
+	@target innerSlot: HTMLElement;
+	@querys inputField: NodeListOf<InputFieldElement>;
+	@querys appDropdown: NodeListOf<AppDropdownElement>;
+	@attr custom: string;
+	@attr hasCancel: string;
+	slotted: any;
+	isValid: boolean = false;
+	error: string;
+	constructor() {
+		super();
+	}
 
-    public inputChange = (e) => {
-        this.validate();
-        this.update();
-    };
+	get submitFunc() {
+		return findMethod(this.custom, this.appMain);
+	}
 
-    public onSubmit = (e) => {
-        e.preventDefault();
-        if (!this.valid) {
-            return;
-        }
-        const actionString = this.custom;
-        const submitFunc = findMethod(actionString, this.appMain);
-        submitFunc?.(this.values);
-        return false;
-    };
+	public inputChange = (e) => {
+		this.validate();
+		this.update();
+	};
 
-    public validate = () => {
-        this.isValid = true;
-        this.inputField?.forEach((input) => {
-            if (input?.error) {
-                this.isValid = false;
-            }
-        });
-    };
+	public onSubmit = (e) => {
+		e.preventDefault();
+		if (!this.valid) {
+			return;
+		}
+		this.submitFunc?.(this.values);
+		return false;
+	};
 
-    public setError = (error) => {
-        this.error = error;
-        this.update();
-    };
+	public validate = () => {
+		const validArr = [];
+		this.inputField?.forEach((input) => {
+			validArr.push(input?.validate());
+		});
+		this.appDropdown?.forEach((input) => {
+			validArr.push(input?.validate());
+		});
+		this.isValid = !validArr?.includes(false);
+	};
 
-    public goBack = (e) => {
-        e.preventDefault();
+	public setError = (error) => {
+		this.error = error;
+		this.update();
+	};
 
-        if (this.appMain?.appModal) {
-            this.appMain?.closeModal?.();
-        } else if (this.routerService?.canGoBack) {
-            this.routerService?.goBack();
-        } else {
-            this.routerService?.goTo("/");
-        }
-    };
+	public goBack = (e) => {
+		e.preventDefault();
 
-    get values(): any {
-        const formObject: any = {};
-        this.inputField.forEach((input: InputFieldElement) => {
-            formObject[input.name] = input._value;
-        });
-        this.appDropdown?.forEach((input: AppDropdownElement) => {
-            if (input.required && input.value) {
-                formObject[input.name] = input._value;
-            }
-        });
-        return formObject;
-    }
+		if (this.appMain?.appModal) {
+			this.appMain?.closeModal?.();
+		} else if (this.routerService?.canGoBack) {
+			this.routerService?.goBack();
+		} else {
+			this.routerService?.goTo('/');
+		}
+	};
 
-    get valid() {
-        let _valid = 0;
-        this.inputField?.forEach((input) => {
-            if (input.required && (input.inp as HTMLSelectElement).value) {
-                _valid++;
-            }
-        });
-        return _valid == this.inputField?.length;
-    }
+	get values(): any {
+		const formObject: any = {};
+		this.inputField.forEach((input: InputFieldElement) => {
+			formObject[input.name] = input._value;
+		});
+		this.appDropdown?.forEach((input: AppDropdownElement) => {
+			if (input.required && input.value) {
+				formObject[input.name] = input._value;
+			}
+		});
+		return formObject;
+	}
 
-    elementConnected = (): void => {
-        const _template = document.createElement("template");
-        const _slot = this.innerHTML;
-        _template.innerHTML = _slot;
-        this.innerHTML = null;
-        this.update();
+	getInput = (name: string): InputFieldElement | AppDropdownElement => {
+		let formObject;
+		this.inputField.forEach((input: InputFieldElement) => {
+			const inputType = input;
+			if (inputType.name === name) formObject = inputType;
+		});
+		this.appDropdown.forEach((input: AppDropdownElement) => {
+			const inputType = input;
+			if (inputType.name === name) formObject = inputType;
+		});
+		return formObject;
+	};
 
-        this.formElement.replaceChild(_template.content, this.innerSlot);
-    };
+	get valid() {
+		let _valid = 0;
+		this.inputField?.forEach((input) => {
+			if (input.required && (input.inp as HTMLSelectElement).value) {
+				_valid++;
+			}
+		});
+		return _valid == this.inputField?.length;
+	}
 
-    render = (): TemplateResult => {
-        const renderSubmit = (valid: boolean) => {
-            if (!valid) {
-                return html` <button type="submit" disabled>Submit</button> `;
-            }
-            return html` <button type="submit">Submit</button> `;
-        };
-        const renderError = (error: string) => {
-            if (error) {
-                return html`<span>${error}</span>`;
-            }
-            return html``;
-        };
-        const renderCancel = (hasCancel: boolean) => {
-            if (hasCancel) {
-                return html`<button
-                    type="button"
-                    app-action="click:app-form#goBack"
-                >
-                    Cancel
-                </button>`;
-            }
-            return html``;
-        };
+	elementConnected = (): void => {
+		const _template = document.createElement('template');
+		const _slot = this.innerHTML;
+		_template.innerHTML = _slot;
+		this.innerHTML = null;
+		this.update();
 
-        return html`<form
-            app-action="submit:app-form#onSubmit"
-            data-target="app-form.formElement"
-        >
-            <slot data-target="app-form.innerSlot"></slot>
-            ${renderError(this.error)}${renderSubmit(
-                this.isValid
-            )}${renderCancel(isTrue(this.hasCancel))}
-        </form>`;
-    };
+		this.formElement.replaceChild(_template.content, this.innerSlot);
+	};
+
+	render = (): TemplateResult => {
+		const renderSubmit = (valid: boolean) => {
+			if (!valid) {
+				return html` <button type="submit" disabled>Submit</button> `;
+			}
+			return html` <button type="submit">Submit</button> `;
+		};
+		const renderError = (error: string) => {
+			if (error) {
+				return html`<span>${error}</span>`;
+			}
+			return html``;
+		};
+		const renderCancel = (hasCancel: boolean) => {
+			if (hasCancel) {
+				return html`<button type="button" app-action="click:app-form#goBack">Cancel</button>`;
+			}
+			return html``;
+		};
+
+		return html`<form app-action="submit:app-form#onSubmit" data-target="app-form.formElement">
+			<slot data-target="app-form.innerSlot"></slot>
+			${renderError(this.error)}${renderSubmit(this.isValid)}${renderCancel(isTrue(this.hasCancel))}
+		</form>`;
+	};
 }
 
 export type { AppFormElement };

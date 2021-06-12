@@ -1,14 +1,14 @@
-import { controller, target } from "@github/catalyst";
-import { BaseComponentElement } from "common/";
+import { controller, target } from '@github/catalyst';
+import { BaseComponentElement } from 'common/';
 
 @controller
 class AppModalElement extends BaseComponentElement {
-    @target modalElement: HTMLElement;
-    constructor() {
-        super();
-    }
+	@target modalElement: HTMLElement;
+	constructor() {
+		super();
+	}
 
-    elementConnected = (): void => {};
+	elementConnected = (): void => {};
 }
 
 export type { AppModalElement };
