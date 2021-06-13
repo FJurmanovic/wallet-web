@@ -54,9 +54,15 @@ module.exports = (env, args) => {
                         maxSize: 400000
                     },
                 }
-            },
-            minimize: true,
-            minimizer: [new TerserPlugin(), new UglifyJsPlugin()],
+            },    
+            minimizer: [
+                new UglifyJsPlugin({
+                    uglifyOptions: {
+                        keep_classnames: true,
+                        keep_fnames: true,
+                    }
+                })
+            ]
         },
         output: {
             path: path.join(__dirname, 'public'),
