@@ -79,9 +79,9 @@ class InputFieldElement extends BaseComponentElement {
 			return html``;
 		};
 
-		const renderError = (displayError: boolean, error: string) => {
-			if (displayError) {
-				return html`<span>${error}</span>`;
+		const renderError = (error: string) => {
+			if (error) {
+				return html`<div class="input-error"><span>${error}</span></div>`;
 			}
 			return html``;
 		};
@@ -90,6 +90,7 @@ class InputFieldElement extends BaseComponentElement {
 			return html` <input
 				type="${this.type}"
 				data-target="input-field.inp"
+				id="${this.randId}"
 				app-action="
                     input:input-field#inputChange
                     blur:input-field#validateDisplay
@@ -98,7 +99,7 @@ class InputFieldElement extends BaseComponentElement {
 		};
 
 		return html`<div class="input-main" data-target="input-field.main">
-			${renderMessage(this.label)} ${renderInput(this.type)} ${renderError(this.displayError, this.error)}
+			${renderMessage(this.label)}${renderError(this.error)} ${renderInput(this.type)}
 		</div>`;
 	};
 }

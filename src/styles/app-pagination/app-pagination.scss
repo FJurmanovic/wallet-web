@@ -67,9 +67,19 @@ app-pagination {
 				position: relative;
 				height: 33px;
 				margin-bottom: 7px;
+				.--total {
+					position: absolute;
+					left: 7px;
+					bottom: 9px;
+					color: $gray-05;
+				}
 				.--footer {
 					position: absolute;
 					right: 7px;
+					.--pages {
+						margin-right: 7px;
+						color: $gray-05;
+					}
 				}
 			}
 		}

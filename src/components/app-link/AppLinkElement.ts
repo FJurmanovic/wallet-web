@@ -52,9 +52,14 @@ class AppLinkElement extends BaseComponentElement {
 
 	render = (): TemplateResult => {
 		return html`${this.disabled
-			? html`<a class="btn btn-link btn-disabled" data-target="app-link.main" style="color:grey">${this.title}</a>`
+			? html`<a
+					class="btn btn-link btn-disabled${this.className ? ` ${this.className}` : ''}"
+					data-target="app-link.main"
+					style="color:grey"
+					>${this.title}</a
+			  >`
 			: html`<a
-					class="btn btn-link"
+					class="btn btn-link${this.className ? ` ${this.className}` : ''}"
 					data-target="app-link.main"
 					app-action="click:app-link#goTo"
 					href="${this.to}"

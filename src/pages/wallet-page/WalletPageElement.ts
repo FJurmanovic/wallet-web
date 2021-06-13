@@ -114,8 +114,10 @@ class WalletPageElement extends BasePageElement {
 		const renderWallet = () => {
 			if (this.routerService?.routerState?.data?.walletId) {
 				return html`<div class="wallet-buttons">
-					<button class="btn btn-squared btn-red" app-action="click:wallet-page#newExpense">New Expense</button>
-					<button class="btn btn-squared btn-green" app-action="click:wallet-page#newGain">New Gain</button>
+					<div class="button-group">
+						<button class="btn btn-squared btn-red" app-action="click:wallet-page#newExpense">New Expense</button>
+						<button class="btn btn-squared btn-green" app-action="click:wallet-page#newGain">New Gain</button>
+					</div>
 				</div>`;
 			}
 			return html``;

@@ -75,7 +75,6 @@ class AppMenuElement extends BaseComponentElement {
 			this.appMain.closeModal();
 		} else {
 			this.appMain.createModal('wallet-create');
-			this.appMain.pushToast(null, 'Da');
 		}
 	};
 

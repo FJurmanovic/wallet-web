@@ -3,6 +3,7 @@ wallet-header {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
 		justify-items: center;
+		margin: 32px 0;
 		gap: 15px 10px;
 		.header-item {
 			display: inline;
@@ -40,5 +41,15 @@ wallet-header {
 				}
 			}
 		}
+	}
+}
+
+.wallet-buttons {
+	position: relative;
+	height: 42px;
+	.button-group {
+		position: absolute;
+		top: 5px;
+		right: 0;
 	}
 }

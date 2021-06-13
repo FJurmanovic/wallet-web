@@ -42,18 +42,8 @@ class HomePageElement extends BasePageElement {
 		this.walletHeader.nextMonth = header.nextMonth || '0';
 	};
 
-	openModal = (): void => {
-		const _modal = this.appMain.appModal;
-		if (_modal) {
-			this.appMain.closeModal();
-		} else {
-			this.appMain.createModal('wallet-create');
-		}
-	};
-
 	render = (): TemplateResult => {
 		return html`
-			<button app-action="click:home-page#openModal">New Wallet</button>
 			<wallet-header
 				data-target="home-page.walletHeader"
 				data-current-balance="0"

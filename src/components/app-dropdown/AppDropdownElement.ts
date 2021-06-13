@@ -143,6 +143,10 @@ class AppDropdownElement extends BaseComponentElement {
 
 	setOpen = (isOpen) => {
 		this.isOpen = isOpen;
+		if (!isOpen) {
+			this.validate();
+			this.update();
+		}
 	};
 
 	openDropdown = (e?) => {
@@ -152,6 +156,7 @@ class AppDropdownElement extends BaseComponentElement {
 
 	closeDropdown = (e?) => {
 		if (e?.target?.closest('app-dropdown')?.randId == this.randId) return;
+		if (!this.isOpen) return;
 		this.setOpen(false);
 	};
 
@@ -166,8 +171,8 @@ class AppDropdownElement extends BaseComponentElement {
 
 	itemSelected = (e) => {
 		const value = (e.target as HTMLSpanElement).getAttribute('data-value');
-		this.setOpen(false);
 		this.setValue(value);
+		this.setOpen(false);
 		this.appForm?.inputChange(e);
 	};
 
@@ -178,6 +183,20 @@ class AppDropdownElement extends BaseComponentElement {
 
 	render = () => {
 		const { label, error, errorMessage, isOpen, searchPhrase, items, selectedItem, displaykey, valuekey } = this;
+
+		const renderMessage = (label: string) => {
+			if (label) {
+				return html`<label app-action="click:app-dropdown#openDropdown">${label}${this.required ? ' (*)' : ''}</label>`;
+			}
+			return html``;
+		};
+
+		const renderError = (error: string) => {
+			if (error) {
+				return html`<div class="input-error"><span>${error}</span></div>`;
+			}
+			return html``;
+		};
 
 		const renderItem = (item) => {
 			return html` <li
@@ -194,32 +213,30 @@ class AppDropdownElement extends BaseComponentElement {
 		};
 
 		return html`
-			<div>
-				<label>
-					${label ? html`<div>${label}</div>` : html``}
-					<div class="dropdown-custom">
-						<div class="dropdown-custom-top${isOpen ? ' --open' : ''}" app-action="click:app-dropdown#toggleDropdown">
-							<span class="dropdown-custom-fieldname">${selectedItem ? selectedItem[displaykey] : 'Select'}</span>
-						</div>
-						${isOpen
-							? html`
-									<div class="dropdown-custom-open" data-target="app-dropdown.dropdowncontainer">
-										<input
-											class="dropdown-custom-search"
-											type="text"
-											value="${searchPhrase || ''}"
-											app-action="input:app-dropdown#phraseChange"
-											autofocus
-										/>
-										<ul class="dropdown-custom-list">
-											${renderItems(items)}
-										</ul>
-									</div>
-							  `
-							: html``}
+			<div class="app-dropdown">
+				${renderMessage(this.label)} ${renderError(this.error)}
+				<div class="dropdown-custom">
+					<div class="dropdown-custom-top${isOpen ? ' --open' : ''}" app-action="click:app-dropdown#toggleDropdown">
+						<span class="dropdown-custom-fieldname">${selectedItem ? selectedItem[displaykey] : 'Select'}</span>
 					</div>
-					${error ? html` <div class="h5 text-red">${errorMessage}</div>` : html``}
-				</label>
+					${isOpen
+						? html`
+								<div class="dropdown-custom-open" data-target="app-dropdown.dropdowncontainer">
+									<input
+										class="dropdown-custom-search"
+										type="text"
+										value="${searchPhrase || ''}"
+										id="${this.randId}"
+										app-action="input:app-dropdown#phraseChange"
+										autofocus
+									/>
+									<ul class="dropdown-custom-list">
+										${renderItems(items)}
+									</ul>
+								</div>
+						  `
+						: html``}
+				</div>
 			</div>
 		`;
 	};

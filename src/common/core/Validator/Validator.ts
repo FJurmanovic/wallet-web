@@ -12,7 +12,7 @@ class Validator {
 	}
 
 	get name() {
-		return this.input?.name;
+		return this.input?.label ? this.input?.label : this.input?.name;
 	}
 
 	get error() {
@@ -69,13 +69,17 @@ class Validator {
 					}
 				}
 				if (!valid) {
-					const error = validatorErrors[rule]?.replaceAll('{- name}', firstUpper(this.name?.toString()));
-					this.error = ruleArray ? validRule?.[1]?.replaceAll('{- name}', firstUpper(this.name?.toString())) : error;
+					const error = ruleArray
+						? validRule?.[1]?.replaceAll('{- name}', firstUpper(this.name?.toString()))
+						: validatorErrors[rule]?.replaceAll('{- name}', firstUpper(this.name?.toString()));
+					if (error) {
+						this.error = error;
+					}
 				}
 				return valid;
 			});
 		const _return = validArr?.includes(false);
-		if (_return) {
+		if (!_return) {
 			this.error = null;
 		}
 		this.valid = !_return;

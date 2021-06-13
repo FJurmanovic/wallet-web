@@ -115,9 +115,11 @@ class AppFormElement extends BaseComponentElement {
 	render = (): TemplateResult => {
 		const renderSubmit = (valid: boolean) => {
 			if (!valid) {
-				return html` <button type="submit" disabled>Submit</button> `;
+				return html`
+					<button class="btn btn-squared btn-primary --submit disabled" type="submit" disabled>Submit</button>
+				`;
 			}
-			return html` <button type="submit">Submit</button> `;
+			return html` <button class="btn btn-squared btn-primary --submit" type="submit">Submit</button> `;
 		};
 		const renderError = (error: string) => {
 			if (error) {
@@ -127,15 +129,24 @@ class AppFormElement extends BaseComponentElement {
 		};
 		const renderCancel = (hasCancel: boolean) => {
 			if (hasCancel) {
-				return html`<button type="button" app-action="click:app-form#goBack">Cancel</button>`;
+				return html`<button class="btn btn-squared btn-red --cancel" type="button" app-action="click:app-form#goBack">
+					Cancel
+				</button>`;
 			}
 			return html``;
 		};
 
-		return html`<form app-action="submit:app-form#onSubmit" data-target="app-form.formElement">
-			<slot data-target="app-form.innerSlot"></slot>
-			${renderError(this.error)}${renderSubmit(this.isValid)}${renderCancel(isTrue(this.hasCancel))}
-		</form>`;
+		return html`
+			<div class="app-form">
+				<form app-action="submit:app-form#onSubmit" data-target="app-form.formElement">
+					<slot data-target="app-form.innerSlot"></slot>
+					${renderError(this.error)}
+					<div class="form-buttons">
+						<div class="button-content">${renderSubmit(this.isValid)}${renderCancel(isTrue(this.hasCancel))}</div>
+					</div>
+				</form>
+			</div>
+		`;
 	};
 }
 

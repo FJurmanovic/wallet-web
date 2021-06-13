@@ -96,7 +96,6 @@ class AppPaginationElement extends BaseComponentElement {
 
 	render = (): TemplateResult => {
 		const { rpp, totalItems, page, items } = this;
-		console.log(items);
 
 		const renderItem = this.customRenderItem
 			? this.customRenderItem
@@ -139,7 +138,9 @@ class AppPaginationElement extends BaseComponentElement {
 				const pageRange = Math.ceil(totalItems / rpp);
 				return html`
 					<div class="paginate">
+						<span class="--total">${totalItems} Total Items</span>
 						<div class="--footer">
+							<span class="--pages">Page ${page} of ${pageRange}</span>
 							<button
 								class="btn btn-primary btn-squared ${page <= 1 ? 'disabled' : ''}"
 								app-action="click:app-pagination#pageBack"

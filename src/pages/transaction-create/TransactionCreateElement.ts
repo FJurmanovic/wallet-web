@@ -152,7 +152,6 @@ class TransactionCreateElement extends BasePageElement {
 		};
 
 		return html`
-			<div>Create wallet</div>
 			<app-form
 				data-custom="transaction-create#onSubmit"
 				data-has-cancel="true"

@@ -70,7 +70,6 @@ class WalletCreateElement extends BasePageElement {
 
 	render = (): TemplateResult => {
 		return html`
-			<div>Create wallet</div>
 			<app-form data-custom="wallet-create#onSubmit" data-has-cancel="true">
 				<input-field
 					data-type="text"

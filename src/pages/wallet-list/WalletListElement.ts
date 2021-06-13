@@ -33,15 +33,12 @@ class WalletListElement extends BasePageElement {
 		}
 	};
 
-	renderItem = (item): TemplateResult => html`<tr>
-		<td><app-link data-to="/wallet/${item.id}">${item.name}</app-link></td>
+	renderItem = (item): TemplateResult => html`<tr class="col-1">
+		<td><app-link class="wallet-item" data-to="/wallet/${item.id}">${item.name}</app-link></td>
 	</tr>`;
 
 	render = (): TemplateResult => {
-		return html`
-			<div>Wallets</div>
-			<app-pagination data-target="wallet-list.pagination"></app-pagination>
-		`;
+		return html` <app-pagination data-target="wallet-list.pagination"></app-pagination> `;
 	};
 }
 
