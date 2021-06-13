@@ -20,6 +20,9 @@ module.exports = (env, args) => {
     let settings = {}
     if (env && env.env) {
         switch (env.env) {
+            case "production":
+                settings = require("./src/configs/production/app-settings.json");
+                break;
             case "testing":
                 settings = require("./src/configs/testing/app-settings.json");
                 break;
@@ -28,7 +31,7 @@ module.exports = (env, args) => {
                 settings = require("./src/configs/development/app-settings.json");
         }
     } else {
-                settings = require("./src/configs/development/app-settings.json");
+        settings = require("./src/configs/development/app-settings.json");
     }
     return {
         entry: {
