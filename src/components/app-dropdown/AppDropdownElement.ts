@@ -46,9 +46,8 @@ class AppDropdownElement extends BaseComponentElement {
 		this.validator = new Validator(this, this.appForm, this.rules);
 		this.randId = `${name}${randomId()}`;
 		this.update();
-		this.appMain.addEventListener('click', this.outsideClick);
+		this.appMain?.addEventListener('click', this.outsideClick);
 		this.elementDisconnectCallbacks.push((appMain) => {
-			console.log('oslo');
 			appMain.removeEventListener('click', this.outsideClick);
 		});
 
@@ -62,7 +61,6 @@ class AppDropdownElement extends BaseComponentElement {
 	elementDisconnected = (): void => {};
 
 	outsideClick = (e) => {
-		console.log(e.target);
 		this.closeDropdown(e);
 	};
 
@@ -209,7 +207,7 @@ class AppDropdownElement extends BaseComponentElement {
 										<input
 											class="dropdown-custom-search"
 											type="text"
-											value="${searchPhrase}"
+											value="${searchPhrase || ''}"
 											app-action="input:app-dropdown#phraseChange"
 											autofocus
 										/>

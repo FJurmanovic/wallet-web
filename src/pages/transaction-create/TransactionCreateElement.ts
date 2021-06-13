@@ -1,7 +1,7 @@
-import { targets, controller } from '@github/catalyst';
+import { targets, controller, target } from '@github/catalyst';
 import { html, TemplateResult } from 'core/utils';
-import { AuthService, TransactionsService, WalletService } from 'services/';
-import { InputFieldElement } from 'components/';
+import { AuthService, TransactionsService, TransactionTypeService, WalletService } from 'services/';
+import { AppFormElement, InputFieldElement } from 'components/';
 import { RouterService } from 'core/services';
 import { BasePageElement } from 'common/';
 import { AppDropdownElement } from 'components/app-dropdown/AppDropdownElement';
@@ -9,10 +9,14 @@ import { AppDropdownElement } from 'components/app-dropdown/AppDropdownElement';
 @controller
 class TransactionCreateElement extends BasePageElement {
 	@targets inputs: Array<InputFieldElement | AppDropdownElement>;
+	@target appForm: AppFormElement;
 	private transactionService: TransactionsService;
+	private transactionTypeService: TransactionTypeService;
 	private walletService: WalletService;
+	walletData: any = null;
 	authService: AuthService;
 	errorMessage: string;
+	private initial: boolean = false;
 	constructor() {
 		super({
 			title: 'New Transaction',
@@ -21,8 +25,15 @@ class TransactionCreateElement extends BasePageElement {
 	elementConnected = (): void => {
 		this.walletService = new WalletService(this.appMain?.appService);
 		this.transactionService = new TransactionsService(this.appMain?.appService);
+		this.transactionTypeService = new TransactionTypeService(this.appMain?.appService);
 		this.authService = new AuthService(this.appMain.appService);
+		this.walletData = this.getData();
 		this.update();
+		if (this.walletData && this.walletData.walletId) {
+			this.setTransactionType();
+		} else {
+			this.initial = true;
+		}
 	};
 
 	get nameInput(): InputFieldElement | AppDropdownElement {
@@ -42,9 +53,27 @@ class TransactionCreateElement extends BasePageElement {
 		return formObject;
 	}
 
+	setTransactionType = async () => {
+		this.appForm.isValid = false;
+		try {
+			const response = await this.transactionTypeService.getAll();
+			this.walletData.transactionTypeId = response?.find((type) => type.type == this.walletData.transactionType)?.id;
+		} catch (err) {
+		} finally {
+			this.appForm.isValid = true;
+		}
+	};
+
 	getWallets = async (options): Promise<void> => {
 		try {
 			const response = await this.walletService.getAll(options);
+			return response;
+		} catch (err) {}
+	};
+
+	getTypes = async (options): Promise<void> => {
+		try {
+			const response = await this.transactionTypeService.getAll(options);
 			return response;
 		} catch (err) {}
 	};
@@ -55,20 +84,30 @@ class TransactionCreateElement extends BasePageElement {
 				return;
 			}
 
-			const { description: description, wallet: walletId, amount } = values;
+			const { description: description, wallet: walletId, amount, transactionType: transactionTypeId } = values;
 
-			const response = await this.transactionService.post({
+			const walletData = this.walletData;
+
+			const formData = {
 				description,
-				walletId,
 				amount,
-			});
+				walletId: walletData && walletData.walletId ? walletData.walletId : walletId,
+				transactionTypeId:
+					walletData && walletData.transactionTypeId ? walletData.transactionTypeId : transactionTypeId,
+			};
+			const response = await this.transactionService.post(formData);
 
 			if (response?.id) {
-				this.appMain.triggerWalletUpdate();
+				this.appMain.triggerTransactionUpdate();
 				this.appMain.pushToast('success', 'Transaction created successfully!');
-				this.routerService.goTo('/history', {
-					walletId: response.id,
-				});
+
+				if (walletData.walletId) {
+					this.appMain?.closeModal();
+				} else {
+					this.routerService.goTo('/history', {
+						walletId: response.walletId,
+					});
+				}
 			}
 		} catch (err) {
 			this.errorMessage = 'Unable to create transaction!';
@@ -86,31 +125,55 @@ class TransactionCreateElement extends BasePageElement {
 	}
 
 	render = (): TemplateResult => {
+		const renderInput = (type, name, label, rules, hide?) => {
+			if (hide) {
+				return html``;
+			}
+			return html`<input-field
+				data-type="${type}"
+				data-name="${name}"
+				data-label="${label}"
+				data-targets="transaction-create.inputs"
+				data-rules="${rules}"
+			></input-field>`;
+		};
+
+		const renderDropdown = (fetch, name, label, rules, hide?) => {
+			if (hide) {
+				return html``;
+			}
+			return html`<app-dropdown
+				data-name="${name}"
+				data-label="${label}"
+				data-targets="transaction-create.inputs"
+				data-rules="${rules}"
+				data-fetch="${fetch}"
+			></app-dropdown>`;
+		};
+
 		return html`
 			<div>Create wallet</div>
-			<app-form data-custom="transaction-create#onSubmit" data-has-cancel="true">
-				<input-field
-					data-type="number"
-					data-name="amount"
-					data-label="Amount"
-					data-targets="transaction-create.inputs"
-					data-rules="required"
-				></input-field>
-				<input-field
-					data-type="text"
-					data-name="description"
-					data-label="Description"
-					data-targets="transaction-create.inputs"
-					data-rules="required"
-				></input-field>
-				<app-dropdown
-					data-name="wallet"
-					data-label="Wallet"
-					data-targets="transaction-create.inputs"
-					data-rules="required"
-					data-fetch="transaction-create#getWallets"
-				>
-				</app-dropdown>
+			<app-form
+				data-custom="transaction-create#onSubmit"
+				data-has-cancel="true"
+				data-target="transaction-create.appForm"
+			>
+				${renderInput('number', 'amount', 'Amount', 'required')}
+				${renderInput('text', 'description', 'Description', 'required')}
+				${renderDropdown(
+					'transaction-create#getWallets',
+					'wallet',
+					'Wallet',
+					'required',
+					this.walletData && this.walletData.walletId
+				)}
+				${renderDropdown(
+					'transaction-create#getTypes',
+					'transactionType',
+					'Transaction Type',
+					'required',
+					this.walletData && this.walletData.walletId
+				)}
 				${this.errorMessage ? html`<div>${this.errorMessage}</div>` : html``}
 			</app-form>
 		`;

@@ -17,7 +17,6 @@ class Timer {
 	resume = () => {
 		this.start = Date.now();
 		window.clearTimeout(this.timerId);
-		console.log(this.remaining);
 		this.timerId = window.setTimeout(this.callback, this.remaining, ...this.args);
 	};
 

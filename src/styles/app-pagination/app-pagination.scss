@@ -13,8 +13,28 @@ app-pagination {
 				padding: 4px 12px;
 				border-radius: 4px;
 				display: grid;
-				grid-template-columns: auto 1fr auto;
 				margin: 6px 8px;
+				&.col-3 {
+					grid-template-columns: repeat(3, 1fr);
+				}
+				&.col-2 {
+					grid-template-columns: repeat(2, 1fr);
+				}
+				&.col-1 {
+					grid-template-columns: 1fr;
+				}
+				&.col-4 {
+					grid-template-columns: repeat(4, 1fr);
+				}
+				&.col-5 {
+					grid-template-columns: repeat(5, 1fr);
+				}
+				&.col-6 {
+					grid-template-columns: repeat(6, 1fr);
+				}
+				&.col-transactions {
+					grid-template-columns: auto 1fr auto;
+				}
 				td,
 				th {
 					margin: 0 12px;

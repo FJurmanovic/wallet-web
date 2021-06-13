@@ -7,6 +7,7 @@ class BasePageElement extends BaseElement {
 	public pageTitle: string = '';
 	@attr hidetitle: string;
 	@attr customtitle: string;
+	private _data: any;
 	constructor(options: OptionType) {
 		super();
 		if (options?.title) {
@@ -34,6 +35,14 @@ class BasePageElement extends BaseElement {
 		this.appMain.setTitle(this.pageTitle);
 		super.connectedCallback();
 	}
+
+	setData = (data: any) => {
+		this._data = data;
+	};
+
+	getData = () => {
+		return this._data;
+	};
 }
 
 export default BasePageElement;

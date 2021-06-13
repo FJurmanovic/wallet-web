@@ -19,10 +19,16 @@ class HistoryPageElement extends BasePageElement {
 		this.update();
 		this.pagination?.setFetchFunc?.(this.getTransactions, true)!;
 		this.appMain.addEventListener('tokenchange', this.update);
+		this.appMain.addEventListener('transactionupdate', this.transactionUpdated);
 	};
 
 	elementDisconnected = (appMain: AppMainElement): void => {
 		appMain?.removeEventListener('tokenchange', this.update);
+		appMain?.removeEventListener('transactionupdate', this.transactionUpdated);
+	};
+
+	transactionUpdated = () => {
+		this.pagination?.executeFetch();
 	};
 
 	getTransactions = async (options): Promise<any> => {

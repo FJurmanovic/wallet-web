@@ -5,6 +5,7 @@ import { AppModalElement, AppRootElement } from 'components/';
 import { closest } from 'core/utils';
 import { AppLoaderElement } from 'components/app-loader/AppLoaderElement';
 import { ToastPortalElement } from 'components/toast-portal/ToastPortalElement';
+import { BasePageElement } from 'common/';
 
 @controller
 class AppMainElement extends HTMLElement {
@@ -22,6 +23,7 @@ class AppMainElement extends HTMLElement {
 		routechanged: new Event('routechanged'),
 		tokenchange: new Event('tokenchange'),
 		walletupdate: new Event('walletupdate'),
+		transactionupdate: new Event('transactionupdate'),
 	};
 
 	constructor() {
@@ -112,12 +114,12 @@ class AppMainElement extends HTMLElement {
 		}
 	};
 
-	createModal = (element: string) => {
+	createModal = (element: string, data?: any) => {
 		this.closeModal();
 		this.appMain.addEventListener('routechanged', this.closeModal);
 
 		const _appModal = this.createAppModal();
-		const _modalContent = this.createModalContent(element);
+		const _modalContent = this.createModalContent(element, data);
 		const _modalOverlay = this.createModalOverlay();
 
 		_modalOverlay.appendChild(_modalContent);
@@ -127,6 +129,10 @@ class AppMainElement extends HTMLElement {
 
 	public triggerWalletUpdate = () => {
 		this.dispatchEvent(this.domEvents.walletupdate);
+	};
+
+	public triggerTransactionUpdate = () => {
+		this.dispatchEvent(this.domEvents.transactionupdate);
 	};
 
 	public setTitle = (title: string): void => {
@@ -146,10 +152,11 @@ class AppMainElement extends HTMLElement {
 		this.appendChild(_loader);
 	};
 
-	private createModalContent = (element: string) => {
+	private createModalContent = (element: string, data?: any) => {
 		const _modalElement = document.createElement(element);
 		const _divEl = document.createElement('div');
 		_modalElement.setAttribute('data-target', 'app-modal.modalElement');
+		(_modalElement as BasePageElement).setData({ ...data });
 		_divEl.setAttribute('data-target', 'app-modal.modalContent');
 		//_divEl.setAttribute('data-action', 'click:app-main#preventClosing');
 		_divEl.appendChild(_modalElement);

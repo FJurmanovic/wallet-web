@@ -11,6 +11,7 @@ class AppPaginationElement extends BaseComponentElement {
 	@attr totalItems: number;
 	@attr autoInit: string;
 	@attr tableLayout: string = 'transactions-table';
+	@attr colLayout: string = 'col-transactions';
 	initial: boolean = false;
 
 	private customRenderItems: () => TemplateResult;
@@ -95,14 +96,20 @@ class AppPaginationElement extends BaseComponentElement {
 
 	render = (): TemplateResult => {
 		const { rpp, totalItems, page, items } = this;
+		console.log(items);
 
 		const renderItem = this.customRenderItem
 			? this.customRenderItem
-			: (item, iter) => html`<tr>
+			: (item, iter) => html`<tr class="${this.colLayout ? this.colLayout : ''}">
 					<td class="--left">${iter + 1 + rpp * (page - 1)}</td>
 					<td class="--left">${item.description}</td>
 					<td class="balance-cell --right">
-						<span class="balance ${item.amount > 0 ? '--positive' : '--negative'}">
+						<span
+							class="balance ${item.amount > 0 && item?.transactionType?.type != 'expense'
+								? '--positive'
+								: '--negative'}"
+						>
+							${item?.transactionType?.type == 'expense' ? '- ' : ''}
 							${Number(item.amount).toLocaleString('en-US', {
 								maximumFractionDigits: 2,
 								minimumFractionDigits: 2,
@@ -119,11 +126,11 @@ class AppPaginationElement extends BaseComponentElement {
 						return html``;
 					} else {
 						if (items?.length > 0) {
-							return html`<table class="${this.tableLayout}">
-								${items?.map((item, iter) => renderItem(item, iter))} ${renderPagination()}
-							</table>`;
+							return items?.map((item, iter) => renderItem(item, iter));
 						}
-						return html``;
+						return html`<tr>
+							<td>No data</td>
+						</tr>`;
 					}
 			  };
 
@@ -151,7 +158,11 @@ class AppPaginationElement extends BaseComponentElement {
 			}
 		};
 
-		return html`<div class="app-pagination">${renderItems()}</div>`;
+		return html`<div class="app-pagination">
+			<table class="${this.tableLayout}">
+				${renderItems()} ${renderPagination()}
+			</table>
+		</div>`;
 	};
 }
 

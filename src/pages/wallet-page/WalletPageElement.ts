@@ -29,10 +29,17 @@ class WalletPageElement extends BasePageElement {
 		this.update();
 		this.pagination?.setFetchFunc?.(this.getTransactions, true)!;
 		this.appMain.addEventListener('tokenchange', this.update);
+		this.appMain.addEventListener('transactionupdate', this.transactionUpdated);
 	};
 
 	elementDisconnected = (appMain: AppMainElement): void => {
 		appMain?.removeEventListener('tokenchange', this.update);
+		appMain?.removeEventListener('transactionupdate', this.transactionUpdated);
+	};
+
+	transactionUpdated = () => {
+		this.walletHeader?.executeFetch();
+		this.pagination?.executeFetch();
 	};
 
 	getTransactions = async (options): Promise<any> => {
@@ -43,6 +50,7 @@ class WalletPageElement extends BasePageElement {
 					options['walletId'] = walletId;
 				}
 			}
+			options.embed = 'TransactionType';
 			const response = await this.transactionsService.getAll(options);
 			return response;
 		} catch (err) {
@@ -69,6 +77,30 @@ class WalletPageElement extends BasePageElement {
 		this.walletHeader.nextMonth = header.nextMonth || '0';
 	};
 
+	newExpense = (s): void => {
+		const _modal = this.appMain.appModal;
+		if (_modal) {
+			this.appMain.closeModal();
+		} else {
+			this.appMain.createModal('transaction-create', {
+				walletId: this.routerService?.routerState?.data?.walletId,
+				transactionType: 'expense',
+			});
+		}
+	};
+
+	newGain = (s): void => {
+		const _modal = this.appMain.appModal;
+		if (_modal) {
+			this.appMain.closeModal();
+		} else {
+			this.appMain.createModal('transaction-create', {
+				walletId: this.routerService?.routerState?.data?.walletId,
+				transactionType: 'gain',
+			});
+		}
+	};
+
 	render = (): TemplateResult => {
 		const renderHeader = () => html`<wallet-header
 			data-target="wallet-page.walletHeader"
@@ -81,7 +113,10 @@ class WalletPageElement extends BasePageElement {
 
 		const renderWallet = () => {
 			if (this.routerService?.routerState?.data?.walletId) {
-				return html`<span>${this.routerService?.routerState?.data?.walletId}</span>`;
+				return html`<div class="wallet-buttons">
+					<button class="btn btn-squared btn-red" app-action="click:wallet-page#newExpense">New Expense</button>
+					<button class="btn btn-squared btn-green" app-action="click:wallet-page#newGain">New Gain</button>
+				</div>`;
 			}
 			return html``;
 		};
