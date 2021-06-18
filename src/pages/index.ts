@@ -7,4 +7,5 @@ export * from './history-page/HistoryPageElement';
 export * from './wallet-list/WalletListElement';
 export * from './wallet-create/WalletCreateElement';
 export * from './transaction-create/TransactionCreateElement';
+export * from './subscription-create/SubscriptionCreateElement';
 export * from './wallet-page/WalletPageElement';

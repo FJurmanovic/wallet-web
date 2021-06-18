@@ -101,6 +101,17 @@ class WalletPageElement extends BasePageElement {
 		}
 	};
 
+	newSub = (s): void => {
+		const _modal = this.appMain.appModal;
+		if (_modal) {
+			this.appMain.closeModal();
+		} else {
+			this.appMain.createModal('subscription-create', {
+				walletId: this.routerService?.routerState?.data?.walletId,
+			});
+		}
+	};
+
 	render = (): TemplateResult => {
 		const renderHeader = () => html`<wallet-header
 			data-target="wallet-page.walletHeader"
@@ -115,6 +126,7 @@ class WalletPageElement extends BasePageElement {
 			if (this.routerService?.routerState?.data?.walletId) {
 				return html`<div class="wallet-buttons">
 					<div class="button-group">
+						<button class="btn btn-squared btn-primary" app-action="click:wallet-page#newSub">New Subscription</button>
 						<button class="btn btn-squared btn-red" app-action="click:wallet-page#newExpense">New Expense</button>
 						<button class="btn btn-squared btn-green" app-action="click:wallet-page#newGain">New Gain</button>
 					</div>

@@ -144,6 +144,8 @@ class AppDropdownElement extends BaseComponentElement {
 	setOpen = (isOpen) => {
 		this.isOpen = isOpen;
 		if (!isOpen) {
+			const active = this.appMain.activeElement;
+			if (active.closest('app-link') || active.closest('a') || active.closest('button')) return;
 			this.validate();
 			this.update();
 		}

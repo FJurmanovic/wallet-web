@@ -25,6 +25,7 @@ class AppMainElement extends HTMLElement {
 		walletupdate: new Event('walletupdate'),
 		transactionupdate: new Event('transactionupdate'),
 	};
+	activeElement: HTMLElement = this;
 
 	constructor() {
 		super();
@@ -105,7 +106,24 @@ class AppMainElement extends HTMLElement {
 			},
 		]);
 		this.routerService.init();
+		this.addEventListener('mousedown', this.setActiveElement, false);
+		this.addEventListener('tokenchange', this.closeOffToken);
 	}
+
+	closeOffToken = () => {
+		if (!this.isAuth) {
+			this.closeModal();
+		}
+	};
+
+	disconnectedCallback = () => {
+		this.removeEventListener('mousedown', this.setActiveElement);
+		this.removeEventListener('tokenchange', this.closeOffToken);
+	};
+
+	setActiveElement = (e) => {
+		this.activeElement = e?.target || this;
+	};
 
 	middleAuth = () => {
 		if (!this.isAuth) {

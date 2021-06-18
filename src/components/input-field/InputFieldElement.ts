@@ -58,6 +58,8 @@ class InputFieldElement extends BaseComponentElement {
 	};
 
 	validateDisplay = () => {
+		const active = this.appMain.activeElement;
+		if (active.closest('app-link') || active.closest('a') || active.closest('button')) return;
 		if (!this.validate()) {
 			this.displayError = true;
 		} else {
