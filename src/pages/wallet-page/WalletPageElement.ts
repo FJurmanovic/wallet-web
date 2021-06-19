@@ -51,6 +51,7 @@ class WalletPageElement extends BasePageElement {
 				}
 			}
 			options.embed = 'TransactionType';
+			options.sortBy = 'transactionDate|desc';
 			const response = await this.transactionsService.getAll(options);
 			return response;
 		} catch (err) {
