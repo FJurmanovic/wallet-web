@@ -43,6 +43,14 @@ class SubscriptionCreateElement extends BasePageElement {
 		}
 	};
 
+	get hasEndCheck(): InputFieldElement | AppDropdownElement {
+		for (const i in this.inputs) {
+			if (this.inputs[i]?.name == 'hasEnd') {
+				return this.inputs[i];
+			}
+		}
+	}
+
 	get nameInput(): InputFieldElement | AppDropdownElement {
 		for (const i in this.inputs) {
 			if (this.inputs[i]?.name == 'name') {
@@ -148,10 +156,16 @@ class SubscriptionCreateElement extends BasePageElement {
 		return _return;
 	}
 
-	render = (): TemplateResult => {
-		const renderInput = (type, name, label, rules, hide?) => {
+	onCheck = () => {
+		this.appForm.update();
+		this.appForm.validate();
+		this.appForm.update();
+	};
+
+	renderForms = () => {
+		const renderInput = (type, name, label, rules, hide?, customAction?) => {
 			if (hide) {
-				return html``;
+				return null;
 			}
 			return html`<input-field
 				data-type="${type}"
@@ -159,6 +173,7 @@ class SubscriptionCreateElement extends BasePageElement {
 				data-label="${label}"
 				data-targets="subscription-create.inputs"
 				data-rules="${rules}"
+				data-custom-action="${customAction || ''}"
 			></input-field>`;
 		};
 
@@ -174,26 +189,41 @@ class SubscriptionCreateElement extends BasePageElement {
 				data-fetch="${fetch}"
 			></app-dropdown>`;
 		};
+		return html`
+				<div slot="inputs">
+					${renderInput('number', 'amount', 'Amount', 'required')}
+					${renderInput('text', 'description', 'Description', 'required')}
+					${renderInput('date', 'startDate', 'Start date', 'required')}
+					${renderInput('checkbox', 'hasEnd', 'Existing End Date', '', false, 'change:subscription-create#onCheck')}
+					${renderInput(
+						'date',
+						'endDate',
+						'End date',
+						'required|is_after[field(startDate)]',
+						!(this.hasEndCheck?.inp as HTMLInputElement)?.checked
+					)}
+					${renderDropdown(
+						'subscription-create#getWallets',
+						'wallet',
+						'Wallet',
+						'required',
+						this.walletData && this.walletData.walletId
+					)}
+					${renderDropdown('subscription-create#getTypes', 'transactionType', 'Transaction Type', 'required')}
+					${renderInput('number', 'customRange', 'Every', 'required')}
+					${renderDropdown('subscription-create#getSubs', 'subscriptionType', 'Subscription Type', 'required')}
+					${this.errorMessage ? html`<div>${this.errorMessage}</div>` : html``}</template
+				>`;
+	};
 
+	render = (): TemplateResult => {
 		return html`
 			<app-form
 				data-custom="subscription-create#onSubmit"
 				data-has-cancel="true"
 				data-target="subscription-create.appForm"
+				data-render-input="subscription-create#renderForms"
 			>
-				${renderInput('number', 'amount', 'Amount', 'required')}
-				${renderInput('text', 'description', 'Description', 'required')}
-				${renderDropdown(
-					'subscription-create#getWallets',
-					'wallet',
-					'Wallet',
-					'required',
-					this.walletData && this.walletData.walletId
-				)}
-				${renderDropdown('subscription-create#getTypes', 'transactionType', 'Transaction Type', 'required')}
-				${renderInput('number', 'customRange', 'Every', 'required')}
-				${renderDropdown('subscription-create#getSubs', 'subscriptionType', 'Subscription Type', 'required')}
-				${this.errorMessage ? html`<div>${this.errorMessage}</div>` : html``}
 			</app-form>
 		`;
 	};

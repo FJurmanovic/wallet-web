@@ -1,6 +1,7 @@
 import isEmail from 'validator/lib/isEmail';
 import isDate from 'validator/lib/isDate';
 import isNumeric from 'validator/lib/isNumeric';
+import isAfter from 'validator/lib/isAfter';
 import matches from 'validator/lib/matches';
 
 const validator = {
@@ -10,6 +11,7 @@ const validator = {
 	matches: matches,
 	is_same: [isSame, '{- name} needs to be same to {- field}.'],
 	required: [required, '{- name} is required.'],
+	is_after: [isAfter, '{- name} needs to be after {- field}.'],
 };
 
 function required(str: string): boolean {

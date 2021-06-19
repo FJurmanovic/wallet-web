@@ -39,6 +39,7 @@ class Validator {
 			.reverse()
 			.map((rule) => {
 				let args = [];
+				let inps = [];
 				if (rule.includes('[') && rule.includes(']')) {
 					const begSep = rule.lastIndexOf('[');
 					const endSep = rule.lastIndexOf(']');
@@ -51,7 +52,7 @@ class Validator {
 								const begBr = arg.lastIndexOf('(');
 								const endBr = arg.lastIndexOf(')');
 								const field = arg.slice(begBr + 1, endBr);
-
+								inps = [...inps, this.form.getInput(field)];
 								return this.form?.values[field];
 							}
 						});
@@ -69,10 +70,19 @@ class Validator {
 					}
 				}
 				if (!valid) {
-					const error = ruleArray
+					let error = ruleArray
 						? validRule?.[1]?.replaceAll('{- name}', firstUpper(this.name?.toString()))
 						: validatorErrors[rule]?.replaceAll('{- name}', firstUpper(this.name?.toString()));
 					if (error) {
+						if (inps?.length > 1) {
+							inps.forEach((arg) => {
+								if (arg) {
+									error.replaceAll(`{- ${arg?.type}}`, firstUpper(arg?.name?.toString()));
+								}
+							});
+						} else if (inps?.length == 1) {
+							error = error.replaceAll('{- field}', firstUpper(inps[0]?.name?.toString()));
+						}
 						this.error = error;
 					}
 				}

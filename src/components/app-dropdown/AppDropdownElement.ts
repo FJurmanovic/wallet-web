@@ -88,7 +88,7 @@ class AppDropdownElement extends BaseComponentElement {
 		return this.value;
 	}
 
-	validate = (): boolean => {
+	validate = (change = false): boolean => {
 		return this.validator.validate();
 	};
 

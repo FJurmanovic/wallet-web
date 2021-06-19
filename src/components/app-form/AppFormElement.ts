@@ -12,6 +12,7 @@ class AppFormElement extends BaseComponentElement {
 	@querys inputField: NodeListOf<InputFieldElement>;
 	@querys appDropdown: NodeListOf<AppDropdownElement>;
 	@attr custom: string;
+	@attr renderInput: string;
 	@attr hasCancel: string;
 	slotted: any;
 	isValid: boolean = false;
@@ -22,6 +23,10 @@ class AppFormElement extends BaseComponentElement {
 
 	get submitFunc() {
 		return findMethod(this.custom, this.appMain);
+	}
+
+	get customRender() {
+		return findMethod(this.renderInput, this.appMain);
 	}
 
 	public inputChange = (e) => {
@@ -103,13 +108,15 @@ class AppFormElement extends BaseComponentElement {
 	}
 
 	elementConnected = (): void => {
-		const _template = document.createElement('template');
-		const _slot = this.innerHTML;
-		_template.innerHTML = _slot;
-		this.innerHTML = null;
-		this.update();
-
-		this.formElement.replaceChild(_template.content, this.innerSlot);
+		if (this.renderInput) {
+			this.update();
+		} else {
+			const _template = document.createElement('template');
+			const _slot = this.innerHTML;
+			_template.innerHTML = _slot;
+			this.update();
+			this.formElement?.replaceChild(_template.content, this.innerSlot);
+		}
 	};
 
 	render = (): TemplateResult => {
@@ -139,7 +146,7 @@ class AppFormElement extends BaseComponentElement {
 		return html`
 			<div class="app-form">
 				<form app-action="submit:app-form#onSubmit" data-target="app-form.formElement">
-					<slot data-target="app-form.innerSlot"></slot>
+					${this.renderInput ? this.customRender() : html`<slot data-target="app-form.innerSlot"></slot>`}
 					${renderError(this.error)}
 					<div class="form-buttons">
 						<div class="button-content">${renderSubmit(this.isValid)}${renderCancel(isTrue(this.hasCancel))}</div>

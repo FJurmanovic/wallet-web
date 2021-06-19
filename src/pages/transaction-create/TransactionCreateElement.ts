@@ -5,6 +5,7 @@ import { AppFormElement, InputFieldElement } from 'components/';
 import { RouterService } from 'core/services';
 import { BasePageElement } from 'common/';
 import { AppDropdownElement } from 'components/app-dropdown/AppDropdownElement';
+import dayjs from 'dayjs';
 
 @controller
 class TransactionCreateElement extends BasePageElement {
@@ -84,7 +85,15 @@ class TransactionCreateElement extends BasePageElement {
 				return;
 			}
 
-			const { description: description, wallet: walletId, amount, transactionType: transactionTypeId } = values;
+			const {
+				description: description,
+				wallet: walletId,
+				amount,
+				transactionType: transactionTypeId,
+				transactionDate,
+			} = values;
+
+			const formattedDate = dayjs(transactionDate).format();
 
 			const walletData = this.walletData;
 
@@ -92,9 +101,11 @@ class TransactionCreateElement extends BasePageElement {
 				description,
 				amount,
 				walletId: walletData && walletData.walletId ? walletData.walletId : walletId,
+				transactionDate: formattedDate,
 				transactionTypeId:
 					walletData && walletData.transactionTypeId ? walletData.transactionTypeId : transactionTypeId,
 			};
+
 			const response = await this.transactionService.post(formData);
 
 			if (response?.id) {
@@ -125,7 +136,7 @@ class TransactionCreateElement extends BasePageElement {
 	}
 
 	render = (): TemplateResult => {
-		const renderInput = (type, name, label, rules, hide?) => {
+		const renderInput = (type, name, label, rules, hide?, customAction?) => {
 			if (hide) {
 				return html``;
 			}
@@ -135,6 +146,7 @@ class TransactionCreateElement extends BasePageElement {
 				data-label="${label}"
 				data-targets="transaction-create.inputs"
 				data-rules="${rules}"
+				custom-action="${customAction}"
 			></input-field>`;
 		};
 
@@ -159,6 +171,7 @@ class TransactionCreateElement extends BasePageElement {
 			>
 				${renderInput('number', 'amount', 'Amount', 'required')}
 				${renderInput('text', 'description', 'Description', 'required')}
+				${renderInput('date', 'transactionDate', 'Transaction date', 'required')}
 				${renderDropdown(
 					'transaction-create#getWallets',
 					'wallet',

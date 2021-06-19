@@ -13,12 +13,14 @@ class InputFieldElement extends BaseComponentElement {
 	@attr type: string;
 	@attr label: string;
 	@attr rules: string;
+	@attr customAction: string;
 	@target main: HTMLElement;
 	@target inp: HTMLElement;
 	@closest appForm: AppFormElement;
 	valid: boolean;
 	displayError: boolean;
 	randId: string;
+	changed: boolean = false;
 
 	validator: Validator;
 
@@ -54,7 +56,15 @@ class InputFieldElement extends BaseComponentElement {
 	}
 
 	validate = (): boolean => {
-		return this.validator.validate();
+		const valid = this.validator.validate();
+		if (valid && this.displayError) {
+			this.displayError = false;
+			this.update();
+		} else if (this.changed && !valid) {
+			this.displayError = true;
+			this.update();
+		}
+		return valid;
 	};
 
 	validateDisplay = () => {
@@ -69,6 +79,9 @@ class InputFieldElement extends BaseComponentElement {
 	};
 
 	inputChange = (e) => {
+		if (!this.changed && e?.target?.value) {
+			this.changed = true;
+		}
 		this.validate();
 		this.appForm?.inputChange(e);
 	};
@@ -96,6 +109,7 @@ class InputFieldElement extends BaseComponentElement {
 				app-action="
                     input:input-field#inputChange
                     blur:input-field#validateDisplay
+					${this.customAction ? this.customAction : ''}
                 "
 			/>`;
 		};

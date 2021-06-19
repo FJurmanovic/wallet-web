@@ -79,6 +79,10 @@ class BaseElement extends HTMLElement {
 
 	update = (): void => {
 		render(this.render(), this);
+		if (this.shadowRoot) {
+			const renderSlot = () => html`<slot><slot></slot></slot>`;
+			render(renderSlot(), this.shadowRoot);
+		}
 		this.bindEvents('data-action');
 		this.bindEvents('app-action');
 		this.updateCallback();

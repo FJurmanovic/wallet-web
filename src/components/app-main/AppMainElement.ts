@@ -13,7 +13,7 @@ class AppMainElement extends HTMLElement {
 	public authStore: AuthStore;
 	private httpClient: HttpClient;
 	public appService: AppService;
-	public shadow: any;
+	//public shadow: any;
 	@target appModal: AppModalElement;
 	@target mainRoot: AppRootElement;
 	@target appLoader: AppLoaderElement;
