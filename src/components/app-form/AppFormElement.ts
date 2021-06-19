@@ -36,7 +36,7 @@ class AppFormElement extends BaseComponentElement {
 
 	public onSubmit = (e) => {
 		e.preventDefault();
-		if (!this.valid) {
+		if (!this.isValid) {
 			return;
 		}
 		this.submitFunc?.(this.values);
@@ -96,16 +96,6 @@ class AppFormElement extends BaseComponentElement {
 		});
 		return formObject;
 	};
-
-	get valid() {
-		let _valid = 0;
-		this.inputField?.forEach((input) => {
-			if (input.required && (input.inp as HTMLSelectElement).value) {
-				_valid++;
-			}
-		});
-		return _valid == this.inputField?.length;
-	}
 
 	elementConnected = (): void => {
 		if (this.renderInput) {
