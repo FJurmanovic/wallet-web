@@ -10,6 +10,7 @@ import {
 import { AppFormElement, InputFieldElement } from 'components/';
 import { BasePageElement } from 'common/';
 import { AppDropdownElement } from 'components/app-dropdown/AppDropdownElement';
+import dayjs from 'dayjs';
 
 @controller
 class SubscriptionCreateElement extends BasePageElement {
@@ -113,7 +114,12 @@ class SubscriptionCreateElement extends BasePageElement {
 				customRange,
 				transactionType: transactionTypeId,
 				subscriptionType: subscriptionTypeId,
+				startDate,
+				endDate,
 			} = values;
+
+			const startDateFormat = dayjs(startDate).format();
+			const endDateFormat = dayjs(endDate).format();
 
 			const walletData = this.walletData;
 
@@ -121,6 +127,9 @@ class SubscriptionCreateElement extends BasePageElement {
 				description,
 				amount,
 				customRange: customRange || 0,
+				hasEnd: (this.hasEndCheck?.inp as HTMLInputElement)?.checked,
+				startDate: startDateFormat,
+				endDate: endDateFormat,
 				walletId: walletData && walletData.walletId ? walletData.walletId : walletId,
 				transactionTypeId:
 					walletData && walletData.transactionTypeId ? walletData.transactionTypeId : transactionTypeId,
