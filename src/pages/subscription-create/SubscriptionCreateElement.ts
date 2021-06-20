@@ -186,6 +186,21 @@ class SubscriptionCreateElement extends BasePageElement {
 			></input-field>`;
 		};
 
+		const renderNumericInput = (pattern, name, label, rules, hide?, customAction?) => {
+			if (hide) {
+				return html``;
+			}
+			return html`<input-field
+				data-type="number"
+				data-pattern="${pattern}"
+				data-name="${name}"
+				data-label="${label}"
+				data-targets="transaction-create.inputs"
+				data-rules="${rules}"
+				custom-action="${customAction}"
+			></input-field>`;
+		};
+
 		const renderDropdown = (fetch, name, label, rules, hide?) => {
 			if (hide) {
 				return html``;
@@ -200,7 +215,7 @@ class SubscriptionCreateElement extends BasePageElement {
 		};
 		return html`
 				<div slot="inputs">
-					${renderInput('number', 'amount', 'Amount', 'required')}
+					${renderNumericInput('^d+(?:.d{1,2})?$', 'amount', 'Amount', 'required', false)}
 					${renderInput('text', 'description', 'Description', 'required')}
 					${renderInput('date', 'startDate', 'Start date', 'required')}
 					${renderInput('checkbox', 'hasEnd', 'Existing End Date', '', false, 'change:subscription-create#onCheck')}

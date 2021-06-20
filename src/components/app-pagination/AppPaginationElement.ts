@@ -2,6 +2,7 @@ import { attr, controller, target } from '@github/catalyst';
 import { html, TemplateResult } from 'core/utils';
 import { BaseComponentElement } from 'common/';
 import { CircleLoaderElement } from 'components/circle-loader/CircleLoaderElement';
+import dayjs from 'dayjs';
 
 @controller
 class AppPaginationElement extends BaseComponentElement {
@@ -36,7 +37,7 @@ class AppPaginationElement extends BaseComponentElement {
 		this.fetchFunc = fetchFunc;
 		if (autoInit) {
 			const options = {
-				rpp: this.rpp || 5,
+				rpp: this.rpp || 10,
 				page: this.page || 1,
 			};
 			this.executeFetch(options);
@@ -100,7 +101,7 @@ class AppPaginationElement extends BaseComponentElement {
 		const renderItem = this.customRenderItem
 			? this.customRenderItem
 			: (item, iter) => html`<tr class="${this.colLayout ? this.colLayout : ''}">
-					<td class="--left">${iter + 1 + rpp * (page - 1)}</td>
+					<td class="--left">${dayjs(item.transactionDate).format("MMM DD 'YY")}</td>
 					<td class="--left">${item.description}</td>
 					<td class="balance-cell --right">
 						<span
@@ -138,7 +139,7 @@ class AppPaginationElement extends BaseComponentElement {
 				const pageRange = Math.ceil(totalItems / rpp);
 				return html`
 					<div class="paginate">
-						<span class="--total">${totalItems} Total Items</span>
+						<span class="--total">(${items?.length}) / ${totalItems} Total Items</span>
 						<div class="--footer">
 							<span class="--pages">Page ${page} of ${pageRange}</span>
 							<button

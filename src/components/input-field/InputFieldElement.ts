@@ -13,6 +13,7 @@ class InputFieldElement extends BaseComponentElement {
 	@attr type: string;
 	@attr label: string;
 	@attr rules: string;
+	@attr pattern: string;
 	@attr customAction: string;
 	@target main: HTMLElement;
 	@target inp: HTMLElement;
@@ -102,6 +103,20 @@ class InputFieldElement extends BaseComponentElement {
 		};
 
 		const renderInput = (type) => {
+			if (this.pattern) {
+				return html` <input
+					type="${this.type}"
+					pattern="${this.pattern}"
+					step="0.01"
+					data-target="input-field.inp"
+					id="${this.randId}"
+					app-action="
+                    input:input-field#inputChange
+                    blur:input-field#validateDisplay
+					${this.customAction ? this.customAction : ''}
+                "
+				/>`;
+			}
 			return html` <input
 				type="${this.type}"
 				data-target="input-field.inp"
