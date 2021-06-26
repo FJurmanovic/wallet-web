@@ -1,14 +1,16 @@
 import { controller, target } from '@github/catalyst';
 import { html, TemplateResult } from 'core/utils';
-import { TransactionsService, WalletService } from 'services/';
+import { SubscriptionService, TransactionsService, WalletService } from 'services/';
 import { AppMainElement, AppPaginationElement, WalletHeaderElement } from 'components/';
 import { BasePageElement } from 'common/';
 
 @controller
 class WalletPageElement extends BasePageElement {
 	private transactionsService: TransactionsService;
+	private subscriptionService: SubscriptionService;
 	private walletService: WalletService;
 	@target pagination: AppPaginationElement;
+	@target paginationSub: AppPaginationElement;
 	@target walletHeader: WalletHeaderElement;
 	walletId: string;
 	constructor() {
@@ -20,6 +22,7 @@ class WalletPageElement extends BasePageElement {
 	elementConnected = (): void => {
 		this.walletService = new WalletService(this.appMain?.appService);
 		this.transactionsService = new TransactionsService(this.appMain?.appService);
+		this.subscriptionService = new SubscriptionService(this.appMain?.appService);
 		if (this?.routerService?.routerState?.data) {
 			const { walletId } = this?.routerService?.routerState?.data;
 			if (walletId) {
@@ -28,6 +31,7 @@ class WalletPageElement extends BasePageElement {
 		}
 		this.update();
 		this.pagination?.setFetchFunc?.(this.getTransactions, true)!;
+		this.paginationSub?.setFetchFunc?.(this.getSubscriptions, true)!;
 		this.appMain.addEventListener('tokenchange', this.update);
 		this.appMain.addEventListener('transactionupdate', this.transactionUpdated);
 	};
@@ -40,6 +44,7 @@ class WalletPageElement extends BasePageElement {
 	transactionUpdated = () => {
 		this.walletHeader?.executeFetch();
 		this.pagination?.executeFetch();
+		this.paginationSub?.executeFetch();
 	};
 
 	getTransactions = async (options): Promise<any> => {
@@ -53,6 +58,23 @@ class WalletPageElement extends BasePageElement {
 			options.embed = 'TransactionType';
 			options.sortBy = 'transactionDate|desc';
 			const response = await this.transactionsService.getAll(options);
+			return response;
+		} catch (err) {
+			throw err;
+		}
+	};
+
+	getSubscriptions = async (options): Promise<any> => {
+		try {
+			if (this?.routerService?.routerState?.data) {
+				const { walletId } = this?.routerService?.routerState?.data;
+				if (walletId) {
+					options['walletId'] = walletId;
+				}
+			}
+			options.embed = 'TransactionType';
+			options.sortBy = 'dateCreated|desc';
+			const response = await this.subscriptionService.getAll(options);
 			return response;
 		} catch (err) {
 			throw err;
@@ -137,7 +159,10 @@ class WalletPageElement extends BasePageElement {
 		};
 		return html`<div>
 			${renderHeader()} ${renderWallet()}
+			<h2>Transactions</h2>
 			<app-pagination data-target="wallet-page.pagination"></app-pagination>
+			<h2>Subscriptions</h2>
+			<app-pagination data-target="wallet-page.paginationSub"></app-pagination>
 		</div>`;
 	};
 }

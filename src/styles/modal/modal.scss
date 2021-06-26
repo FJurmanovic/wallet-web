@@ -15,7 +15,7 @@ app-modal {
 			z-index: 1005;
 			width: 960px;
 			min-height: 160px;
-			max-height: 560px;
+			max-height: 580px;
 			overflow-y: auto;
 			padding-bottom: 10px;
 			margin: 0;
@@ -23,10 +23,47 @@ app-modal {
 			left: 50%;
 			-ms-transform: translate(-50%, -50%);
 			transform: translate(-50%, -50%);
-			background: $gray-05;
-			color: $black;
+			background: $gray-10;
+			color: $white;
 			box-shadow: 1px 1px 5px -5px #868686;
 			border-radius: 3px;
+
+			.close-button {
+				position: absolute;
+				top: 2px;
+				right: 2px;
+				div {
+					position: relative;
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					width: 40px;
+					height: 40px;
+					cursor: pointer;
+					&:hover {
+						&:before,
+						&:after {
+							background-color: $gray-05;
+						}
+					}
+					&:before,
+					&:after {
+						position: absolute;
+						content: '';
+						width: 100%;
+						height: 1px;
+						background-color: $white;
+					}
+
+					&:before {
+						transform: rotate(45deg);
+					}
+
+					&:after {
+						transform: rotate(-45deg);
+					}
+				}
+			}
 
 			.page {
 				&.--title {
@@ -37,7 +74,7 @@ app-modal {
 
 			app-form {
 				.app-form {
-					margin-bottom: 64px;
+					margin-bottom: 54px;
 					.form-buttons {
 						.button-content {
 							position: absolute;
@@ -46,6 +83,26 @@ app-modal {
 						}
 					}
 				}
+			}
+		}
+	}
+}
+
+@media (max-width: 1020px) {
+	app-modal {
+		[data-target='app-modal.modalOverlay'] {
+			[data-target='app-modal.modalContent'] {
+				width: 95%;
+			}
+		}
+	}
+}
+
+@media (max-height: 600px) {
+	app-modal {
+		[data-target='app-modal.modalOverlay'] {
+			[data-target='app-modal.modalContent'] {
+				height: 95%;
 			}
 		}
 	}

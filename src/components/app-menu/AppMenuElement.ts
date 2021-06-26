@@ -87,6 +87,15 @@ class AppMenuElement extends BaseComponentElement {
 		}
 	};
 
+	modalSubscription = (s): void => {
+		const _modal = this.appMain.appModal;
+		if (_modal) {
+			this.appMain.closeModal();
+		} else {
+			this.appMain.createModal('subscription-create');
+		}
+	};
+
 	render = (): TemplateResult => {
 		const { isAuth, totalWallets, walletData } = this;
 
@@ -121,6 +130,7 @@ class AppMenuElement extends BaseComponentElement {
 			<div data-target="app-menu.sidebar">
 				${menuHeader(__CONFIG__.appName)} ${regularMenu('/', 'Home')}
 				${authMenu('/history', 'Transaction History', 'click:app-menu#modalTransaction')}
+				${authMenu('/subscriptions', 'Subscriptions', 'click:app-menu#modalSubscription')}
 				${authMenu('/wallet/all', 'My Wallets', 'click:app-menu#modalWallet')} ${renderWallets(walletData)}
 				<span class="menu-item divider"></span>
 				${authMenu('/logout', 'Logout')} ${notAuthMenu('/login', 'Login')} ${notAuthMenu('/register', 'Register')}

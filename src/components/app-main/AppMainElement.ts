@@ -58,6 +58,12 @@ class AppMainElement extends HTMLElement {
 				middleware: this.isAuth,
 			},
 			{
+				path: '/subscriptions',
+				component: 'subscription-list',
+				layout: 'menu-layout',
+				middleware: this.isAuth,
+			},
+			{
 				path: '/wallet',
 				component: 'history-page',
 				layout: 'menu-layout',
@@ -136,10 +142,18 @@ class AppMainElement extends HTMLElement {
 		this.closeModal();
 		this.appMain.addEventListener('routechanged', this.closeModal);
 
+		const _closeButton = document.createElement('div');
+		_closeButton.className = 'close-button';
+		_closeButton.setAttribute('data-action', 'click:app-main#closeModal');
+		_closeButton.setAttribute('data-target', 'app-modal.closeButton');
+		const _closeButtonDiv = document.createElement('div');
+		_closeButton.appendChild(_closeButtonDiv);
+
 		const _appModal = this.createAppModal();
 		const _modalContent = this.createModalContent(element, data);
 		const _modalOverlay = this.createModalOverlay();
 
+		_modalContent.appendChild(_closeButton);
 		_modalOverlay.appendChild(_modalContent);
 		_appModal.appendChild(_modalOverlay);
 		this.appendChild(_appModal);
@@ -216,9 +230,10 @@ class AppMainElement extends HTMLElement {
 
 	closeModal = (e?) => {
 		const selector = "[data-target='app-modal.modalContent']";
+		const closeButton = 'div.close-button';
 		if (this.appModal) {
 			if (e?.target) {
-				if (e?.target?.closest(selector)) return;
+				if (e?.target?.closest(selector) && !e?.target?.closest(closeButton)) return;
 				if (e?.target?.closest('app-main')) {
 					this.removeChild(this.appModal);
 				}
