@@ -6,6 +6,8 @@ import { RouterService } from 'core/services';
 import { BasePageElement } from 'common/';
 import { AppDropdownElement } from 'components/app-dropdown/AppDropdownElement';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+dayjs.extend(utc);
 
 @controller
 class TransactionCreateElement extends BasePageElement {
@@ -93,7 +95,7 @@ class TransactionCreateElement extends BasePageElement {
 				transactionDate,
 			} = values;
 
-			const formattedDate = dayjs(transactionDate).format();
+			const formattedDate = dayjs(transactionDate).utc(true).format();
 
 			const walletData = this.walletData;
 

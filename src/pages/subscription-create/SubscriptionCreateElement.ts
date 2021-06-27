@@ -11,6 +11,8 @@ import { AppFormElement, InputFieldElement } from 'components/';
 import { BasePageElement } from 'common/';
 import { AppDropdownElement } from 'components/app-dropdown/AppDropdownElement';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+dayjs.extend(utc);
 
 @controller
 class SubscriptionCreateElement extends BasePageElement {
@@ -118,8 +120,8 @@ class SubscriptionCreateElement extends BasePageElement {
 				endDate,
 			} = values;
 
-			const startDateFormat = dayjs(startDate).format();
-			const endDateFormat = dayjs(endDate).format();
+			const startDateFormat = dayjs(startDate).utc(true).format();
+			const endDateFormat = dayjs(endDate).utc(true).format();
 
 			const walletData = this.walletData;
 
