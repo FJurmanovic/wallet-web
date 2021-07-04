@@ -1,6 +1,6 @@
 {
   "name": "wallet-web",
-  "version": "1.0.0",
+  "version": "0.0.72",
   "main": "index.js",
   "author": "Fran Jurmanović <fjurma12@outlook.com>",
   "license": "MIT",
