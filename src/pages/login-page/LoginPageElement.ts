@@ -78,24 +78,31 @@ class LoginPageElement extends BasePageElement {
 		return _return;
 	}
 
+	renderForms = () => {
+		return html` <input-field
+				data-type="email"
+				data-name="email"
+				data-label="E-mail"
+				data-targets="login-page.inputs"
+				data-rules="required|is_email"
+			></input-field>
+			<input-field
+				data-type="password"
+				data-name="password"
+				data-label="Password"
+				data-targets="login-page.inputs"
+				data-rules="required"
+			>
+			</input-field>`;
+	};
+
 	render = (): TemplateResult => {
 		return html`
-			<app-form data-custom="login-page#onSubmit" data-target="login-page.appForm">
-				<input-field
-					data-type="email"
-					data-name="email"
-					data-label="E-mail"
-					data-targets="login-page.inputs"
-					data-rules="required|is_email"
-				></input-field>
-				<input-field
-					data-type="password"
-					data-name="password"
-					data-label="Password"
-					data-targets="login-page.inputs"
-					data-rules="required"
-				>
-				</input-field>
+			<app-form
+				data-custom="login-page#onSubmit"
+				data-target="login-page.appForm"
+				data-render-input="login-page#renderForms"
+			>
 			</app-form>
 			<div>
 				<app-link data-to="/register" data-title="Create new account"></app-link>

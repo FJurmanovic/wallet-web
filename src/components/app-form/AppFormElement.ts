@@ -35,7 +35,7 @@ class AppFormElement extends BaseComponentElement {
 	};
 
 	public onSubmit = (e) => {
-		e.preventDefault();
+		//e.preventDefault();
 		if (!this.isValid) {
 			return;
 		}
@@ -135,7 +135,13 @@ class AppFormElement extends BaseComponentElement {
 
 		return html`
 			<div class="app-form">
-				<form app-action="submit:app-form#onSubmit" data-target="app-form.formElement">
+				<form
+					app-action="submit:app-form#onSubmit"
+					data-target="app-form.formElement"
+					autocomplete="on"
+					method="POST"
+					action="javascript:void(0)"
+				>
 					${this.renderInput ? this.customRender() : html`<slot data-target="app-form.innerSlot"></slot>`}
 					${renderError(this.error)}
 					<div class="form-buttons">

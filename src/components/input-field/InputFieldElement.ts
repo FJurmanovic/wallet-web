@@ -33,7 +33,7 @@ class InputFieldElement extends BaseComponentElement {
 		this.validator = new Validator(this, this.appForm, this.rules);
 		this.randId = `${name}${randomId()}`;
 		this.update();
-		this.validate();
+		//this.validate();
 	};
 
 	setError = (error) => {
@@ -83,11 +83,12 @@ class InputFieldElement extends BaseComponentElement {
 		if (!this.changed && e?.target?.value) {
 			this.changed = true;
 		}
-		this.validate();
+		//this.validate();
 		this.appForm?.inputChange(e);
 	};
 
 	render = (): TemplateResult => {
+		console.log('e');
 		const renderMessage = (label: string) => {
 			if (this.label) {
 				return html`<label for="${this.randId}">${this.label}${this.required ? ' (*)' : ''}</label>`;
@@ -105,19 +106,20 @@ class InputFieldElement extends BaseComponentElement {
 		const renderInput = (type) => {
 			if (this.pattern) {
 				return html` <input
+					name="${this.name}"
+					autocomplete="${this.name}"
 					type="${this.type}"
 					pattern="${this.pattern}"
 					step="0.01"
 					data-target="input-field.inp"
 					id="${this.randId}"
-					app-action="
-                    input:input-field#inputChange
-                    blur:input-field#validateDisplay
-					${this.customAction ? this.customAction : ''}
-                "
+					app-action=" input:input-field#inputChange blur:input-field#validateDisplay
+				${this.customAction ? this.customAction : ''} "
 				/>`;
 			}
 			return html` <input
+				name="${this.name}"
+				autocomplete="${this.name}"
 				type="${this.type}"
 				data-target="input-field.inp"
 				id="${this.randId}"

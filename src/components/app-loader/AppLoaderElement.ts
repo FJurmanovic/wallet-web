@@ -51,7 +51,9 @@ class AppLoaderElement extends BaseComponentElement {
 			}
 			return html``;
 		};
-		return html`${renderLoader(this.finished, this.loading)}`;
+		return html`<div class="loader-wrapper">
+			<div class="loader-relative">${renderLoader(this.finished, this.loading)}</div>
+		</div>`;
 	};
 }
 

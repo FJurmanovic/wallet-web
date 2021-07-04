@@ -142,18 +142,28 @@ class AppPaginationElement extends BaseComponentElement {
 						<span class="--total">(${items?.length}) / ${totalItems} Total Items</span>
 						<div class="--footer">
 							<span class="--pages">Page ${page} of ${pageRange}</span>
-							<button
-								class="btn btn-primary btn-squared ${page <= 1 ? 'disabled' : ''}"
-								app-action="click:app-pagination#pageBack"
-							>
-								Prev
-							</button>
-							<button
-								class="btn btn-primary btn-squared ${page >= pageRange ? 'disabled' : ''}"
-								app-action="click:app-pagination#pageNext"
-							>
-								Next
-							</button>
+							${page <= 1 || this.loader.loading
+								? html` <button
+										class="btn btn-primary btn-squared disabled"
+										disabled
+										app-action="click:app-pagination#pageBack"
+								  >
+										Prev
+								  </button>`
+								: html` <button class="btn btn-primary btn-squared" app-action="click:app-pagination#pageBack">
+										Prev
+								  </button>`}
+							${page >= pageRange || this.loader.loading
+								? html` <button
+										class="btn btn-primary btn-squared disabled"
+										disabled
+										app-action="click:app-pagination#pageNext"
+								  >
+										Next
+								  </button>`
+								: html`<button class="btn btn-primary btn-squared" app-action="click:app-pagination#pageNext">
+										Next
+								  </button>`}
 						</div>
 					</div>
 				`;
@@ -161,9 +171,10 @@ class AppPaginationElement extends BaseComponentElement {
 		};
 
 		return html`<div class="app-pagination">
-			<table class="${this.tableLayout}">
+			<table class="${this.tableLayout} ${this.loader && this.loader.loading ? '--loading' : ''}">
 				${renderItems()} ${renderPagination()}
 			</table>
+			${this.loader && this.loader.loading ? html`<circle-loader></circle-loader>` : html``}
 		</div>`;
 	};
 }
