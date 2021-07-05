@@ -105,6 +105,11 @@ class AppMenuElement extends BaseComponentElement {
 			}
 			return html`<menu-item data-path="${path}">${title}</menu-item>`;
 		};
+		const menuButton = (title: string, action?: string): TemplateResult => {
+			return html` <div class="menu-item --retract" data-target="menu-item.itemEl">
+				<button class="btn btn-link" data-target="app-link.main" app-action="${action}">${title}</button>
+			</div>`;
+		};
 		const authMenu = (path: string, title: string, action?: string): TemplateResult => {
 			if (isAuth) {
 				return regularMenu(path, title, action);
@@ -133,7 +138,8 @@ class AppMenuElement extends BaseComponentElement {
 				${authMenu('/subscriptions', 'Subscriptions', 'click:app-menu#modalSubscription')}
 				${authMenu('/wallet/all', 'My Wallets', 'click:app-menu#modalWallet')} ${renderWallets(walletData)}
 				<span class="menu-item divider"></span>
-				${authMenu('/logout', 'Logout')} ${notAuthMenu('/login', 'Login')} ${notAuthMenu('/register', 'Register')}
+				${authMenu('/logout', 'Logout')} ${notAuthMenu('/login', 'Login')}
+				${notAuthMenu('/register', 'Register')}${menuButton('Retract', 'click:menu-layout#retractMenu')}
 			</div>
 		`;
 	};

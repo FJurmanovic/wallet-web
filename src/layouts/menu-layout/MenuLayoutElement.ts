@@ -8,6 +8,7 @@ import { AppMainElement } from 'components/';
 class MenuLayoutElement extends BaseLayoutElement {
 	@closest appMain: AppMainElement;
 	@target appPage: HTMLDivElement;
+	@target appSidebar: HTMLDivElement;
 
 	constructor() {
 		super();
@@ -36,12 +37,20 @@ class MenuLayoutElement extends BaseLayoutElement {
 		this.update();
 	};
 
+	retractMenu = () => {
+		this.appPage.classList.toggle('--retracted');
+	};
+
 	render = (): TemplateResult => {
 		const _isAuth = this.isAuth;
 		return html`
-			<div data-target="menu-layout.appPage">
-				${_isAuth ? html`<app-menu></app-menu>` : html``}
-				<app-slot data-target="menu-layout.appSlot"></app-slot>
+			<div class="app-layout" data-target="menu-layout.appPage">
+				${_isAuth
+					? html`<div class="app-sidebar" data-target="menu-layout.appSidebar"><app-menu></app-menu></div>`
+					: html``}
+				<div class="app-content">
+					<app-slot data-target="menu-layout.appSlot"></app-slot>
+				</div>
 			</div>
 		`;
 	};

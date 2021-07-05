@@ -53,3 +53,79 @@ wallet-header {
 		right: 0;
 	}
 }
+
+@media (max-width: 600px) {
+	.wallet-buttons {
+		position: relative;
+		height: 50px;
+		margin-bottom: 10px;
+		.button-group {
+			display: flex;
+			align-content: space-between;
+			button {
+				flex: 1;
+				height: 50px;
+			}
+		}
+	}
+	.wallet-header {
+		width: 100%;
+		height: 143px;
+		display: block;
+		position: relative;
+		.header-item {
+			position: absolute;
+			height: 143px;
+			&:nth-child(1) {
+				z-index: 15;
+				width: 25%;
+				background-color: transparent;
+				border: none;
+				height: auto;
+				left: 0;
+				bottom: 12px;
+				.--header {
+					font-size: 11px;
+					margin-top: 0;
+				}
+				.--content {
+					.--balance {
+						font-size: 12px;
+						margin-top: 0;
+					}
+				}
+				.--currency {
+					font-size: 10px;
+					margin-top: 0;
+				}
+			}
+			&:nth-child(2) {
+				z-index: 10;
+				width: 100%;
+			}
+			&:nth-child(3) {
+				z-index: 15;
+				width: 25%;
+				background-color: transparent;
+				border: none;
+				height: auto;
+				right: 0;
+				bottom: 12px;
+				.--header {
+					font-size: 11px;
+					margin-top: 0;
+				}
+				.--content {
+					.--balance {
+						font-size: 12px;
+						margin-top: 0;
+					}
+				}
+				.--currency {
+					font-size: 10px;
+					margin-top: 0;
+				}
+			}
+		}
+	}
+}

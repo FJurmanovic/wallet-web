@@ -1,30 +1,81 @@
 menu-layout {
 	[data-target='menu-layout.appPage'] {
-		display: grid;
-		position: relative;
-		height: 100%;
-		width: 100%;
-		min-height: 100vh;
-		grid-template-columns: 301px auto;
-		grid-template-areas: 'sidebar content';
-
-		app-menu {
-			[data-target='app-menu.sidebar'] {
-				grid-area: sidebar;
-				position: absolute;
-				top: 0;
-				bottom: 0;
-				left: 0;
+		&.app-layout {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			width: 100%;
+			.app-sidebar {
 				width: 301px;
-				border-right: 1px solid $gray-08;
-				background-color: $black;
+				[data-target='app-menu.sidebar'] {
+					z-index: 100;
+					position: fixed;
+					overflow: hidden;
+					top: 0;
+					bottom: 0;
+					left: 0;
+					width: 301px;
+					border-right: 1px solid #6b6b6b;
+					background-color: #181818;
+				}
+			}
+			.app-content {
+				flex: 1;
+				margin: 15px;
+			}
+			&.--retracted {
+				.app-sidebar {
+					position: absolute;
+					left: -302px;
+					[data-target='app-menu.sidebar'] {
+						left: -302px;
+						overflow: visible;
+						[data-target='menu-item.itemEl'] {
+							&.--retract {
+								position: absolute;
+								left: 60px;
+								button {
+									background-color: $white;
+								}
+								&::after {
+									content: '>';
+									margin: auto;
+									margin-left: -25px;
+									font-size: 32px;
+									pointer-events: none;
+									font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+
+									color: #000;
+								}
+							}
+						}
+					}
+				}
 			}
 		}
+	}
+}
 
-		app-slot {
-			[data-target='base-layout.content'] {
-				grid-area: content;
-				margin: 15px;
+@media (max-width: 600px) {
+	menu-layout {
+		[data-target='menu-layout.appPage'] {
+			&.app-layout {
+				.app-sidebar {
+					width: 100%;
+
+					[data-target='app-menu.sidebar'] {
+						width: 100%;
+					}
+				}
+				&.--retracted {
+					.app-sidebar {
+						width: 301px;
+
+						[data-target='app-menu.sidebar'] {
+							width: 301px;
+						}
+					}
+				}
 			}
 		}
 	}
