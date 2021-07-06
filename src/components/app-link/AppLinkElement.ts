@@ -56,7 +56,7 @@ class AppLinkElement extends BaseComponentElement {
 					class="btn btn-link btn-disabled${this.className ? ` ${this.className}` : ''}"
 					data-target="app-link.main"
 					style="color:grey"
-					>${this.title}</a
+					><span class="link-text">${this.title}</span></a
 			  >`
 			: html`<a
 					class="btn btn-link${this.className ? ` ${this.className}` : ''}"
@@ -64,7 +64,7 @@ class AppLinkElement extends BaseComponentElement {
 					app-action="click:app-link#goTo"
 					href="${this.to}"
 					style="text-decoration: underline; cursor: pointer;"
-					>${this.title}</a
+					><span class="link-text">${this.title}</span></a
 			  >`}`;
 	};
 }

@@ -17,6 +17,8 @@ menu-layout {
 					width: 301px;
 					border-right: 1px solid #6b6b6b;
 					background-color: #181818;
+					display: grid;
+					grid-template-rows: 1fr auto;
 				}
 			}
 			.app-content {
@@ -25,27 +27,86 @@ menu-layout {
 			}
 			&.--retracted {
 				.app-sidebar {
-					position: absolute;
-					left: -302px;
+					width: 50px;
 					[data-target='app-menu.sidebar'] {
-						left: -302px;
+						left: -252px;
 						overflow: visible;
+
+						.menu-item {
+							&.menu-header {
+								align-items: end;
+								text-align: right;
+								align-content: end;
+								.link-text {
+									max-width: 50px;
+									width: 50px;
+									flex: 1;
+									font-size: 0;
+									text-transform: lowercase;
+									color: $blue-08;
+									text-align: center;
+									&::first-letter {
+										visibility: visible;
+										font-size: 32px !important;
+									}
+								}
+							}
+							&.divider {
+								width: 100%;
+							}
+						}
 						[data-target='menu-item.itemEl'] {
+							[data-target='menu-item.customButton'] {
+								display: none;
+							}
+							a {
+								align-items: end;
+								text-align: right;
+								align-content: end;
+								float: right;
+								&.--logout {
+									.link-text {
+										color: $red-01;
+									}
+								}
+								&.--wallet {
+									.link-text {
+										text-transform: lowercase;
+									}
+								}
+								.link-text {
+									max-width: 50px;
+									width: 50px;
+									flex: 1;
+									text-transform: uppercase;
+									color: $white;
+									font-size: 0 !important;
+									text-align: center;
+									&::first-letter {
+										visibility: visible;
+										font-size: 32px;
+									}
+								}
+							}
 							&.--retract {
 								position: absolute;
-								left: 60px;
+								left: 30px;
+								bottom: 0;
+								border-top: 20px transparent;
+								border-bottom: 20px transparent;
+								border-right: 20px #000;
 								button {
 									background-color: $white;
-								}
-								&::after {
-									content: '>';
-									margin: auto;
-									margin-left: -25px;
-									font-size: 32px;
-									pointer-events: none;
-									font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-
-									color: #000;
+									.pseudo {
+										content: '';
+										width: 0;
+										height: 0;
+										border-top: 22px solid transparent;
+										border-bottom: 22px solid transparent; /* 40px height (20+20) */
+										border-left: 22px solid $white;
+										position: absolute;
+										right: -22px;
+									}
 								}
 							}
 						}
@@ -73,6 +134,7 @@ menu-layout {
 
 						[data-target='app-menu.sidebar'] {
 							width: 301px;
+							left: -302px;
 						}
 					}
 				}
