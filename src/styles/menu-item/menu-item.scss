@@ -13,8 +13,11 @@
 		text-transform: uppercase;
 		text-decoration: underline;
 		margin: 8px auto;
-		font-family: Roboto;
-		font-size: 38px !important;
+		.link-text {
+			display: inline-block;
+			font-family: Roboto;
+			font-size: 38px;
+		}
 	}
 }
 
@@ -46,8 +49,6 @@
 		}
 	}
 	&.--retract {
-		position: absolute;
-		bottom: 0;
 		width: 100%;
 	}
 	[data-target='menu-item.customButton'] {
