@@ -131,7 +131,8 @@ menu-layout {
 				&.--retracted {
 					.app-sidebar {
 						width: 301px;
-
+						position: absolute;
+						left: -302px;
 						[data-target='app-menu.sidebar'] {
 							width: 301px;
 							left: -302px;
