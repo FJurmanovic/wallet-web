@@ -10,6 +10,7 @@ class AppLinkElement extends BaseComponentElement {
 	@attr to: string;
 	@attr goBack: string;
 	@attr title: string;
+	@attr customAction: string;
 	@target main: Element;
 	constructor() {
 		super();
@@ -61,7 +62,7 @@ class AppLinkElement extends BaseComponentElement {
 			: html`<a
 					class="btn btn-link${this.className ? ` ${this.className}` : ''}"
 					data-target="app-link.main"
-					app-action="click:app-link#goTo"
+					app-action="click:app-link#goTo ${this.customAction ? this.customAction : ''}"
 					href="${this.to}"
 					style="text-decoration: underline; cursor: pointer;"
 					><span class="link-text">${this.title}</span></a

@@ -2,6 +2,8 @@ import { attr, controller, target } from '@github/catalyst';
 import { html, TemplateResult } from 'core/utils';
 import { AppMainElement } from 'components/app-main/AppMainElement';
 import { BaseComponentElement } from 'common/';
+import { deviceWidths } from 'core/constants';
+import { MenuLayoutElement } from 'layouts';
 
 @controller
 class MenuItemElement extends BaseComponentElement {
@@ -32,10 +34,18 @@ class MenuItemElement extends BaseComponentElement {
 		return this.routerService.comparePath(this.path);
 	}
 
+	itemClick = (e) => {
+		if (window.innerWidth < deviceWidths.mobile) {
+			(this.appMain?.mainRoot?.rootElement as MenuLayoutElement)?.retractMenu?.();
+		}
+	};
+
 	render = (): TemplateResult => {
 		return html`
 			<div class="${this.current ? 'selected ' : ''}menu-item" data-target="menu-item.itemEl">
-				<app-link class="${this.className}" data-to="${this.path}">${this.title}</app-link>
+				<app-link class="${this.className}" data-to="${this.path}" data-custom-action="click:menu-item#itemClick"
+					>${this.title}</app-link
+				>
 				${this.customaction
 					? html`<div data-target="menu-item.customButton" app-action="${this.customaction}">+</div>`
 					: html``}
