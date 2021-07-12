@@ -1,17 +1,29 @@
 input-field {
-	label {
-		cursor: pointer;
-	}
-	input {
-		width: 100%;
-		box-sizing: border-box;
-		margin: 0;
-		padding: 5px 0 !important;
-		border: 1px solid $gray-03;
-		border-radius: 2px;
-	}
-	.input-error {
-		color: $red-04;
-		margin: 3px 0;
+	.input-main {
+		label {
+			cursor: pointer;
+		}
+		input {
+			width: 100%;
+			box-sizing: border-box;
+			margin: 0;
+			padding: 5px 0 !important;
+			border: 1px solid $gray-03;
+			border-radius: 2px;
+		}
+		.input-error {
+			color: $red-04;
+			margin: 3px 0;
+		}
+		&--checkbox {
+			label {
+				display: inline-block;
+			}
+			input {
+				margin-left: 12px !important;
+				display: inline-block !important;
+				width: auto !important;
+			}
+		}
 	}
 }

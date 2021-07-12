@@ -3,7 +3,7 @@ import { html, TemplateResult } from 'core/utils';
 import { AppMainElement } from 'components/app-main/AppMainElement';
 import { BaseComponentElement } from 'common/';
 import { deviceWidths } from 'core/constants';
-import { MenuLayoutElement } from 'layouts';
+import { MenuLayoutElement } from 'layouts/';
 
 @controller
 class MenuItemElement extends BaseComponentElement {

@@ -131,7 +131,10 @@ class InputFieldElement extends BaseComponentElement {
 			/>`;
 		};
 
-		return html`<div class="input-main" data-target="input-field.main">
+		return html`<div
+			class="input-main${this.type === 'checkbox' ? ' input-main--checkbox' : ''}"
+			data-target="input-field.main"
+		>
 			${renderMessage(this.label)}${renderError(this.error)} ${renderInput(this.type)}
 		</div>`;
 	};
