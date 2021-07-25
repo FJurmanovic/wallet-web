@@ -3,6 +3,7 @@ import { html, TemplateResult } from 'core/utils';
 import { SubscriptionService, TransactionsService, WalletService } from 'services/';
 import { AppMainElement, AppPaginationElement, WalletHeaderElement } from 'components/';
 import { BasePageElement } from 'common/';
+import dayjs from 'dayjs';
 
 @controller
 class WalletPageElement extends BasePageElement {
@@ -32,6 +33,7 @@ class WalletPageElement extends BasePageElement {
 		this.update();
 		this.pagination?.setFetchFunc?.(this.getTransactions, true)!;
 		this.paginationSub?.setFetchFunc?.(this.getSubscriptions, true)!;
+		this.paginationSub?.setCustomRenderItem?.(this.renderSubscription)!;
 		this.appMain.addEventListener('tokenchange', this.update);
 		this.appMain.addEventListener('transactionupdate', this.transactionUpdated);
 	};
@@ -64,6 +66,25 @@ class WalletPageElement extends BasePageElement {
 		}
 	};
 
+	renderSubscription = (item) => html`<tr class="col-subscription">
+		<td class="--left">${dayjs(item.lastTransactionDate).format("MMM DD 'YY")}</td>
+		<td class="--left">every ${item.customRange} ${item.rangeName}</td>
+		<td class="--left">${item.description}</td>
+		<td class="--left">${dayjs(item.nextTransaction).format("MMM DD 'YY")}</td>
+		<td class="balance-cell --right">
+			<span
+				class="balance ${item.amount > 0 && item?.transactionType?.type != 'expense' ? '--positive' : '--negative'}"
+			>
+				${item?.transactionType?.type == 'expense' ? '- ' : ''}
+				${Number(item.amount).toLocaleString('en-US', {
+					maximumFractionDigits: 2,
+					minimumFractionDigits: 2,
+				})}
+			</span>
+			<span class="currency">(${item.currency ? item.currency : 'USD'})</span>
+		</td>
+	</tr>`;
+
 	getSubscriptions = async (options): Promise<any> => {
 		try {
 			if (this?.routerService?.routerState?.data) {
@@ -72,9 +93,29 @@ class WalletPageElement extends BasePageElement {
 					options['walletId'] = walletId;
 				}
 			}
-			options.embed = 'TransactionType';
+			options.embed = 'TransactionType,SubscriptionType';
 			options.sortBy = 'dateCreated|desc';
 			const response = await this.subscriptionService.getAll(options);
+			response?.items?.map?.((i) => {
+				switch (i.subscriptionType.type) {
+					case 'monthly':
+						i.rangeName = i.customRange != 1 ? 'Months' : 'Month';
+						i.nextTransaction = dayjs(i.lastTransactionDate).add(i.customRange, 'month');
+						break;
+					case 'yearly':
+						i.rangeName = i.customRange != 1 ? 'Years' : 'Year';
+						i.nextTransaction = dayjs(i.lastTransactionDate).add(i.customRange, 'year');
+						break;
+					case 'daily':
+						i.rangeName = i.customRange != 1 ? 'Days' : 'Day';
+						i.nextTransaction = dayjs(i.lastTransactionDate).add(i.customRange, 'day');
+						break;
+					case 'weekly':
+						i.rangeName = i.customRange != 1 ? 'Weeks' : 'Week';
+						i.nextTransaction = dayjs(i.lastTransactionDate).add(7 * i.customRange, 'day');
+						break;
+				}
+			});
 			return response;
 		} catch (err) {
 			throw err;
@@ -162,7 +203,7 @@ class WalletPageElement extends BasePageElement {
 			<h2>Transactions</h2>
 			<app-pagination data-target="wallet-page.pagination"></app-pagination>
 			<h2>Subscriptions</h2>
-			<app-pagination data-target="wallet-page.paginationSub"></app-pagination>
+			<app-pagination data-target="wallet-page.paginationSub" data-table-layout="subscription-table"></app-pagination>
 		</div>`;
 	};
 }
