@@ -15,7 +15,7 @@ import utc from 'dayjs/plugin/utc';
 dayjs.extend(utc);
 
 @controller
-class SubscriptionCreateElement extends BasePageElement {
+class SubscriptionEditElement extends BasePageElement {
 	@targets inputs: Array<InputFieldElement | AppDropdownElement>;
 	@target appForm: AppFormElement;
 	private subscriptionService: SubscriptionService;
@@ -28,7 +28,7 @@ class SubscriptionCreateElement extends BasePageElement {
 	private initial: boolean = false;
 	constructor() {
 		super({
-			title: 'New Subscription',
+			title: 'Edit Subscription',
 		});
 	}
 	elementConnected = (): void => {
@@ -38,6 +38,7 @@ class SubscriptionCreateElement extends BasePageElement {
 		this.subscriptionTypeService = new SubscriptionTypeService(this.appMain?.appService);
 		this.authService = new AuthService(this.appMain.appService);
 		this.walletData = this.getData();
+		this.getSubscription(this.walletData.id);
 		this.update();
 		if (this.walletData && this.walletData.walletId) {
 			this.setTransactionType();
@@ -82,6 +83,23 @@ class SubscriptionCreateElement extends BasePageElement {
 		}
 	};
 
+	getSubscription = async (id) => {
+		try {
+			const response = await this.subscriptionService.get(id, {
+				embed: 'Wallet'
+			});
+			const wallet = this.appForm.getInput('wallet');
+			if (wallet) {
+				(wallet as AppDropdownElement).setItemValue(response.wallet);
+			}
+			response.wallet = response.walletId
+			response.endDate = dayjs(response.endDate).format('YYYY-MM-DD')
+			this.appForm.set(response);
+		} catch (err) {
+
+		}
+	}
+
 	getWallets = async (options): Promise<void> => {
 		try {
 			const response = await this.walletService.getAll(options);
@@ -113,14 +131,9 @@ class SubscriptionCreateElement extends BasePageElement {
 				description: description,
 				wallet: walletId,
 				amount,
-				customRange,
-				transactionType: transactionTypeId,
-				subscriptionType: subscriptionTypeId,
-				startDate,
 				endDate,
 			} = values;
 
-			const startDateFormat = dayjs(startDate).utc(true).format();
 			const endDateFormat = dayjs(endDate).utc(true).format();
 
 			const walletData = this.walletData;
@@ -128,21 +141,15 @@ class SubscriptionCreateElement extends BasePageElement {
 			const formData = {
 				description,
 				amount,
-				customRange: customRange || 0,
 				hasEnd: (this.hasEndCheck?.inp as HTMLInputElement)?.checked,
-				startDate: startDateFormat,
 				endDate: endDateFormat,
 				walletId: walletData && walletData.walletId ? walletData.walletId : walletId,
-				transactionTypeId:
-					walletData && walletData.transactionTypeId ? walletData.transactionTypeId : transactionTypeId,
-				subscriptionTypeId:
-					walletData && walletData.subscriptionTypeId ? walletData.subscriptionTypeId : subscriptionTypeId,
 			};
-			const response = await this.subscriptionService.post(formData);
+			const response = await this.subscriptionService.put(this.walletData.id, formData);
 
 			if (response?.id) {
 				this.appMain.triggerTransactionUpdate();
-				this.appMain.pushToast('success', 'Subscription created successfully!');
+				this.appMain.pushToast('success', 'Subscription edited successfully!');
 
 				if (walletData.walletId) {
 					this.appMain?.closeModal();
@@ -153,7 +160,7 @@ class SubscriptionCreateElement extends BasePageElement {
 				}
 			}
 		} catch (err) {
-			this.errorMessage = 'Unable to create subscription!';
+			this.errorMessage = 'Unable to edit subscription!';
 			this.update();
 		}
 	};
@@ -175,16 +182,14 @@ class SubscriptionCreateElement extends BasePageElement {
 
 	renderForms = () => {
 		const renderInput = (type, name, label, rules, hide?, customAction?) => {
-			if (hide) {
-				return null;
-			}
 			return html`<input-field
 				data-type="${type}"
 				data-name="${name}"
 				data-label="${label}"
-				data-targets="subscription-create.inputs"
+				data-targets="subscription-edit.inputs"
 				data-rules="${rules}"
 				data-custom-action="${customAction || ''}"
+				data-disabled="${hide}"
 			></input-field>`;
 		};
 
@@ -197,7 +202,7 @@ class SubscriptionCreateElement extends BasePageElement {
 				data-pattern="${pattern}"
 				data-name="${name}"
 				data-label="${label}"
-				data-targets="transaction-create.inputs"
+				data-targets="subscription-edit.inputs"
 				data-rules="${rules}"
 				custom-action="${customAction}"
 			></input-field>`;
@@ -210,7 +215,7 @@ class SubscriptionCreateElement extends BasePageElement {
 			return html`<app-dropdown
 				data-name="${name}"
 				data-label="${label}"
-				data-targets="subscription-create.inputs"
+				data-targets="subscription-edit.inputs"
 				data-rules="${rules}"
 				data-fetch="${fetch}"
 			></app-dropdown>`;
@@ -219,25 +224,21 @@ class SubscriptionCreateElement extends BasePageElement {
 				<div slot="inputs">
 					${renderNumericInput('^d+(?:.d{1,2})?$', 'amount', 'Amount', 'required', false)}
 					${renderInput('text', 'description', 'Description', 'required')}
-					${renderInput('date', 'startDate', 'Start date', 'required')}
-					${renderInput('checkbox', 'hasEnd', 'Existing End Date', '', false, 'change:subscription-create#onCheck')}
+					${renderInput('checkbox', 'hasEnd', 'Existing End Date', '', false, 'change:subscription-edit#onCheck')}
 					${renderInput(
 						'date',
 						'endDate',
 						'End date',
-						'required|is_after[field(startDate)]',
+						'required',
 						!(this.hasEndCheck?.inp as HTMLInputElement)?.checked
 					)}
 					${renderDropdown(
-						'subscription-create#getWallets',
+						'subscription-edit#getWallets',
 						'wallet',
 						'Wallet',
 						'required',
 						this.walletData && this.walletData.walletId
 					)}
-					${renderDropdown('subscription-create#getTypes', 'transactionType', 'Transaction Type', 'required')}
-					${renderInput('number', 'customRange', 'Every', 'required')}
-					${renderDropdown('subscription-create#getSubs', 'subscriptionType', 'Subscription Type', 'required')}
 					${this.errorMessage ? html`<div>${this.errorMessage}</div>` : html``}</template
 				>`;
 	};
@@ -245,14 +246,14 @@ class SubscriptionCreateElement extends BasePageElement {
 	render = (): TemplateResult => {
 		return html`
 			<app-form
-				data-custom="subscription-create#onSubmit"
+				data-custom="subscription-edit#onSubmit"
 				data-has-cancel="true"
-				data-target="subscription-create.appForm"
-				data-render-input="subscription-create#renderForms"
+				data-target="subscription-edit.appForm"
+				data-render-input="subscription-edit#renderForms"
 			>
 			</app-form>
 		`;
 	};
 }
 
-export type { SubscriptionCreateElement };
+export type { SubscriptionEditElement };

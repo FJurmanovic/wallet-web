@@ -50,7 +50,7 @@ class AppService {
 		}
 	};
 
-	delete = async (url: string, data: Object, headersParam: HeadersInit): Promise<any> => {
+	delete = async (url: string, data?: Object, headersParam?: HeadersInit): Promise<any> => {
 		headersParam = {
 			...headersParam,
 			Authorization: `BEARER ${this.appMain?.authStore?.token}`,

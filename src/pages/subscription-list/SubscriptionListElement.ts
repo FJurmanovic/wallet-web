@@ -33,6 +33,23 @@ class SubscriptionListElement extends BasePageElement {
 		this.pagination?.executeFetch();
 	};
 
+	subscriptionEdit = (id) => {
+		const _modal = this.appMain.appModal;
+		if (_modal) {
+			this.appMain.closeModal();
+		} else {
+			this.appMain.createModal('subscription-edit', {
+				id: id
+			});
+		}
+	}
+
+	subscriptionEnd = (id) => {
+		if (confirm('Are you sure you want to end this subscription?')) {
+			this.subscriptionService.endSubscription(id);
+		}
+	}
+
 	renderSubscription = (item) => html`<tr class="col-subscription">
 		<td class="--left">${dayjs(item.lastTransactionDate).format("MMM DD 'YY")}</td>
 		<td class="--left">every ${item.customRange} ${item.rangeName}</td>
@@ -49,6 +66,10 @@ class SubscriptionListElement extends BasePageElement {
 				})}
 			</span>
 			<span class="currency">(${item.currency ? item.currency : 'USD'})</span>
+		</td>
+		<td class="--left">
+			<span><button @click=${() => this.subscriptionEdit(item.id)}}>Edit</button></span>
+			<span><button @click=${() => this.subscriptionEnd(item.id)}}>End</button></span>
 		</td>
 	</tr>`;
 

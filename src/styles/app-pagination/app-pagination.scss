@@ -138,13 +138,14 @@ app-pagination {
 					grid-template-columns: repeat(6, 1fr);
 				}
 				&.col-subscription {
-					grid-template-columns: 1fr 2fr 10fr 1fr 2fr;
+					grid-template-columns: 1fr 2fr 10fr 1fr 2fr 1fr;
 				}
 				td,
 				th {
 					margin: 0 12px;
 					overflow: hidden; // Or flex might break
 					list-style: none;
+					align-self: center;
 					&.--left {
 						text-align: left;
 					}
