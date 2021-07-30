@@ -95,6 +95,17 @@ class AppPaginationElement extends BaseComponentElement {
 		}
 	};
 
+	transactionEdit = (id) => {
+		const _modal = this.appMain.appModal;
+		if (_modal) {
+			this.appMain.closeModal();
+		} else {
+			this.appMain.createModal('transaction-edit', {
+				id: id
+			});
+		}
+	}
+
 	render = (): TemplateResult => {
 		const { rpp, totalItems, page, items } = this;
 
@@ -116,6 +127,9 @@ class AppPaginationElement extends BaseComponentElement {
 							})}
 						</span>
 						<span class="currency">(${item.currency ? item.currency : 'USD'})</span>
+					</td>
+					<td class="--left">
+						<span><button @click=${() => this.transactionEdit(item.id)}}>Edit</button></span>
 					</td>
 			  </tr>`;
 

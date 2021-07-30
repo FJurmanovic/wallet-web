@@ -11,3 +11,4 @@ export * from './subscription-create/SubscriptionCreateElement';
 export * from './subscription-list/SubscriptionListElement';
 export * from './wallet-page/WalletPageElement';
 export * from './subscription-edit/SubscriptionEditElement';
+export * from './transaction-edit/TransactionEditElement';
