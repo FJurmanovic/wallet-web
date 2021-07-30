@@ -42,6 +42,7 @@ class AppMenuElement extends BaseComponentElement {
 	setWallets = (wallets: Array<any>, totalWallets: number): void => {
 		this.walletData = wallets;
 		this.totalWallets = totalWallets;
+		console.log(wallets)
 		this.update();
 	};
 
@@ -99,13 +100,15 @@ class AppMenuElement extends BaseComponentElement {
 	render = (): TemplateResult => {
 		const { isAuth, totalWallets, walletData } = this;
 
+		console.log(walletData)
+
 		const regularMenu = (path: string, title: string, action?: string, className?: string): TemplateResult => {
 			if (action) {
 				return html`
-					<menu-item class="${className || ''}" data-path="${path}" data-customaction="${action}">${title}</menu-item>
+					<menu-item class="${className || ''}" data-path="${path}" data-customaction="${action}" data-title="${title}"></menu-item>
 				`;
 			}
-			return html`<menu-item class="${className || ''}" data-path="${path}">${title}</menu-item>`;
+			return html`<menu-item class="${className || ''}" data-path="${path}" data-title="${title}"></menu-item>`;
 		};
 		const menuButton = (title: string, action?: string): TemplateResult => {
 			return html` <div class="menu-item --retract" data-target="menu-item.itemEl">
@@ -128,6 +131,7 @@ class AppMenuElement extends BaseComponentElement {
 		};
 		const renderWallets = (wallets: Array<any>) => {
 			if (isAuth && totalWallets > 0) {
+				console.log(wallets[0].name)
 				return html`<div class="menu-item divider"></div>
 					${wallets.map((wallet) => regularMenu(`/wallet/${wallet.id}`, wallet.name, '', '--wallet'))}`;
 			}

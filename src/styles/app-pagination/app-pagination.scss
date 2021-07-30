@@ -49,6 +49,9 @@ app-pagination {
 				&.col-transactions {
 					grid-template-columns: 1fr 10fr 1fr 1fr;
 				}
+				&.col-wallet {
+					grid-template-columns: 9fr 1fr;
+				}
 				td,
 				th {
 					margin: 0 12px;

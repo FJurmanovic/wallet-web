@@ -44,6 +44,14 @@ class AppPaginationElement extends BaseComponentElement {
 		}
 	};
 
+	defaultFetch = () => {
+		const options = {
+			rpp: this.rpp || 10,
+			page: 1
+		}
+		this.executeFetch(options);
+	}
+
 	setCustomRenderItems = (customRenderItems: () => TemplateResult) => {
 		this.customRenderItems = customRenderItems;
 		this.update();
