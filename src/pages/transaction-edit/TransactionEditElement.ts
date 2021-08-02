@@ -1,12 +1,6 @@
 import { targets, controller, target } from '@github/catalyst';
 import { html, TemplateResult } from 'core/utils';
-import {
-	AuthService,
-	SubscriptionService,
-	SubscriptionTypeService,
-	TransactionTypeService,
-	WalletService,
-} from 'services/';
+import { AuthService, TransactionsService, TransactionTypeService, WalletService } from 'services/';
 import { AppFormElement, InputFieldElement } from 'components/';
 import { BasePageElement } from 'common/';
 import { AppDropdownElement } from 'components/app-dropdown/AppDropdownElement';
@@ -15,12 +9,11 @@ import utc from 'dayjs/plugin/utc';
 dayjs.extend(utc);
 
 @controller
-class SubscriptionCreateElement extends BasePageElement {
+class TransactionEditElement extends BasePageElement {
 	@targets inputs: Array<InputFieldElement | AppDropdownElement>;
 	@target appForm: AppFormElement;
-	private subscriptionService: SubscriptionService;
+	private transactionService: TransactionsService;
 	private transactionTypeService: TransactionTypeService;
-	private subscriptionTypeService: SubscriptionTypeService;
 	private walletService: WalletService;
 	walletData: any = null;
 	authService: AuthService;
@@ -28,17 +21,17 @@ class SubscriptionCreateElement extends BasePageElement {
 	private initial: boolean = false;
 	constructor() {
 		super({
-			title: 'New Subscription',
+			title: 'Edit Transaction',
 		});
 	}
 	elementConnected = (): void => {
 		this.walletService = new WalletService(this.appMain?.appService);
-		this.subscriptionService = new SubscriptionService(this.appMain?.appService);
+		this.transactionService = new TransactionsService(this.appMain?.appService);
 		this.transactionTypeService = new TransactionTypeService(this.appMain?.appService);
-		this.subscriptionTypeService = new SubscriptionTypeService(this.appMain?.appService);
 		this.authService = new AuthService(this.appMain.appService);
 		this.walletData = this.getData();
 		this.update();
+		this.getTransaction(this.walletData?.id)
 		if (this.walletData && this.walletData.walletId) {
 			this.setTransactionType();
 		} else {
@@ -46,11 +39,25 @@ class SubscriptionCreateElement extends BasePageElement {
 		}
 	};
 
-	get hasEndCheck(): InputFieldElement | AppDropdownElement {
-		for (const i in this.inputs) {
-			if (this.inputs[i]?.name == 'hasEnd') {
-				return this.inputs[i];
+	getTransaction = async (id) => {
+		try {
+			const response = await this.transactionService.get(id, {
+				embed: 'Wallet,TransactionType'
+			});
+			const wallet = this.appForm.getInput('wallet');
+			if (wallet) {
+				(wallet as AppDropdownElement).setItemValue(response.wallet);
 			}
+			const transactionType = this.appForm.getInput('transactionType');
+			if (transactionType) {
+				(transactionType as AppDropdownElement).setItemValue(response.transactionType);
+			}
+			response.wallet = response.walletId;
+			response.transactionType = response.transactionTypeId;
+			response.transactionDate = dayjs(response.transactionDate).format('YYYY-MM-DD');
+			this.appForm.set(response);
+		} catch (err) {
+
 		}
 	}
 
@@ -96,13 +103,6 @@ class SubscriptionCreateElement extends BasePageElement {
 		} catch (err) {}
 	};
 
-	getSubs = async (options): Promise<void> => {
-		try {
-			const response = await this.subscriptionTypeService.getAll(options);
-			return response;
-		} catch (err) {}
-	};
-
 	onSubmit = async (values): Promise<void> => {
 		try {
 			if (!this.validate()) {
@@ -113,48 +113,39 @@ class SubscriptionCreateElement extends BasePageElement {
 				description: description,
 				wallet: walletId,
 				amount,
-				customRange,
 				transactionType: transactionTypeId,
-				subscriptionType: subscriptionTypeId,
-				startDate,
-				endDate,
+				transactionDate,
 			} = values;
 
-			const startDateFormat = dayjs(startDate).utc(true).format();
-			const endDateFormat = dayjs(endDate).utc(true).format();
+			const formattedDate = dayjs(transactionDate).utc(true).format();
 
 			const walletData = this.walletData;
 
 			const formData = {
 				description,
 				amount,
-				customRange: customRange || 0,
-				hasEnd: (this.hasEndCheck?.inp as HTMLInputElement)?.checked,
-				startDate: startDateFormat,
-				endDate: endDateFormat,
 				walletId: walletData && walletData.walletId ? walletData.walletId : walletId,
+				transactionDate: formattedDate,
 				transactionTypeId:
 					walletData && walletData.transactionTypeId ? walletData.transactionTypeId : transactionTypeId,
-				subscriptionTypeId:
-					walletData && walletData.subscriptionTypeId ? walletData.subscriptionTypeId : subscriptionTypeId,
 			};
-			const response = await this.subscriptionService.post(formData);
+
+			const response = await this.transactionService.put(this.walletData?.id, formData);
 
 			if (response?.id) {
 				this.appMain.triggerTransactionUpdate();
-				this.appMain.pushToast('success', 'Subscription created successfully!');
+				this.appMain.pushToast('success', 'Transaction edited successfully!');
 
-				if (walletData.walletId) {
+				if (walletData.id) {
 					this.appMain?.closeModal();
 				} else {
-					this.appMain?.closeModal();
-					this.routerService.goTo('/subscriptions', {
+					this.routerService.goTo('/history', {
 						walletId: response.walletId,
 					});
 				}
 			}
 		} catch (err) {
-			this.errorMessage = 'Unable to create subscription!';
+			this.errorMessage = 'Unable to edit transaction!';
 			this.update();
 		}
 	};
@@ -168,24 +159,18 @@ class SubscriptionCreateElement extends BasePageElement {
 		return _return;
 	}
 
-	onCheck = () => {
-		this.appForm.update();
-		this.appForm.validate();
-		this.appForm.update();
-	};
-
-	renderForms = () => {
+	render = (): TemplateResult => {
 		const renderInput = (type, name, label, rules, hide?, customAction?) => {
 			if (hide) {
-				return null;
+				return html``;
 			}
 			return html`<input-field
 				data-type="${type}"
 				data-name="${name}"
 				data-label="${label}"
-				data-targets="subscription-create.inputs"
+				data-targets="transaction-edit.inputs"
 				data-rules="${rules}"
-				data-custom-action="${customAction || ''}"
+				custom-action="${customAction}"
 			></input-field>`;
 		};
 
@@ -198,7 +183,7 @@ class SubscriptionCreateElement extends BasePageElement {
 				data-pattern="${pattern}"
 				data-name="${name}"
 				data-label="${label}"
-				data-targets="transaction-create.inputs"
+				data-targets="transaction-edit.inputs"
 				data-rules="${rules}"
 				custom-action="${customAction}"
 			></input-field>`;
@@ -211,49 +196,39 @@ class SubscriptionCreateElement extends BasePageElement {
 			return html`<app-dropdown
 				data-name="${name}"
 				data-label="${label}"
-				data-targets="subscription-create.inputs"
+				data-targets="transaction-edit.inputs"
 				data-rules="${rules}"
 				data-fetch="${fetch}"
 			></app-dropdown>`;
 		};
-		return html`
-				<div slot="inputs">
-					${renderNumericInput('^d+(?:.d{1,2})?$', 'amount', 'Amount', 'required', false)}
-					${renderInput('text', 'description', 'Description', 'required')}
-					${renderInput('date', 'startDate', 'Start date', 'required')}
-					${renderInput('checkbox', 'hasEnd', 'Existing End Date', '', false, 'change:subscription-create#onCheck')}
-					${renderInput(
-						'date',
-						'endDate',
-						'End date',
-						'required|is_after[field(startDate)]',
-						!(this.hasEndCheck?.inp as HTMLInputElement)?.checked
-					)}
-					${renderDropdown(
-						'subscription-create#getWallets',
-						'wallet',
-						'Wallet',
-						'required',
-						this.walletData && this.walletData.walletId
-					)}
-					${renderDropdown('subscription-create#getTypes', 'transactionType', 'Transaction Type', 'required')}
-					${renderInput('number', 'customRange', 'Every', 'required')}
-					${renderDropdown('subscription-create#getSubs', 'subscriptionType', 'Subscription Type', 'required')}
-					${this.errorMessage ? html`<div>${this.errorMessage}</div>` : html``}</template
-				>`;
-	};
 
-	render = (): TemplateResult => {
 		return html`
 			<app-form
-				data-custom="subscription-create#onSubmit"
+				data-custom="transaction-edit#onSubmit"
 				data-has-cancel="true"
-				data-target="subscription-create.appForm"
-				data-render-input="subscription-create#renderForms"
+				data-target="transaction-edit.appForm"
 			>
+				${renderNumericInput('^d+(?:.d{1,2})?$', 'amount', 'Amount', 'required', false)}
+				${renderInput('text', 'description', 'Description', 'required')}
+				${renderInput('date', 'transactionDate', 'Transaction date', 'required')}
+				${renderDropdown(
+					'transaction-edit#getWallets',
+					'wallet',
+					'Wallet',
+					'required',
+					this.walletData && this.walletData.walletId
+				)}
+				${renderDropdown(
+					'transaction-edit#getTypes',
+					'transactionType',
+					'Transaction Type',
+					'required',
+					this.walletData && this.walletData.walletId
+				)}
+				${this.errorMessage ? html`<div>${this.errorMessage}</div>` : html``}
 			</app-form>
 		`;
 	};
 }
 
-export type { SubscriptionCreateElement };
+export type { TransactionEditElement };

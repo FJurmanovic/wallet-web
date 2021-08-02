@@ -33,6 +33,24 @@ class SubscriptionListElement extends BasePageElement {
 		this.pagination?.executeFetch();
 	};
 
+	subscriptionEdit = (id) => {
+		const _modal = this.appMain.appModal;
+		if (_modal) {
+			this.appMain.closeModal();
+		} else {
+			this.appMain.createModal('subscription-edit', {
+				id: id
+			});
+		}
+	}
+
+	subscriptionEnd = async (id) => {
+		if (confirm('Are you sure you want to end this subscription?')) {
+			await this.subscriptionService.endSubscription(id);
+			this.appMain.triggerTransactionUpdate();
+		}
+	}
+
 	renderSubscription = (item) => html`<tr class="col-subscription">
 		<td class="--left">${dayjs(item.lastTransactionDate).format("MMM DD 'YY")}</td>
 		<td class="--left">every ${item.customRange} ${item.rangeName}</td>
@@ -50,6 +68,12 @@ class SubscriptionListElement extends BasePageElement {
 			</span>
 			<span class="currency">(${item.currency ? item.currency : 'USD'})</span>
 		</td>
+		${item.hasEnd ? html`` : html`
+		<td class="--right">
+			<span><button class="btn btn-rounded btn-gray" @click=${() => this.subscriptionEdit(item.id)}}>Edit</button></span>
+			<span><button class="btn btn-rounded btn-alert"  @click=${() => this.subscriptionEnd(item.id)}}>End</button></span>
+		</td>`
+		}
 	</tr>`;
 
 	getSubscriptions = async (options): Promise<any> => {

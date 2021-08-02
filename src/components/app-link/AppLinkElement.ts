@@ -14,6 +14,7 @@ class AppLinkElement extends BaseComponentElement {
 	@target main: Element;
 	constructor() {
 		super();
+		this.attributeChangedCallback = this.attributeChangedCallback.bind(this);
 	}
 
 	elementConnected = (): void => {
@@ -34,6 +35,12 @@ class AppLinkElement extends BaseComponentElement {
 		}
 	};
 
+	attributeChangedCallback(changed) {
+		if(this.initialized && changed == 'data-title') {
+			this.update();
+		}
+	}
+
 	goTo = (e: Event): void => {
 		e.preventDefault();
 		if (!isTrue(this.goBack) && this.to) {
@@ -46,7 +53,7 @@ class AppLinkElement extends BaseComponentElement {
 
 	get disabled(): boolean {
 		if (isTrue(this.goBack)) {
-			return this.routerService.emptyState;
+			return this.routerService?.emptyState;
 		}
 		return false;
 	}

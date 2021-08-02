@@ -7,20 +7,20 @@ class BaseService {
 		return this.appService.get(this.endpoint, params, headers);
 	};
 
-	get = (params?: Object, headers?: HeadersInit) => {
-		return this.appService.get(this.endpoint, params, headers);
+	get = (id: string, params?: Object, headers?: HeadersInit) => {
+		return this.appService.get(this.endpoint + `/${id}`, params, headers);
 	};
 
-	put = (data?: Object, headers?: HeadersInit) => {
-		return this.appService.put(this.endpoint, data, headers);
+	put = (id: string, data?: any, headers?: HeadersInit) => {
+		return this.appService.put(this.endpoint + `/${id || data?.id || ''}`, data, headers);
 	};
 
 	post = (data?: Object, headers?: HeadersInit) => {
 		return this.appService.post(this.endpoint, data, headers);
 	};
 
-	delete = (data?: Object, headers?: HeadersInit) => {
-		return this.appService.delete(this.endpoint, data, headers);
+	delete = (id:string, data?: any, headers?: HeadersInit) => {
+		return this.appService.delete(this.endpoint + `/${id || data?.id || ''}`, data, headers);
 	};
 }
 

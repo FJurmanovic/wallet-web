@@ -14,13 +14,21 @@ class WalletPageElement extends BasePageElement {
 	@target paginationSub: AppPaginationElement;
 	@target walletHeader: WalletHeaderElement;
 	walletId: string;
+	walletTitle: string;
 	constructor() {
 		super({
-			title: 'Wallet',
+			title: 'Wallet'
 		});
 	}
 
-	elementConnected = (): void => {
+	get pageTitle(){
+		if (this.walletTitle) {
+			return `Wallet - ${this.walletTitle}`
+		}
+		return 'Wallet'
+	}
+
+	elementConnected = async(): Promise<void> => {
 		this.walletService = new WalletService(this.appMain?.appService);
 		this.transactionsService = new TransactionsService(this.appMain?.appService);
 		this.subscriptionService = new SubscriptionService(this.appMain?.appService);
@@ -30,15 +38,18 @@ class WalletPageElement extends BasePageElement {
 				this.walletId = walletId;
 			}
 		}
+		await this.getWallet();
 		this.update();
 		this.pagination?.setFetchFunc?.(this.getTransactions, true)!;
 		this.paginationSub?.setFetchFunc?.(this.getSubscriptions, true)!;
 		this.paginationSub?.setCustomRenderItem?.(this.renderSubscription)!;
+		this.appMain.addEventListener('walletupdate', this.getWallet);
 		this.appMain.addEventListener('tokenchange', this.update);
 		this.appMain.addEventListener('transactionupdate', this.transactionUpdated);
 	};
 
 	elementDisconnected = (appMain: AppMainElement): void => {
+		appMain?.removeEventListener('walletupdate', this.getWallet);
 		appMain?.removeEventListener('tokenchange', this.update);
 		appMain?.removeEventListener('transactionupdate', this.transactionUpdated);
 	};
@@ -66,6 +77,35 @@ class WalletPageElement extends BasePageElement {
 		}
 	};
 
+	getWallet = async() => {
+		try {
+			const id = this.walletId;
+			const response = await this.walletService.get(id, null);
+			this.walletTitle = response.name;
+		} catch (err) {
+			throw err;
+		}
+		this.update();
+	}
+
+	subscriptionEdit = (id) => {
+		const _modal = this.appMain.appModal;
+		if (_modal) {
+			this.appMain.closeModal();
+		} else {
+			this.appMain.createModal('subscription-edit', {
+				id: id
+			});
+		}
+	}
+
+	subscriptionEnd = async (id) => {
+		if (confirm('Are you sure you want to end this subscription?')) {
+			await this.subscriptionService.endSubscription(id);
+			this.appMain.triggerTransactionUpdate();
+		}
+	}
+
 	renderSubscription = (item) => html`<tr class="col-subscription">
 		<td class="--left">${dayjs(item.lastTransactionDate).format("MMM DD 'YY")}</td>
 		<td class="--left">every ${item.customRange} ${item.rangeName}</td>
@@ -83,6 +123,12 @@ class WalletPageElement extends BasePageElement {
 			</span>
 			<span class="currency">(${item.currency ? item.currency : 'USD'})</span>
 		</td>
+		${item.hasEnd ? html`` : html`
+		<td class="--right">
+			<span><button class="btn btn-rounded btn-gray" @click=${() => this.subscriptionEdit(item.id)}}>Edit</button></span>
+			<span><button class="btn btn-rounded btn-alert"  @click=${() => this.subscriptionEnd(item.id)}}>End</button></span>
+		</td>`
+		}
 	</tr>`;
 
 	getSubscriptions = async (options): Promise<any> => {
@@ -175,6 +221,17 @@ class WalletPageElement extends BasePageElement {
 			});
 		}
 	};
+	
+	walletEdit = () => {
+		const _modal = this.appMain.appModal;
+		if (_modal) {
+			this.appMain.closeModal();
+		} else {
+			this.appMain.createModal('wallet-edit', {
+				id: this.routerService?.routerState?.data?.walletId
+			});
+		}
+	}
 
 	render = (): TemplateResult => {
 		const renderHeader = () => html`<wallet-header
@@ -189,6 +246,7 @@ class WalletPageElement extends BasePageElement {
 		const renderWallet = () => {
 			if (this.routerService?.routerState?.data?.walletId) {
 				return html`<div class="wallet-buttons">
+				<button class="btn btn-squared btn-gray" app-action="click:wallet-page#walletEdit">Edit Wallet</button>
 					<div class="button-group">
 						<button class="btn btn-squared btn-primary" app-action="click:wallet-page#newSub">New Subscription</button>
 						<button class="btn btn-squared btn-red" app-action="click:wallet-page#newExpense">New Expense</button>

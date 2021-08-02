@@ -33,6 +33,7 @@ class AppDropdownElement extends BaseComponentElement {
 	page: number = 1;
 	rpp: number = 30;
 	validator: Validator;
+	itemValue: any = null;
 
 	constructor() {
 		super();
@@ -119,7 +120,10 @@ class AppDropdownElement extends BaseComponentElement {
 	};
 
 	get selectedItem() {
-		const { value, valuekey, items } = this;
+		const { value, valuekey, items, itemValue } = this;
+		if (itemValue) {
+			return itemValue;
+		}
 		const item = items?.find((item) => {
 			return value == item[valuekey];
 		});
@@ -173,6 +177,7 @@ class AppDropdownElement extends BaseComponentElement {
 
 	itemSelected = (e) => {
 		const value = (e.target as HTMLSpanElement).getAttribute('data-value');
+		this.itemValue = null;
 		this.setValue(value);
 		this.setOpen(false);
 		this.appForm?.inputChange(e);
@@ -182,6 +187,11 @@ class AppDropdownElement extends BaseComponentElement {
 		this.value = value;
 		this.update();
 	};
+
+	setItemValue = (itemValue) => {
+		this.itemValue = itemValue;
+		this.update();
+	}
 
 	render = () => {
 		const { label, error, errorMessage, isOpen, searchPhrase, items, selectedItem, displaykey, valuekey } = this;
