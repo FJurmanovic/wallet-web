@@ -48,7 +48,6 @@ class MenuItemElement extends BaseComponentElement {
 	};
 
 	render = (): TemplateResult => {
-		console.log(this.title)
 		return html`
 			<div class="${this.current ? 'selected ' : ''}menu-item" data-target="menu-item.itemEl">
 				<app-link class="${this.className}" data-to="${this.path}" data-custom-action="click:menu-item#itemClick" data-title="${this.title}"></app-link

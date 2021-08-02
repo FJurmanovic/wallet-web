@@ -53,7 +53,6 @@ class AppLinkElement extends BaseComponentElement {
 
 	get disabled(): boolean {
 		if (isTrue(this.goBack)) {
-			console.log(this.routerService)
 			return this.routerService?.emptyState;
 		}
 		return false;

@@ -42,7 +42,6 @@ class AppMenuElement extends BaseComponentElement {
 	setWallets = (wallets: Array<any>, totalWallets: number): void => {
 		this.walletData = wallets;
 		this.totalWallets = totalWallets;
-		console.log(wallets)
 		this.update();
 	};
 
@@ -100,8 +99,6 @@ class AppMenuElement extends BaseComponentElement {
 	render = (): TemplateResult => {
 		const { isAuth, totalWallets, walletData } = this;
 
-		console.log(walletData)
-
 		const regularMenu = (path: string, title: string, action?: string, className?: string): TemplateResult => {
 			if (action) {
 				return html`
@@ -131,7 +128,6 @@ class AppMenuElement extends BaseComponentElement {
 		};
 		const renderWallets = (wallets: Array<any>) => {
 			if (isAuth && totalWallets > 0) {
-				console.log(wallets[0].name)
 				return html`<div class="menu-item divider"></div>
 					${wallets.map((wallet) => regularMenu(`/wallet/${wallet.id}`, wallet.name, '', '--wallet'))}`;
 			}
