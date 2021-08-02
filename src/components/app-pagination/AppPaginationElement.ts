@@ -44,6 +44,14 @@ class AppPaginationElement extends BaseComponentElement {
 		}
 	};
 
+	defaultFetch = () => {
+		const options = {
+			rpp: this.rpp || 10,
+			page: 1
+		}
+		this.executeFetch(options);
+	}
+
 	setCustomRenderItems = (customRenderItems: () => TemplateResult) => {
 		this.customRenderItems = customRenderItems;
 		this.update();
@@ -95,6 +103,17 @@ class AppPaginationElement extends BaseComponentElement {
 		}
 	};
 
+	transactionEdit = (id) => {
+		const _modal = this.appMain.appModal;
+		if (_modal) {
+			this.appMain.closeModal();
+		} else {
+			this.appMain.createModal('transaction-edit', {
+				id: id
+			});
+		}
+	}
+
 	render = (): TemplateResult => {
 		const { rpp, totalItems, page, items } = this;
 
@@ -116,6 +135,9 @@ class AppPaginationElement extends BaseComponentElement {
 							})}
 						</span>
 						<span class="currency">(${item.currency ? item.currency : 'USD'})</span>
+					</td>
+					<td class="--right">
+						<span><button class="btn btn-rounded btn-gray" @click=${() => this.transactionEdit(item.id)}}>Edit</button></span>
 					</td>
 			  </tr>`;
 

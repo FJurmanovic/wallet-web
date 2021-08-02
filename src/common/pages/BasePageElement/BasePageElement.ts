@@ -4,17 +4,21 @@ import { BaseElement } from 'common/';
 import { isTrue } from 'core/utils';
 
 class BasePageElement extends BaseElement {
-	public pageTitle: string = '';
+	public _pageTitle: string = '';
 	@attr hidetitle: string;
 	@attr customtitle: string;
 	private _data: any;
 	constructor(options: OptionType) {
 		super();
 		if (options?.title) {
-			this.pageTitle = options?.title;
+			this._pageTitle = options?.title;
 		}
 		this.connectedCallback = this.connectedCallback.bind(this);
 		this.disconnectedCallback = this.disconnectedCallback.bind(this);
+	}
+
+	get pageTitle() {
+		return this._pageTitle;
 	}
 
 	public renderTitle = () => {

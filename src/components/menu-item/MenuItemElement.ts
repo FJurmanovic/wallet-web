@@ -3,7 +3,7 @@ import { html, TemplateResult } from 'core/utils';
 import { AppMainElement } from 'components/app-main/AppMainElement';
 import { BaseComponentElement } from 'common/';
 import { deviceWidths } from 'core/constants';
-import { MenuLayoutElement } from 'layouts';
+import { MenuLayoutElement } from 'layouts/';
 
 @controller
 class MenuItemElement extends BaseComponentElement {
@@ -14,6 +14,7 @@ class MenuItemElement extends BaseComponentElement {
 	@target customButton: HTMLDivElement;
 	constructor() {
 		super();
+		this.attributeChangedCallback = this.attributeChangedCallback.bind(this);
 	}
 
 	public elementConnected = (): void => {
@@ -30,8 +31,14 @@ class MenuItemElement extends BaseComponentElement {
 		appMain?.removeEventListener('routechanged', this.update);
 	};
 
+	attributeChangedCallback(changed) {
+		if(this.initialized && changed == 'data-title') {
+			this.update();
+		}
+	}
+
 	get current(): boolean {
-		return this.routerService.comparePath(this.path);
+		return this.routerService?.comparePath(this.path);
 	}
 
 	itemClick = (e) => {
@@ -43,8 +50,7 @@ class MenuItemElement extends BaseComponentElement {
 	render = (): TemplateResult => {
 		return html`
 			<div class="${this.current ? 'selected ' : ''}menu-item" data-target="menu-item.itemEl">
-				<app-link class="${this.className}" data-to="${this.path}" data-custom-action="click:menu-item#itemClick"
-					>${this.title}</app-link
+				<app-link class="${this.className}" data-to="${this.path}" data-custom-action="click:menu-item#itemClick" data-title="${this.title}"></app-link
 				>
 				${this.customaction
 					? html`<div data-target="menu-item.customButton" app-action="${this.customaction}">+</div>`

@@ -3,6 +3,7 @@ import { html, TemplateResult } from 'core/utils';
 import { SubscriptionService, TransactionsService, WalletService } from 'services/';
 import { AppMainElement, AppPaginationElement, WalletHeaderElement } from 'components/';
 import { BasePageElement } from 'common/';
+import dayjs from 'dayjs';
 
 @controller
 class WalletPageElement extends BasePageElement {
@@ -13,13 +14,21 @@ class WalletPageElement extends BasePageElement {
 	@target paginationSub: AppPaginationElement;
 	@target walletHeader: WalletHeaderElement;
 	walletId: string;
+	walletTitle: string;
 	constructor() {
 		super({
-			title: 'Wallet',
+			title: 'Wallet'
 		});
 	}
 
-	elementConnected = (): void => {
+	get pageTitle(){
+		if (this.walletTitle) {
+			return `Wallet - ${this.walletTitle}`
+		}
+		return 'Wallet'
+	}
+
+	elementConnected = async(): Promise<void> => {
 		this.walletService = new WalletService(this.appMain?.appService);
 		this.transactionsService = new TransactionsService(this.appMain?.appService);
 		this.subscriptionService = new SubscriptionService(this.appMain?.appService);
@@ -29,14 +38,18 @@ class WalletPageElement extends BasePageElement {
 				this.walletId = walletId;
 			}
 		}
+		await this.getWallet();
 		this.update();
 		this.pagination?.setFetchFunc?.(this.getTransactions, true)!;
 		this.paginationSub?.setFetchFunc?.(this.getSubscriptions, true)!;
+		this.paginationSub?.setCustomRenderItem?.(this.renderSubscription)!;
+		this.appMain.addEventListener('walletupdate', this.getWallet);
 		this.appMain.addEventListener('tokenchange', this.update);
 		this.appMain.addEventListener('transactionupdate', this.transactionUpdated);
 	};
 
 	elementDisconnected = (appMain: AppMainElement): void => {
+		appMain?.removeEventListener('walletupdate', this.getWallet);
 		appMain?.removeEventListener('tokenchange', this.update);
 		appMain?.removeEventListener('transactionupdate', this.transactionUpdated);
 	};
@@ -64,6 +77,60 @@ class WalletPageElement extends BasePageElement {
 		}
 	};
 
+	getWallet = async() => {
+		try {
+			const id = this.walletId;
+			const response = await this.walletService.get(id, null);
+			this.walletTitle = response.name;
+		} catch (err) {
+			throw err;
+		}
+		this.update();
+	}
+
+	subscriptionEdit = (id) => {
+		const _modal = this.appMain.appModal;
+		if (_modal) {
+			this.appMain.closeModal();
+		} else {
+			this.appMain.createModal('subscription-edit', {
+				id: id
+			});
+		}
+	}
+
+	subscriptionEnd = async (id) => {
+		if (confirm('Are you sure you want to end this subscription?')) {
+			await this.subscriptionService.endSubscription(id);
+			this.appMain.triggerTransactionUpdate();
+		}
+	}
+
+	renderSubscription = (item) => html`<tr class="col-subscription">
+		<td class="--left">${dayjs(item.lastTransactionDate).format("MMM DD 'YY")}</td>
+		<td class="--left">every ${item.customRange} ${item.rangeName}</td>
+		<td class="--left">${item.description}</td>
+		<td class="--left">${dayjs(item.nextTransaction).format("MMM DD 'YY")}</td>
+		<td class="balance-cell --right">
+			<span
+				class="balance ${item.amount > 0 && item?.transactionType?.type != 'expense' ? '--positive' : '--negative'}"
+			>
+				${item?.transactionType?.type == 'expense' ? '- ' : ''}
+				${Number(item.amount).toLocaleString('en-US', {
+					maximumFractionDigits: 2,
+					minimumFractionDigits: 2,
+				})}
+			</span>
+			<span class="currency">(${item.currency ? item.currency : 'USD'})</span>
+		</td>
+		${item.hasEnd ? html`` : html`
+		<td class="--right">
+			<span><button class="btn btn-rounded btn-gray" @click=${() => this.subscriptionEdit(item.id)}}>Edit</button></span>
+			<span><button class="btn btn-rounded btn-alert"  @click=${() => this.subscriptionEnd(item.id)}}>End</button></span>
+		</td>`
+		}
+	</tr>`;
+
 	getSubscriptions = async (options): Promise<any> => {
 		try {
 			if (this?.routerService?.routerState?.data) {
@@ -72,9 +139,29 @@ class WalletPageElement extends BasePageElement {
 					options['walletId'] = walletId;
 				}
 			}
-			options.embed = 'TransactionType';
+			options.embed = 'TransactionType,SubscriptionType';
 			options.sortBy = 'dateCreated|desc';
 			const response = await this.subscriptionService.getAll(options);
+			response?.items?.map?.((i) => {
+				switch (i.subscriptionType.type) {
+					case 'monthly':
+						i.rangeName = i.customRange != 1 ? 'Months' : 'Month';
+						i.nextTransaction = dayjs(i.lastTransactionDate).add(i.customRange, 'month');
+						break;
+					case 'yearly':
+						i.rangeName = i.customRange != 1 ? 'Years' : 'Year';
+						i.nextTransaction = dayjs(i.lastTransactionDate).add(i.customRange, 'year');
+						break;
+					case 'daily':
+						i.rangeName = i.customRange != 1 ? 'Days' : 'Day';
+						i.nextTransaction = dayjs(i.lastTransactionDate).add(i.customRange, 'day');
+						break;
+					case 'weekly':
+						i.rangeName = i.customRange != 1 ? 'Weeks' : 'Week';
+						i.nextTransaction = dayjs(i.lastTransactionDate).add(7 * i.customRange, 'day');
+						break;
+				}
+			});
 			return response;
 		} catch (err) {
 			throw err;
@@ -134,6 +221,17 @@ class WalletPageElement extends BasePageElement {
 			});
 		}
 	};
+	
+	walletEdit = () => {
+		const _modal = this.appMain.appModal;
+		if (_modal) {
+			this.appMain.closeModal();
+		} else {
+			this.appMain.createModal('wallet-edit', {
+				id: this.routerService?.routerState?.data?.walletId
+			});
+		}
+	}
 
 	render = (): TemplateResult => {
 		const renderHeader = () => html`<wallet-header
@@ -148,6 +246,7 @@ class WalletPageElement extends BasePageElement {
 		const renderWallet = () => {
 			if (this.routerService?.routerState?.data?.walletId) {
 				return html`<div class="wallet-buttons">
+				<button class="btn btn-squared btn-gray" app-action="click:wallet-page#walletEdit">Edit Wallet</button>
 					<div class="button-group">
 						<button class="btn btn-squared btn-primary" app-action="click:wallet-page#newSub">New Subscription</button>
 						<button class="btn btn-squared btn-red" app-action="click:wallet-page#newExpense">New Expense</button>
@@ -162,7 +261,7 @@ class WalletPageElement extends BasePageElement {
 			<h2>Transactions</h2>
 			<app-pagination data-target="wallet-page.pagination"></app-pagination>
 			<h2>Subscriptions</h2>
-			<app-pagination data-target="wallet-page.paginationSub"></app-pagination>
+			<app-pagination data-target="wallet-page.paginationSub" data-table-layout="subscription-table"></app-pagination>
 		</div>`;
 	};
 }

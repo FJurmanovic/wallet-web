@@ -9,6 +9,7 @@ class BaseElement extends HTMLElement {
 	private _appMain: AppMainElement;
 	public loader: Loader;
 	public elementDisconnectCallbacks: Array<Function> = [];
+	public initialized: boolean = false;
 	constructor() {
 		super();
 		this.connectedCallback = this.connectedCallback.bind(this);
@@ -86,6 +87,7 @@ class BaseElement extends HTMLElement {
 		this.bindEvents('data-action');
 		this.bindEvents('app-action');
 		this.updateCallback();
+		this.initialized = true;
 	};
 
 	connectedCallback(): void {

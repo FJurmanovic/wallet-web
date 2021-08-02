@@ -47,13 +47,109 @@ app-pagination {
 					grid-template-columns: repeat(6, 1fr);
 				}
 				&.col-transactions {
-					grid-template-columns: auto 1fr auto;
+					grid-template-columns: 1fr 10fr 1fr 1fr;
+				}
+				&.col-wallet {
+					grid-template-columns: 9fr 1fr;
 				}
 				td,
 				th {
 					margin: 0 12px;
 					overflow: hidden; // Or flex might break
 					list-style: none;
+					align-self: center;
+					&.--left {
+						text-align: left;
+					}
+					&.--right {
+						text-align: right;
+					}
+					&.balance-cell {
+						.balance {
+							display: inline;
+							&.--positive {
+								color: $green-01;
+							}
+							&.--negative {
+								color: $red-01;
+							}
+						}
+						.currency {
+							display: inline;
+							color: $gray-10;
+						}
+					}
+				}
+			}
+			.paginate {
+				position: relative;
+				height: 33px;
+				margin-bottom: 7px;
+				.--total {
+					position: absolute;
+					left: 7px;
+					bottom: 9px;
+					color: $gray-05;
+				}
+				.--footer {
+					position: absolute;
+					right: 7px;
+					.--pages {
+						margin-right: 7px;
+						color: $gray-05;
+					}
+				}
+			}
+		}
+		table.subscription-table {
+			margin: 0 0 3em 0;
+			padding: 0;
+			width: 100%;
+			background-color: $gray-09;
+			border: 1px solid $gray-09;
+			border-radius: 4px;
+			display: block;
+			&.--loading {
+				min-height: 80px;
+				tr {
+					td {
+						visibility: hidden;
+					}
+				}
+			}
+			tr {
+				background-color: $gray-07;
+				padding: 4px 12px;
+				border-radius: 4px;
+				display: grid;
+				margin: 6px 8px;
+				&.col-3 {
+					grid-template-columns: repeat(3, 1fr);
+				}
+				&.col-2 {
+					grid-template-columns: repeat(2, 1fr);
+				}
+				&.col-1 {
+					grid-template-columns: 1fr;
+				}
+				&.col-4 {
+					grid-template-columns: repeat(4, 1fr);
+				}
+				&.col-5 {
+					grid-template-columns: repeat(5, 1fr);
+				}
+				&.col-6 {
+					grid-template-columns: repeat(6, 1fr);
+				}
+				&.col-subscription {
+					grid-template-columns: 1fr 2fr 10fr 1fr 2fr 2fr;
+				}
+				td,
+				th {
+					margin: 0 12px;
+					overflow: hidden; // Or flex might break
+					list-style: none;
+					align-self: center;
 					&.--left {
 						text-align: left;
 					}

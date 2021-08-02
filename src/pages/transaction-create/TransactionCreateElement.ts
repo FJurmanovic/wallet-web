@@ -117,6 +117,7 @@ class TransactionCreateElement extends BasePageElement {
 				if (walletData.walletId) {
 					this.appMain?.closeModal();
 				} else {
+					this.appMain?.closeModal();
 					this.routerService.goTo('/history', {
 						walletId: response.walletId,
 					});

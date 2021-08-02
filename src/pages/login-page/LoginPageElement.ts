@@ -41,7 +41,11 @@ class LoginPageElement extends BasePageElement {
 		const formObject: any = {};
 		this.inputs.forEach((input: InputFieldElement) => {
 			const inputType = input.inp;
-			formObject[input.name] = (inputType as HTMLInputElement).value;
+			if (input.type === 'checkbox') {
+				formObject[input.name] = (inputType as HTMLInputElement).checked;
+			} else {
+				formObject[input.name] = (inputType as HTMLInputElement).value;
+			}
 		});
 		return formObject;
 	}
@@ -92,6 +96,14 @@ class LoginPageElement extends BasePageElement {
 				data-label="Password"
 				data-targets="login-page.inputs"
 				data-rules="required"
+			>
+			</input-field>
+			<input-field
+				data-type="checkbox"
+				data-name="rememberMe"
+				data-label="Remember me"
+				data-targets="login-page.inputs"
+				data-rules=""
 			>
 			</input-field>`;
 	};

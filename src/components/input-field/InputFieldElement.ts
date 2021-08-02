@@ -18,6 +18,7 @@ class InputFieldElement extends BaseComponentElement {
 	@target main: HTMLElement;
 	@target inp: HTMLElement;
 	@closest appForm: AppFormElement;
+	@attr disabled: string;
 	valid: boolean;
 	displayError: boolean;
 	randId: string;
@@ -36,12 +37,16 @@ class InputFieldElement extends BaseComponentElement {
 		//this.validate();
 	};
 
+	attributeChangedCallback() {
+		this.update();
+	}
+
 	setError = (error) => {
 		this.validator.error = error;
 	};
 
 	get error(): string {
-		return this.validator.error;
+		return this.validator?.error;
 	}
 
 	get isValid(): boolean {
@@ -53,7 +58,22 @@ class InputFieldElement extends BaseComponentElement {
 	}
 
 	get _value() {
+		if (this.type == 'checkbox') {
+			return (this.inp as HTMLInputElement)?.checked;
+		}
 		return (this.inp as HTMLInputElement)?.value;
+	}
+	
+	get _disabled() {
+		return this.disabled == "true" 
+	}
+
+	set _value(value) {
+		if (this.type == 'checkbox') {
+			(this.inp as HTMLInputElement).checked = (value as boolean);
+		} else {
+			(this.inp as HTMLInputElement).value = (value as string);
+		}
 	}
 
 	validate = (): boolean => {
@@ -88,7 +108,6 @@ class InputFieldElement extends BaseComponentElement {
 	};
 
 	render = (): TemplateResult => {
-		console.log('e');
 		const renderMessage = (label: string) => {
 			if (this.label) {
 				return html`<label for="${this.randId}">${this.label}${this.required ? ' (*)' : ''}</label>`;
@@ -113,6 +132,7 @@ class InputFieldElement extends BaseComponentElement {
 					step="0.01"
 					data-target="input-field.inp"
 					id="${this.randId}"
+					?disabled=${this._disabled}
 					app-action=" input:input-field#inputChange blur:input-field#validateDisplay
 				${this.customAction ? this.customAction : ''} "
 				/>`;
@@ -122,6 +142,7 @@ class InputFieldElement extends BaseComponentElement {
 				autocomplete="${this.name}"
 				type="${this.type}"
 				data-target="input-field.inp"
+				?disabled=${this._disabled}
 				id="${this.randId}"
 				app-action="
                     input:input-field#inputChange
@@ -131,7 +152,10 @@ class InputFieldElement extends BaseComponentElement {
 			/>`;
 		};
 
-		return html`<div class="input-main" data-target="input-field.main">
+		return html`<div
+			class="input-main${this.type === 'checkbox' ? ' input-main--checkbox' : ''}"
+			data-target="input-field.main"
+		>
 			${renderMessage(this.label)}${renderError(this.error)} ${renderInput(this.type)}
 		</div>`;
 	};

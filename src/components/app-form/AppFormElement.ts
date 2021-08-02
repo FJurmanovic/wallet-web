@@ -77,11 +77,25 @@ class AppFormElement extends BaseComponentElement {
 			formObject[input.name] = input._value;
 		});
 		this.appDropdown?.forEach((input: AppDropdownElement) => {
-			if (input.required && input.value) {
-				formObject[input.name] = input._value;
-			}
+			formObject[input.name] = input._value;
 		});
 		return formObject;
+	}
+
+	set = (data): any => {
+		for (let i = 0; i < this.inputField.length; i++) {
+			const input = this.inputField[i];
+			if(data?.[input.name]) {
+				input._value = data[input.name]
+				this.update()
+			}
+		}
+		this.appDropdown?.forEach((input: AppDropdownElement) => {
+			if(data?.[input.name]) {
+				input.setValue(data[input.name])
+				this.update()
+			}
+		});
 	}
 
 	getInput = (name: string): InputFieldElement | AppDropdownElement => {

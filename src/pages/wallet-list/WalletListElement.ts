@@ -1,7 +1,7 @@
 import { targets, controller, target } from '@github/catalyst';
 import { html, TemplateResult } from 'core/utils';
 import { AuthService, WalletService } from 'services/';
-import { AppPaginationElement, InputFieldElement } from 'components/';
+import { AppMainElement, AppPaginationElement, InputFieldElement } from 'components/';
 import { BasePageElement } from 'common/';
 
 @controller
@@ -22,7 +22,16 @@ class WalletListElement extends BasePageElement {
 		this.update();
 		this.pagination?.setCustomRenderItem(this.renderItem);
 		this.pagination?.setFetchFunc?.(this.getWallets, true)!;
+		this.appMain.addEventListener('walletupdate', this.updateToken);
 	};
+
+	elementDisconnected = (appMain: AppMainElement) => {
+		appMain?.removeEventListener('walletupdate', this.updateToken);
+	}
+
+	get updateToken() {
+		return this.pagination?.defaultFetch;
+	} 
 
 	getWallets = async (options): Promise<any> => {
 		try {
@@ -33,8 +42,22 @@ class WalletListElement extends BasePageElement {
 		}
 	};
 
-	renderItem = (item): TemplateResult => html`<tr class="col-1">
-		<td><app-link class="wallet-item" data-to="/wallet/${item.id}">${item.name}</app-link></td>
+	walletEdit = (id) => {
+		const _modal = this.appMain.appModal;
+		if (_modal) {
+			this.appMain.closeModal();
+		} else {
+			this.appMain.createModal('wallet-edit', {
+				id: id
+			});
+		}
+	}
+
+	renderItem = (item): TemplateResult => html`<tr class="col-wallet">
+		<td><app-link class="wallet-item" data-to="/wallet/${item.id}" data-title="${item.name}"></app-link></td>
+		<td class="--right">
+			<span><button class="btn btn-rounded btn-gray" @click=${() => this.walletEdit(item.id)}}>Edit</button></span>
+		</td>
 	</tr>`;
 
 	render = (): TemplateResult => {
