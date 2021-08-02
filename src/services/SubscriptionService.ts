@@ -6,7 +6,7 @@ class SubscriptionService extends BaseService {
 	}
 
 	endSubscription = (id) => {
-		return this.appService.put(this.endpoint + `/end/${id || ''}`, null, null);
+		return this.appService.post(this.endpoint + `/end`, {id}, null);
 	};
 }
 

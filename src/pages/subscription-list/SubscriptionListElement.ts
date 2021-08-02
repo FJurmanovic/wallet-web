@@ -44,9 +44,10 @@ class SubscriptionListElement extends BasePageElement {
 		}
 	}
 
-	subscriptionEnd = (id) => {
+	subscriptionEnd = async (id) => {
 		if (confirm('Are you sure you want to end this subscription?')) {
-			this.subscriptionService.endSubscription(id);
+			await this.subscriptionService.endSubscription(id);
+			this.appMain.triggerTransactionUpdate();
 		}
 	}
 
@@ -67,10 +68,12 @@ class SubscriptionListElement extends BasePageElement {
 			</span>
 			<span class="currency">(${item.currency ? item.currency : 'USD'})</span>
 		</td>
-		<td class="--left">
-			<span><button @click=${() => this.subscriptionEdit(item.id)}}>Edit</button></span>
-			<span><button @click=${() => this.subscriptionEnd(item.id)}}>End</button></span>
-		</td>
+		${item.hasEnd ? html`` : html`
+		<td class="--right">
+			<span><button class="btn btn-rounded btn-gray" @click=${() => this.subscriptionEdit(item.id)}}>Edit</button></span>
+			<span><button class="btn btn-rounded btn-alert"  @click=${() => this.subscriptionEnd(item.id)}}>End</button></span>
+		</td>`
+		}
 	</tr>`;
 
 	getSubscriptions = async (options): Promise<any> => {

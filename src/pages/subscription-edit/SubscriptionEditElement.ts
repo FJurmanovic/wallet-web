@@ -154,6 +154,7 @@ class SubscriptionEditElement extends BasePageElement {
 				if (walletData.id) {
 					this.appMain?.closeModal();
 				} else {
+					this.appMain?.closeModal();
 					this.routerService.goTo('/subscriptions', {
 						walletId: response.walletId,
 					});

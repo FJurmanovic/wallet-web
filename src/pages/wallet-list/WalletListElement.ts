@@ -55,8 +55,8 @@ class WalletListElement extends BasePageElement {
 
 	renderItem = (item): TemplateResult => html`<tr class="col-wallet">
 		<td><app-link class="wallet-item" data-to="/wallet/${item.id}" data-title="${item.name}"></app-link></td>
-		<td>
-			<span><button @click=${() => this.walletEdit(item.id)}}>Edit</button></span>
+		<td class="--right">
+			<span><button class="btn btn-rounded btn-gray" @click=${() => this.walletEdit(item.id)}}>Edit</button></span>
 		</td>
 	</tr>`;
 

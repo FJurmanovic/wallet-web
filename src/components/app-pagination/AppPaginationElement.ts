@@ -136,8 +136,8 @@ class AppPaginationElement extends BaseComponentElement {
 						</span>
 						<span class="currency">(${item.currency ? item.currency : 'USD'})</span>
 					</td>
-					<td class="--left">
-						<span><button @click=${() => this.transactionEdit(item.id)}}>Edit</button></span>
+					<td class="--right">
+						<span><button class="btn btn-rounded btn-gray" @click=${() => this.transactionEdit(item.id)}}>Edit</button></span>
 					</td>
 			  </tr>`;
 

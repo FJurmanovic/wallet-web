@@ -2,7 +2,6 @@ import { targets, controller, target } from '@github/catalyst';
 import { html, TemplateResult } from 'core/utils';
 import { AuthService, TransactionsService, TransactionTypeService, WalletService } from 'services/';
 import { AppFormElement, InputFieldElement } from 'components/';
-import { RouterService } from 'core/services';
 import { BasePageElement } from 'common/';
 import { AppDropdownElement } from 'components/app-dropdown/AppDropdownElement';
 import dayjs from 'dayjs';
