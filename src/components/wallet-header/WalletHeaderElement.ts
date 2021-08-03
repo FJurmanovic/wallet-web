@@ -3,7 +3,7 @@ import { BaseComponentElement } from 'common/';
 import { findMethod } from 'core/utils';
 import { WalletHeaderElementTemplate } from 'components/wallet-header';
 
-@controller
+@controller('wallet-header')
 class WalletHeaderElement extends BaseComponentElement {
 	@attr currentBalance: number;
 	@attr lastMonth: number;
