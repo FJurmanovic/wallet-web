@@ -1,8 +1,8 @@
-import { controller } from '@github/catalyst';
+import { controller } from 'core/utils';
 import { AuthService } from 'services/';
 import { BasePageElement } from 'common/';
 
-@controller
+@controller('logout-page')
 class LogoutPageElement extends BasePageElement {
 	authService: AuthService;
 	constructor() {

@@ -1,10 +1,8 @@
-import { attr, controller, target } from '@github/catalyst';
-import { html, TemplateResult } from 'core/utils';
+import { attr, controller, TemplateResult } from 'core/utils';
 import { BaseComponentElement } from 'common/';
-import { CircleLoaderElement } from 'components/circle-loader/CircleLoaderElement';
-import dayjs from 'dayjs';
+import { AppPaginationElementTemplate } from 'components/app-pagination';
 
-@controller
+@controller('app-pagination')
 class AppPaginationElement extends BaseComponentElement {
 	public items: Array<any>;
 	@attr page: number;
@@ -47,10 +45,10 @@ class AppPaginationElement extends BaseComponentElement {
 	defaultFetch = () => {
 		const options = {
 			rpp: this.rpp || 10,
-			page: 1
-		}
+			page: 1,
+		};
 		this.executeFetch(options);
-	}
+	};
 
 	setCustomRenderItems = (customRenderItems: () => TemplateResult) => {
 		this.customRenderItems = customRenderItems;
@@ -109,96 +107,25 @@ class AppPaginationElement extends BaseComponentElement {
 			this.appMain.closeModal();
 		} else {
 			this.appMain.createModal('transaction-edit', {
-				id: id
+				id: id,
 			});
 		}
-	}
-
-	render = (): TemplateResult => {
-		const { rpp, totalItems, page, items } = this;
-
-		const renderItem = this.customRenderItem
-			? this.customRenderItem
-			: (item, iter) => html`<tr class="${this.colLayout ? this.colLayout : ''}">
-					<td class="--left">${dayjs(item.transactionDate).format("MMM DD 'YY")}</td>
-					<td class="--left">${item.description}</td>
-					<td class="balance-cell --right">
-						<span
-							class="balance ${item.amount > 0 && item?.transactionType?.type != 'expense'
-								? '--positive'
-								: '--negative'}"
-						>
-							${item?.transactionType?.type == 'expense' ? '- ' : ''}
-							${Number(item.amount).toLocaleString('en-US', {
-								maximumFractionDigits: 2,
-								minimumFractionDigits: 2,
-							})}
-						</span>
-						<span class="currency">(${item.currency ? item.currency : 'USD'})</span>
-					</td>
-					<td class="--right">
-						<span><button class="btn btn-rounded btn-gray" @click=${() => this.transactionEdit(item.id)}}>Edit</button></span>
-					</td>
-			  </tr>`;
-
-		const renderItems = this.customRenderItems
-			? this.customRenderItems
-			: () => {
-					if (this.loader && this.loader.loading && !this.initial) {
-						return html``;
-					} else {
-						if (items?.length > 0) {
-							return items?.map((item, iter) => renderItem(item, iter));
-						}
-						return html`<tr>
-							<td>No data</td>
-						</tr>`;
-					}
-			  };
-
-		const renderPagination = () => {
-			if (totalItems > items?.length) {
-				const pageRange = Math.ceil(totalItems / rpp);
-				return html`
-					<div class="paginate">
-						<span class="--total">(${items?.length}) / ${totalItems} Total Items</span>
-						<div class="--footer">
-							<span class="--pages">Page ${page} of ${pageRange}</span>
-							${page <= 1 || this.loader.loading
-								? html` <button
-										class="btn btn-primary btn-squared disabled"
-										disabled
-										app-action="click:app-pagination#pageBack"
-								  >
-										Prev
-								  </button>`
-								: html` <button class="btn btn-primary btn-squared" app-action="click:app-pagination#pageBack">
-										Prev
-								  </button>`}
-							${page >= pageRange || this.loader.loading
-								? html` <button
-										class="btn btn-primary btn-squared disabled"
-										disabled
-										app-action="click:app-pagination#pageNext"
-								  >
-										Next
-								  </button>`
-								: html`<button class="btn btn-primary btn-squared" app-action="click:app-pagination#pageNext">
-										Next
-								  </button>`}
-						</div>
-					</div>
-				`;
-			}
-		};
-
-		return html`<div class="app-pagination">
-			<table class="${this.tableLayout} ${this.loader && this.loader.loading ? '--loading' : ''}">
-				${renderItems()} ${renderPagination()}
-			</table>
-			${this.loader && this.loader.loading ? html`<circle-loader></circle-loader>` : html``}
-		</div>`;
 	};
+
+	render = (): TemplateResult =>
+		AppPaginationElementTemplate({
+			rpp: this.rpp,
+			totalItems: this.totalItems,
+			page: this.page,
+			items: this.items,
+			customRenderItem: this.customRenderItem,
+			colLayout: this.colLayout,
+			transactionEdit: this.transactionEdit,
+			customRenderItems: this.customRenderItems,
+			loader: this.loader,
+			initial: this.initial,
+			tableLayout: this.tableLayout,
+		});
 }
 
 export type { AppPaginationElement };

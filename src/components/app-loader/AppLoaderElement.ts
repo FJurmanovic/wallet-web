@@ -1,8 +1,8 @@
-import { controller, target } from '@github/catalyst';
-import { html } from 'core/utils';
+import { controller } from 'core/utils';
 import { BaseComponentElement } from 'common/';
+import AppLoaderElementTemplate from './AppLoaderElementTemplate';
 
-@controller
+@controller('app-loader')
 class AppLoaderElement extends BaseComponentElement {
 	private finished: boolean = true;
 	private _loading: number = 0;
@@ -42,19 +42,7 @@ class AppLoaderElement extends BaseComponentElement {
 		this.update();
 	};
 
-	render = () => {
-		const renderLoader = (finished: boolean, loading: boolean) => {
-			if (!finished && !loading) {
-				return html`<div class="loader --removing"></div>`;
-			} else if (loading) {
-				return html`<div class="loader --loading"></div>`;
-			}
-			return html``;
-		};
-		return html`<div class="loader-wrapper">
-			<div class="loader-relative">${renderLoader(this.finished, this.loading)}</div>
-		</div>`;
-	};
+	render = () => AppLoaderElementTemplate({ finished: this.finished, loading: this.loading });
 }
 
 export type { AppLoaderElement };

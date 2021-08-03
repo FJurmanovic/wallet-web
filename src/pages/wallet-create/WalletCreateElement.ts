@@ -1,11 +1,10 @@
-import { targets, controller } from '@github/catalyst';
-import { html, TemplateResult } from 'core/utils';
+import { html, TemplateResult, targets, controller } from 'core/utils';
 import { AuthService, WalletService } from 'services/';
 import { InputFieldElement } from 'components/';
-import { RouterService } from 'core/services';
 import { BasePageElement } from 'common/';
+import { WalletCreateElementTemplate } from 'pages/wallet-create';
 
-@controller
+@controller('wallet-create')
 class WalletCreateElement extends BasePageElement {
 	@targets inputs: Array<InputFieldElement>;
 	private walletService: WalletService;
@@ -68,20 +67,7 @@ class WalletCreateElement extends BasePageElement {
 		return _return;
 	}
 
-	render = (): TemplateResult => {
-		return html`
-			<app-form data-custom="wallet-create#onSubmit" data-has-cancel="true">
-				<input-field
-					data-type="text"
-					data-name="name"
-					data-label="Name"
-					data-targets="wallet-create.inputs"
-					data-rules="required"
-				></input-field>
-				${this.errorMessage ? html`<div>${this.errorMessage}</div>` : html``}
-			</app-form>
-		`;
-	};
+	render = (): TemplateResult => WalletCreateElementTemplate({ errorMessage: this.errorMessage });
 }
 
 export type { WalletCreateElement };

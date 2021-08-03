@@ -1,14 +1,14 @@
-import { targets, controller, target } from '@github/catalyst';
-import { html, TemplateResult } from 'core/utils';
+import { TemplateResult, targets, controller, target } from 'core/utils';
 import { AuthService, TransactionsService, TransactionTypeService, WalletService } from 'services/';
 import { AppFormElement, InputFieldElement } from 'components/';
 import { BasePageElement } from 'common/';
 import { AppDropdownElement } from 'components/app-dropdown/AppDropdownElement';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import { TransactionEditElementTemplate } from 'pages/transaction-edit';
 dayjs.extend(utc);
 
-@controller
+@controller('transaction-edit')
 class TransactionEditElement extends BasePageElement {
 	@targets inputs: Array<InputFieldElement | AppDropdownElement>;
 	@target appForm: AppFormElement;
@@ -31,7 +31,7 @@ class TransactionEditElement extends BasePageElement {
 		this.authService = new AuthService(this.appMain.appService);
 		this.walletData = this.getData();
 		this.update();
-		this.getTransaction(this.walletData?.id)
+		this.getTransaction(this.walletData?.id);
 		if (this.walletData && this.walletData.walletId) {
 			this.setTransactionType();
 		} else {
@@ -42,7 +42,7 @@ class TransactionEditElement extends BasePageElement {
 	getTransaction = async (id) => {
 		try {
 			const response = await this.transactionService.get(id, {
-				embed: 'Wallet,TransactionType'
+				embed: 'Wallet,TransactionType',
 			});
 			const wallet = this.appForm.getInput('wallet');
 			if (wallet) {
@@ -56,10 +56,8 @@ class TransactionEditElement extends BasePageElement {
 			response.transactionType = response.transactionTypeId;
 			response.transactionDate = dayjs(response.transactionDate).format('YYYY-MM-DD');
 			this.appForm.set(response);
-		} catch (err) {
-
-		}
-	}
+		} catch (err) {}
+	};
 
 	get nameInput(): InputFieldElement | AppDropdownElement {
 		for (const i in this.inputs) {
@@ -159,76 +157,8 @@ class TransactionEditElement extends BasePageElement {
 		return _return;
 	}
 
-	render = (): TemplateResult => {
-		const renderInput = (type, name, label, rules, hide?, customAction?) => {
-			if (hide) {
-				return html``;
-			}
-			return html`<input-field
-				data-type="${type}"
-				data-name="${name}"
-				data-label="${label}"
-				data-targets="transaction-edit.inputs"
-				data-rules="${rules}"
-				custom-action="${customAction}"
-			></input-field>`;
-		};
-
-		const renderNumericInput = (pattern, name, label, rules, hide?, customAction?) => {
-			if (hide) {
-				return html``;
-			}
-			return html`<input-field
-				data-type="number"
-				data-pattern="${pattern}"
-				data-name="${name}"
-				data-label="${label}"
-				data-targets="transaction-edit.inputs"
-				data-rules="${rules}"
-				custom-action="${customAction}"
-			></input-field>`;
-		};
-
-		const renderDropdown = (fetch, name, label, rules, hide?) => {
-			if (hide) {
-				return html``;
-			}
-			return html`<app-dropdown
-				data-name="${name}"
-				data-label="${label}"
-				data-targets="transaction-edit.inputs"
-				data-rules="${rules}"
-				data-fetch="${fetch}"
-			></app-dropdown>`;
-		};
-
-		return html`
-			<app-form
-				data-custom="transaction-edit#onSubmit"
-				data-has-cancel="true"
-				data-target="transaction-edit.appForm"
-			>
-				${renderNumericInput('^d+(?:.d{1,2})?$', 'amount', 'Amount', 'required', false)}
-				${renderInput('text', 'description', 'Description', 'required')}
-				${renderInput('date', 'transactionDate', 'Transaction date', 'required')}
-				${renderDropdown(
-					'transaction-edit#getWallets',
-					'wallet',
-					'Wallet',
-					'required',
-					this.walletData && this.walletData.walletId
-				)}
-				${renderDropdown(
-					'transaction-edit#getTypes',
-					'transactionType',
-					'Transaction Type',
-					'required',
-					this.walletData && this.walletData.walletId
-				)}
-				${this.errorMessage ? html`<div>${this.errorMessage}</div>` : html``}
-			</app-form>
-		`;
-	};
+	render = (): TemplateResult =>
+		TransactionEditElementTemplate({ errorMessage: this.errorMessage, walletData: this.walletData });
 }
 
 export type { TransactionEditElement };

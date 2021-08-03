@@ -1,11 +1,11 @@
-import { controller, target } from '@github/catalyst';
-import { html, TemplateResult } from 'core/utils';
+import { html, TemplateResult, controller, target } from 'core/utils';
 import { SubscriptionService } from 'services/';
 import { AppMainElement, AppPaginationElement } from 'components/';
 import { BasePageElement } from 'common/';
 import dayjs from 'dayjs';
+import { SubscriptionListElementTemplate } from 'pages/subscription-list';
 
-@controller
+@controller('subscription-list')
 class SubscriptionListElement extends BasePageElement {
 	private subscriptionService: SubscriptionService;
 	@target pagination: AppPaginationElement;
@@ -39,17 +39,17 @@ class SubscriptionListElement extends BasePageElement {
 			this.appMain.closeModal();
 		} else {
 			this.appMain.createModal('subscription-edit', {
-				id: id
+				id: id,
 			});
 		}
-	}
+	};
 
 	subscriptionEnd = async (id) => {
 		if (confirm('Are you sure you want to end this subscription?')) {
 			await this.subscriptionService.endSubscription(id);
 			this.appMain.triggerTransactionUpdate();
 		}
-	}
+	};
 
 	renderSubscription = (item) => html`<tr class="col-subscription">
 		<td class="--left">${dayjs(item.lastTransactionDate).format("MMM DD 'YY")}</td>
@@ -68,12 +68,20 @@ class SubscriptionListElement extends BasePageElement {
 			</span>
 			<span class="currency">(${item.currency ? item.currency : 'USD'})</span>
 		</td>
-		${item.hasEnd ? html`` : html`
-		<td class="--right">
-			<span><button class="btn btn-rounded btn-gray" @click=${() => this.subscriptionEdit(item.id)}}>Edit</button></span>
-			<span><button class="btn btn-rounded btn-alert"  @click=${() => this.subscriptionEnd(item.id)}}>End</button></span>
-		</td>`
-		}
+		${item.hasEnd
+			? html``
+			: html` <td class="--right">
+					<span
+						><button class="btn btn-rounded btn-gray" @click="${() => this.subscriptionEdit(item.id)}}">
+							Edit
+						</button></span
+					>
+					<span
+						><button class="btn btn-rounded btn-alert" @click="${() => this.subscriptionEnd(item.id)}}">
+							End
+						</button></span
+					>
+			  </td>`}
 	</tr>`;
 
 	getSubscriptions = async (options): Promise<any> => {
@@ -113,21 +121,8 @@ class SubscriptionListElement extends BasePageElement {
 		}
 	};
 
-	render = (): TemplateResult => {
-		const renderWallet = () => {
-			if (this.routerService?.routerState?.data?.walletId) {
-				return html`<span>${this.routerService?.routerState?.data?.walletId}</span>`;
-			}
-			return html``;
-		};
-		return html`<div>
-			${renderWallet()}
-			<app-pagination
-				data-target="subscription-list.pagination"
-				data-table-layout="subscription-table"
-			></app-pagination>
-		</div>`;
-	};
+	render = (): TemplateResult =>
+		SubscriptionListElementTemplate({ walletId: this.routerService?.routerState?.data?.walletId });
 }
 
 export type { SubscriptionListElement };

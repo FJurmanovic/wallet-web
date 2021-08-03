@@ -1,8 +1,8 @@
-import { controller } from '@github/catalyst';
-import { html, TemplateResult } from 'core/utils';
+import { TemplateResult, controller } from 'core/utils';
 import { BasePageElement } from 'common/';
+import { NotFoundElementTemplate } from 'pages/not-found';
 
-@controller
+@controller('not-found')
 class NotFoundElement extends BasePageElement {
 	constructor() {
 		super({
@@ -13,12 +13,7 @@ class NotFoundElement extends BasePageElement {
 		this.update();
 	};
 
-	render = (): TemplateResult => {
-		return html`
-			<div>404 - Page not found</div>
-			<div><app-link data-to="/" data-title="Homepage"></app-link></div>
-		`;
-	};
+	render = (): TemplateResult => NotFoundElementTemplate();
 }
 
 export type { NotFoundElement };

@@ -1,12 +1,11 @@
-import { targets, controller, target } from '@github/catalyst';
-//import { html, TemplateResult } from "core/utils";
-import { html, render, TemplateResult } from 'core/utils';
+import { TemplateResult, targets, controller, target } from 'core/utils';
 import { AuthService } from 'services/';
 import { AppFormElement, InputFieldElement } from 'components/';
-import { RouterService } from 'core/services';
 import { BasePageElement } from 'common/';
+import LoginFormTemplate from './LoginFormTemplate';
+import LoginPageElementTemplate from './LoginPageElementTemplate';
 
-@controller
+@controller('login-page')
 class LoginPageElement extends BasePageElement {
 	@targets inputs: Array<InputFieldElement>;
 	@target appForm: AppFormElement;
@@ -82,45 +81,9 @@ class LoginPageElement extends BasePageElement {
 		return _return;
 	}
 
-	renderForms = () => {
-		return html` <input-field
-				data-type="email"
-				data-name="email"
-				data-label="E-mail"
-				data-targets="login-page.inputs"
-				data-rules="required|is_email"
-			></input-field>
-			<input-field
-				data-type="password"
-				data-name="password"
-				data-label="Password"
-				data-targets="login-page.inputs"
-				data-rules="required"
-			>
-			</input-field>
-			<input-field
-				data-type="checkbox"
-				data-name="rememberMe"
-				data-label="Remember me"
-				data-targets="login-page.inputs"
-				data-rules=""
-			>
-			</input-field>`;
-	};
+	renderForms = (): TemplateResult => LoginFormTemplate();
 
-	render = (): TemplateResult => {
-		return html`
-			<app-form
-				data-custom="login-page#onSubmit"
-				data-target="login-page.appForm"
-				data-render-input="login-page#renderForms"
-			>
-			</app-form>
-			<div>
-				<app-link data-to="/register" data-title="Create new account"></app-link>
-			</div>
-		`;
-	};
+	render = (): TemplateResult => LoginPageElementTemplate();
 }
 
 export type { LoginPageElement };

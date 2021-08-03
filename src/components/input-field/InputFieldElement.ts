@@ -1,13 +1,10 @@
-import { attr, controller, target } from '@github/catalyst';
-import { closest, firstUpper } from 'core/utils';
-import { html, TemplateResult } from 'core/utils';
+import { closest, attr, controller, target, html, TemplateResult } from 'core/utils';
 import randomId from 'core/utils/random-id';
-import { validatorErrors } from 'core/constants';
 import { BaseComponentElement, Validator } from 'common/';
 import { AppFormElement } from 'components/app-form/AppFormElement';
-import { validator } from 'core/utils';
+import { InputFieldElementTemplate } from 'components/input-field';
 
-@controller
+@controller('input-field')
 class InputFieldElement extends BaseComponentElement {
 	@attr name: string;
 	@attr type: string;
@@ -34,7 +31,6 @@ class InputFieldElement extends BaseComponentElement {
 		this.validator = new Validator(this, this.appForm, this.rules);
 		this.randId = `${name}${randomId()}`;
 		this.update();
-		//this.validate();
 	};
 
 	attributeChangedCallback() {
@@ -54,7 +50,7 @@ class InputFieldElement extends BaseComponentElement {
 	}
 
 	get required(): boolean {
-		return this.rules.includes('required');
+		return this.rules?.includes('required');
 	}
 
 	get _value() {
@@ -63,16 +59,16 @@ class InputFieldElement extends BaseComponentElement {
 		}
 		return (this.inp as HTMLInputElement)?.value;
 	}
-	
+
 	get _disabled() {
-		return this.disabled == "true" 
+		return this.disabled == 'true';
 	}
 
 	set _value(value) {
 		if (this.type == 'checkbox') {
-			(this.inp as HTMLInputElement).checked = (value as boolean);
+			(this.inp as HTMLInputElement).checked = value as boolean;
 		} else {
-			(this.inp as HTMLInputElement).value = (value as string);
+			(this.inp as HTMLInputElement).value = value as string;
 		}
 	}
 
@@ -103,62 +99,20 @@ class InputFieldElement extends BaseComponentElement {
 		if (!this.changed && e?.target?.value) {
 			this.changed = true;
 		}
-		//this.validate();
 		this.appForm?.inputChange(e);
 	};
 
-	render = (): TemplateResult => {
-		const renderMessage = (label: string) => {
-			if (this.label) {
-				return html`<label for="${this.randId}">${this.label}${this.required ? ' (*)' : ''}</label>`;
-			}
-			return html``;
-		};
-
-		const renderError = (error: string) => {
-			if (error) {
-				return html`<div class="input-error"><span>${error}</span></div>`;
-			}
-			return html``;
-		};
-
-		const renderInput = (type) => {
-			if (this.pattern) {
-				return html` <input
-					name="${this.name}"
-					autocomplete="${this.name}"
-					type="${this.type}"
-					pattern="${this.pattern}"
-					step="0.01"
-					data-target="input-field.inp"
-					id="${this.randId}"
-					?disabled=${this._disabled}
-					app-action=" input:input-field#inputChange blur:input-field#validateDisplay
-				${this.customAction ? this.customAction : ''} "
-				/>`;
-			}
-			return html` <input
-				name="${this.name}"
-				autocomplete="${this.name}"
-				type="${this.type}"
-				data-target="input-field.inp"
-				?disabled=${this._disabled}
-				id="${this.randId}"
-				app-action="
-                    input:input-field#inputChange
-                    blur:input-field#validateDisplay
-					${this.customAction ? this.customAction : ''}
-                "
-			/>`;
-		};
-
-		return html`<div
-			class="input-main${this.type === 'checkbox' ? ' input-main--checkbox' : ''}"
-			data-target="input-field.main"
-		>
-			${renderMessage(this.label)}${renderError(this.error)} ${renderInput(this.type)}
-		</div>`;
-	};
+	render = (): TemplateResult =>
+		InputFieldElementTemplate({
+			randId: this.randId,
+			required: this.required,
+			pattern: this.pattern,
+			_disabled: this._disabled,
+			customAction: this.customAction,
+			type: this.type,
+			error: this.error,
+			label: this.label,
+		});
 }
 
 export type { InputFieldElement };

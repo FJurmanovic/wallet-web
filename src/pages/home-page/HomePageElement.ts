@@ -1,10 +1,10 @@
-import { controller, target } from '@github/catalyst';
-import { html, TemplateResult, until } from 'core/utils';
+import { TemplateResult, controller, target } from 'core/utils';
 import { WalletService } from 'services/';
 import { AppMainElement, WalletHeaderElement } from 'components/';
 import { BasePageElement } from 'common/';
+import { HomePageElementTemplate } from 'pages/home-page';
 
-@controller
+@controller('home-page')
 class HomePageElement extends BasePageElement {
 	@target walletHeader: WalletHeaderElement;
 	private walletService: WalletService;
@@ -42,18 +42,7 @@ class HomePageElement extends BasePageElement {
 		this.walletHeader.nextMonth = header.nextMonth || '0';
 	};
 
-	render = (): TemplateResult => {
-		return html`
-			<wallet-header
-				data-target="home-page.walletHeader"
-				data-current-balance="0"
-				data-last-month="0"
-				data-next-month="0"
-				data-currency="0"
-				data-custom="home-page#getBalance"
-			></wallet-header>
-		`;
-	};
+	render = (): TemplateResult => HomePageElementTemplate();
 }
 
 export { HomePageElement };

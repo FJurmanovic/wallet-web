@@ -1,3 +1,3 @@
-import { render, html, TemplateResult, directive, isPrimitive } from 'lit-html';
+import { render, html, TemplateResult, directive, isPrimitive, nothing } from 'lit-html';
 
-export { render, html, TemplateResult, directive, isPrimitive };
+export { render, html, TemplateResult, directive, isPrimitive, nothing };

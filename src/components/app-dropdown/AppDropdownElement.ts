@@ -1,12 +1,10 @@
-import { attr, controller, target } from '@github/catalyst';
-import { closest, findMethod, firstUpper } from 'core/utils';
-import { html } from 'core/utils';
+import { closest, findMethod, attr, controller, target } from 'core/utils';
 import randomId from 'core/utils/random-id';
-import { validatorErrors } from 'core/constants';
 import { BaseComponentElement, Validator } from 'common/';
 import { AppFormElement } from 'components/app-form/AppFormElement';
+import { AppDropdownElementTemplate } from 'components/app-dropdown';
 
-@controller
+@controller('app-dropdown')
 class AppDropdownElement extends BaseComponentElement {
 	@attr name: string;
 	@attr label: string;
@@ -82,7 +80,7 @@ class AppDropdownElement extends BaseComponentElement {
 	}
 
 	get required(): boolean {
-		return this.rules.includes('required');
+		return this.rules?.includes('required');
 	}
 
 	get _value() {
@@ -191,67 +189,21 @@ class AppDropdownElement extends BaseComponentElement {
 	setItemValue = (itemValue) => {
 		this.itemValue = itemValue;
 		this.update();
-	}
-
-	render = () => {
-		const { label, error, errorMessage, isOpen, searchPhrase, items, selectedItem, displaykey, valuekey } = this;
-
-		const renderMessage = (label: string) => {
-			if (label) {
-				return html`<label app-action="click:app-dropdown#openDropdown">${label}${this.required ? ' (*)' : ''}</label>`;
-			}
-			return html``;
-		};
-
-		const renderError = (error: string) => {
-			if (error) {
-				return html`<div class="input-error"><span>${error}</span></div>`;
-			}
-			return html``;
-		};
-
-		const renderItem = (item) => {
-			return html` <li
-				class="dropdown-custom-listitem ${selectedItem?.[valuekey] == item[valuekey] ? '--selected' : ''}"
-				app-action="click:app-dropdown#itemSelected"
-				data-value="${item[valuekey]}"
-			>
-				${item[displaykey]}
-			</li>`;
-		};
-
-		const renderItems = (_items) => {
-			return _items?.map((item) => renderItem(item));
-		};
-
-		return html`
-			<div class="app-dropdown">
-				${renderMessage(this.label)} ${renderError(this.error)}
-				<div class="dropdown-custom">
-					<div class="dropdown-custom-top${isOpen ? ' --open' : ''}" app-action="click:app-dropdown#toggleDropdown">
-						<span class="dropdown-custom-fieldname">${selectedItem ? selectedItem[displaykey] : 'Select'}</span>
-					</div>
-					${isOpen
-						? html`
-								<div class="dropdown-custom-open" data-target="app-dropdown.dropdowncontainer">
-									<input
-										class="dropdown-custom-search"
-										type="text"
-										value="${searchPhrase || ''}"
-										id="${this.randId}"
-										app-action="input:app-dropdown#phraseChange"
-										autofocus
-									/>
-									<ul class="dropdown-custom-list">
-										${renderItems(items)}
-									</ul>
-								</div>
-						  `
-						: html``}
-				</div>
-			</div>
-		`;
 	};
+
+	render = () =>
+		AppDropdownElementTemplate({
+			label: this.label,
+			error: this.error,
+			randId: this.randId,
+			required: this.required,
+			isOpen: this.isOpen,
+			searchPhrase: this.searchPhrase,
+			items: this.items,
+			selectedItem: this.selectedItem,
+			displaykey: this.displaykey,
+			valuekey: this.valuekey,
+		});
 }
 
 export type { AppDropdownElement };

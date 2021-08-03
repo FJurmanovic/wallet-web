@@ -1,10 +1,10 @@
-import { targets, controller, target } from '@github/catalyst';
-import { html, TemplateResult } from 'core/utils';
+import { html, TemplateResult, targets, controller, target } from 'core/utils';
 import { AuthService, WalletService } from 'services/';
 import { AppMainElement, AppPaginationElement, InputFieldElement } from 'components/';
 import { BasePageElement } from 'common/';
+import { WalletListElementTemplate } from 'pages/wallet-list';
 
-@controller
+@controller('wallet-list')
 class WalletListElement extends BasePageElement {
 	@targets inputs: Array<InputFieldElement>;
 	private walletService: WalletService;
@@ -27,11 +27,11 @@ class WalletListElement extends BasePageElement {
 
 	elementDisconnected = (appMain: AppMainElement) => {
 		appMain?.removeEventListener('walletupdate', this.updateToken);
-	}
+	};
 
 	get updateToken() {
 		return this.pagination?.defaultFetch;
-	} 
+	}
 
 	getWallets = async (options): Promise<any> => {
 		try {
@@ -48,21 +48,21 @@ class WalletListElement extends BasePageElement {
 			this.appMain.closeModal();
 		} else {
 			this.appMain.createModal('wallet-edit', {
-				id: id
+				id: id,
 			});
 		}
-	}
-
-	renderItem = (item): TemplateResult => html`<tr class="col-wallet">
-		<td><app-link class="wallet-item" data-to="/wallet/${item.id}" data-title="${item.name}"></app-link></td>
-		<td class="--right">
-			<span><button class="btn btn-rounded btn-gray" @click=${() => this.walletEdit(item.id)}}>Edit</button></span>
-		</td>
-	</tr>`;
-
-	render = (): TemplateResult => {
-		return html` <app-pagination data-target="wallet-list.pagination"></app-pagination> `;
 	};
+
+	renderItem = (item): TemplateResult => WalletListItemTemplate({ item, walletEdit: this.walletEdit });
+
+	render = (): TemplateResult => WalletListElementTemplate();
 }
 
 export type { WalletListElement };
+
+const WalletListItemTemplate = ({ item, walletEdit }): TemplateResult => html`<tr class="col-wallet">
+	<td><app-link class="wallet-item" data-to="/wallet/${item.id}" data-title="${item.name}"></app-link></td>
+	<td class="--right">
+		<span><button class="btn btn-rounded btn-gray" @click="${() => walletEdit(item.id)}}">Edit</button></span>
+	</td>
+</tr>`;

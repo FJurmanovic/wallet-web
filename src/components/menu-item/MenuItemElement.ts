@@ -1,11 +1,11 @@
-import { attr, controller, target } from '@github/catalyst';
-import { html, TemplateResult } from 'core/utils';
+import { TemplateResult, attr, controller, target } from 'core/utils';
 import { AppMainElement } from 'components/app-main/AppMainElement';
 import { BaseComponentElement } from 'common/';
 import { deviceWidths } from 'core/constants';
 import { MenuLayoutElement } from 'layouts/';
+import { MenuItemElementTemplate } from 'components/menu-item';
 
-@controller
+@controller('menu-item')
 class MenuItemElement extends BaseComponentElement {
 	@attr path: string;
 	@attr title: string;
@@ -32,7 +32,7 @@ class MenuItemElement extends BaseComponentElement {
 	};
 
 	attributeChangedCallback(changed) {
-		if(this.initialized && changed == 'data-title') {
+		if (this.initialized && changed == 'data-title') {
 			this.update();
 		}
 	}
@@ -47,17 +47,14 @@ class MenuItemElement extends BaseComponentElement {
 		}
 	};
 
-	render = (): TemplateResult => {
-		return html`
-			<div class="${this.current ? 'selected ' : ''}menu-item" data-target="menu-item.itemEl">
-				<app-link class="${this.className}" data-to="${this.path}" data-custom-action="click:menu-item#itemClick" data-title="${this.title}"></app-link
-				>
-				${this.customaction
-					? html`<div data-target="menu-item.customButton" app-action="${this.customaction}">+</div>`
-					: html``}
-			</div>
-		`;
-	};
+	render = (): TemplateResult =>
+		MenuItemElementTemplate({
+			current: this.current,
+			className: this.className,
+			path: this.path,
+			title: this.title,
+			customaction: this.customaction,
+		});
 }
 
 export type { MenuItemElement };

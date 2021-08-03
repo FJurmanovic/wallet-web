@@ -1,13 +1,12 @@
-import { controller, target } from '@github/catalyst';
 import { AppService, HttpClient, RouterService } from 'core/services';
 import { AuthStore } from 'core/store';
 import { AppModalElement, AppRootElement } from 'components/';
-import { closest } from 'core/utils';
+import { closest, controller, target } from 'core/utils';
 import { AppLoaderElement } from 'components/app-loader/AppLoaderElement';
 import { ToastPortalElement } from 'components/toast-portal/ToastPortalElement';
 import { BasePageElement } from 'common/';
 
-@controller
+@controller('app-main')
 class AppMainElement extends HTMLElement {
 	public routerService: RouterService;
 	public authStore: AuthStore;
