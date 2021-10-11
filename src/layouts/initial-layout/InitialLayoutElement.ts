@@ -1,10 +1,9 @@
-import { controller, target } from '@github/catalyst';
-import { closest } from 'core/utils';
-import { html, TemplateResult } from 'core/utils';
+import { html, TemplateResult, controller, target, closest } from 'core/utils';
 import { BaseLayoutElement } from 'common/layouts';
 import { AppMainElement } from 'components/';
+import { InitialLayoutElementTemplate } from 'layouts/initial-layout';
 
-@controller
+@controller('initial-layout')
 class InitialLayoutElement extends BaseLayoutElement {
 	@closest appMain: AppMainElement;
 	@target appPage: HTMLDivElement;
@@ -19,13 +18,7 @@ class InitialLayoutElement extends BaseLayoutElement {
 
 	elementDisconnected = (appMain: AppMainElement): void => {};
 
-	render = (): TemplateResult => {
-		return html`
-			<div data-target="initial-layout.appPage">
-				<app-slot data-target="initial-layout.appSlot"></app-slot>
-			</div>
-		`;
-	};
+	render = (): TemplateResult => InitialLayoutElementTemplate();
 }
 
 export type { InitialLayoutElement };

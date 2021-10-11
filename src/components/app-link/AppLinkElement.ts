@@ -1,11 +1,10 @@
-import { attr, controller, target } from '@github/catalyst';
 import { isTrue } from 'core/utils';
-import { html, TemplateResult } from 'core/utils';
+import { TemplateResult, attr, controller, target } from 'core/utils';
 import { AppMainElement } from 'components/app-main/AppMainElement';
-import { RouterService } from 'core/services';
 import { BaseComponentElement } from 'common/';
+import { AppLinkElementTemplate } from 'components/app-link';
 
-@controller
+@controller('app-link')
 class AppLinkElement extends BaseComponentElement {
 	@attr to: string;
 	@attr goBack: string;
@@ -36,7 +35,7 @@ class AppLinkElement extends BaseComponentElement {
 	};
 
 	attributeChangedCallback(changed) {
-		if(this.initialized && changed == 'data-title') {
+		if (this.initialized && changed == 'data-title') {
 			this.update();
 		}
 	}
@@ -58,23 +57,14 @@ class AppLinkElement extends BaseComponentElement {
 		return false;
 	}
 
-	render = (): TemplateResult => {
-		return html`${this.disabled
-			? html`<a
-					class="btn btn-link btn-disabled${this.className ? ` ${this.className}` : ''}"
-					data-target="app-link.main"
-					style="color:grey"
-					><span class="link-text">${this.title}</span></a
-			  >`
-			: html`<a
-					class="btn btn-link${this.className ? ` ${this.className}` : ''}"
-					data-target="app-link.main"
-					app-action="click:app-link#goTo ${this.customAction ? this.customAction : ''}"
-					href="${this.to}"
-					style="text-decoration: underline; cursor: pointer;"
-					><span class="link-text">${this.title}</span></a
-			  >`}`;
-	};
+	render = (): TemplateResult =>
+		AppLinkElementTemplate({
+			disabled: this.disabled,
+			className: this.classList,
+			title: this.title,
+			customAction: this.customAction,
+			to: this.to,
+		});
 }
 
 export type { AppLinkElement };

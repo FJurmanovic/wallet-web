@@ -1,10 +1,10 @@
-import { targets, controller, target } from '@github/catalyst';
-import { html, TemplateResult } from 'core/utils';
+import { TemplateResult, targets, controller, target } from 'core/utils';
 import { AuthService, WalletService } from 'services/';
-import { AppDropdownElement, AppFormElement, InputFieldElement } from 'components/';
+import { AppFormElement, InputFieldElement } from 'components/';
 import { BasePageElement } from 'common/';
+import { WalletEditElementTemplate } from 'pages/wallet-edit';
 
-@controller
+@controller('wallet-edit')
 class WalletEditElement extends BasePageElement {
 	@targets inputs: Array<InputFieldElement>;
 	@target appForm: AppFormElement;
@@ -22,17 +22,15 @@ class WalletEditElement extends BasePageElement {
 		this.authService = new AuthService(this.appMain.appService);
 		this.walletData = this.getData();
 		this.update();
-		this.getWallet(this.walletData?.id)
+		this.getWallet(this.walletData?.id);
 	};
 
 	getWallet = async (id) => {
 		try {
 			const response = await this.walletService.get(id, null);
 			this.appForm.set(response);
-		} catch (err) {
-
-		}
-	}
+		} catch (err) {}
+	};
 
 	get nameInput(): InputFieldElement {
 		for (const i in this.inputs) {
@@ -78,21 +76,7 @@ class WalletEditElement extends BasePageElement {
 		return _return;
 	}
 
-	render = (): TemplateResult => {
-		return html`
-			<app-form data-custom="wallet-edit#onSubmit" data-has-cancel="true" 
-			data-target="wallet-edit.appForm">
-				<input-field
-					data-type="text"
-					data-name="name"
-					data-label="Name"
-					data-targets="wallet-edit.inputs"
-					data-rules="required"
-				></input-field>
-				${this.errorMessage ? html`<div>${this.errorMessage}</div>` : html``}
-			</app-form>
-		`;
-	};
+	render = (): TemplateResult => WalletEditElementTemplate({ errorMessage: this.errorMessage });
 }
 
 export type { WalletEditElement };

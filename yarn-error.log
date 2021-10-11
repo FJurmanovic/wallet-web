@@ -1,35 +1,25 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Users\franj\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add lit
+  /home/yurma/.nvm/versions/node/v16.5.0/bin/node /home/yurma/.nvm/versions/node/v16.5.0/bin/yarn add -D webpack-cli
 
 PATH: 
-  C:\Program Files\PowerShell\7;C:\Program Files (x86)\Razer Chroma SDK\bin;C:\Program Files\Razer Chroma SDK\bin;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\Users\franj\AppData\Local\Microsoft\WindowsApps;C:\Users\franj\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\franj\AppData\Roaming\npm;C:\Users\franj\go\bin;C:\Program Files\dotnet\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Users\franj\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\ProgramData\chocolatey\bin;C:\Program Files\nu\bin\;C:\Program Files\PowerShell\7\;C:\Program Files\Amazon\AWSCLIV2\;C:\Python\Python39\Scripts\;C:\Python\Python39\;C:\Users\franj\scoop\shims;C:\Users\franj\.cargo\bin;C:\Users\f;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Program Files\Go\bin;C:\ProgramData\chocolatey\lib\Elixir/bin;C:\Python\Python39\Scripts\;C:\Python\Python39\;C:\Users\franj\scoop\shims;C:\Users\franj\.cargo\bin;C:\Users\franj\AppData\Local\Microsoft\WindowsApps;C:\Users\franj\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\franj\AppData\Roaming\npm;C:\Users\franj\go\bin;C:\Users\franj\.deno\bin;C:\Program Files\heroku\bin;C:\Users\franj\.dotnet\tools;C:\Program Files\PostgreSQL\10\bin;C:\Users\franj\AppData\Roaming\nvm;C:\Program Files\nodejs;E:\Programs\env;C:\Program Files\JetBrains\GoLand 2020.3.3\bin;C:\Users\franj\.dotnet\tools;C:\Program Files\mingw\mingw64\bin;C:\Users\franj\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin;C:\Users\franj\AppData\Local\GitHubDesktop\bin;C:\tools\neovim\Neovim\bin;C:\Users\franj\go\bin
+  /tmp/yarn--1627223235455-0.969165436334535:/mnt/hgfs/repos/gogs/Yurma/wallet-web/node_modules/.bin:/home/yurma/.config/yarn/link/node_modules/.bin:/home/yurma/.yarn/bin:/home/yurma/.nvm/versions/node/v16.5.0/libexec/lib/node_modules/npm/bin/node-gyp-bin:/home/yurma/.nvm/versions/node/v16.5.0/lib/node_modules/npm/bin/node-gyp-bin:/home/yurma/.nvm/versions/node/v16.5.0/bin/node_modules/npm/bin/node-gyp-bin:/home/yurma/.nvm/versions/node/v16.5.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin
 
 Yarn version: 
   1.22.10
 
 Node version: 
-  16.2.0
+  16.5.0
 
 Platform: 
-  win32 x64
+  linux x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/core/utils/-/core/utils-1.4.1.tgz: Request failed "404 Not Found"
-      at ResponseError.ExtendableBuiltin (C:\Users\franj\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:696:66)
-      at new ResponseError (C:\Users\franj\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:802:124)
-      at Request.<anonymous> (C:\Users\franj\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:67058:16)
-      at Request.emit (node:events:365:28)
-      at Request.module.exports.Request.onRequestResponse (C:\Users\franj\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:141539:10)
-      at ClientRequest.emit (node:events:365:28)
-      at HTTPParser.parserOnIncomingClient (node:_http_client:621:27)
-      at HTTPParser.parserOnHeadersComplete (node:_http_common:127:17)
-      at TLSSocket.socketOnData (node:_http_client:487:22)
-      at TLSSocket.emit (node:events:365:28)
+  Error: ENOTSUP: operation not supported on socket, symlink '../../../parser/bin/babel-parser.js' -> '/mnt/hgfs/repos/gogs/Yurma/wallet-web/node_modules/@babel/core/node_modules/.bin/parser'
 
 npm manifest: 
   {
     "name": "wallet-web",
-    "version": "1.0.0",
+    "version": "0.0.73",
     "main": "index.js",
     "author": "Fran Jurmanović <fjurma12@outlook.com>",
     "license": "MIT",
@@ -40,7 +30,8 @@ npm manifest:
     },
     "dependencies": {
       "@github/catalyst": "^1.1.3",
-      "core/utils": "^1.4.1",
+      "dayjs": "^1.10.5",
+      "lit-html": "^1.4.1",
       "validator": "^13.6.0"
     },
     "devDependencies": {
@@ -2261,6 +2252,11 @@ Lockfile:
     dependencies:
       assert-plus "^1.0.0"
   
+  dayjs@^1.10.5:
+    version "1.10.5"
+    resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.10.5.tgz#5600df4548fc2453b3f163ebb2abbe965ccfb986"
+    integrity sha512-BUFis41ikLz+65iH6LHQCDm4YPMj5r1YFLdupPIyM4SGcXMmtiLQ7U37i+hGS8urIuqe7I/ou3IS1jVc4nbN4g==
+  
   debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.9:
     version "2.6.9"
     resolved "https://registry.npmjs.org/debug/-/debug-2.6.9.tgz"
@@ -4151,9 +4147,9 @@ Lockfile:
       prelude-ls "^1.2.1"
       type-check "~0.4.0"
   
-  core/utils@^1.4.1:
+  lit-html@^1.4.1:
     version "1.4.1"
-    resolved "https://registry.yarnpkg.com/core/utils/-/core/utils-1.4.1.tgz#0c6f3ee4ad4eb610a49831787f0478ad8e9ae5e0"
+    resolved "https://registry.yarnpkg.com/lit-html/-/lit-html-1.4.1.tgz#0c6f3ee4ad4eb610a49831787f0478ad8e9ae5e0"
     integrity sha512-B9btcSgPYb1q4oSOb/PrOT6Z/H+r6xuNzfH4lFli/AWhYwdtrgQkQWBbIc6mdnf6E2IL3gDXdkkqNktpU0OZQA==
   
   load-json-file@^1.0.0:

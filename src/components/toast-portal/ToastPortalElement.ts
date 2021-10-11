@@ -1,8 +1,8 @@
-import { controller, targets } from '@github/catalyst';
-import { delay, html, Timer } from 'core/utils';
+import { Timer, controller, targets } from 'core/utils';
 import { BaseComponentElement } from 'common/';
+import { ToastPortalElementTemplate } from 'components/toast-portal';
 
-@controller
+@controller('toast-portal')
 class ToastPortalElement extends BaseComponentElement {
 	@targets toastElement: HTMLElement;
 	toasts: Array<Toast> = [];
@@ -26,10 +26,6 @@ class ToastPortalElement extends BaseComponentElement {
 				}
 			}, 5000);
 		}
-		// const interval = setInterval(() => {
-		// 	this.popToast();
-		// 	clearInterval(interval);
-		// }, 5000);
 		this.update();
 	};
 
@@ -41,30 +37,10 @@ class ToastPortalElement extends BaseComponentElement {
 		this.update();
 	};
 
-	render = () => {
-		const renderToast = (note: string, type: string) => {
-			const message = () =>
-				html`
-					<div class="toast ${type ? `--${type}` : '--default'}">
-						<span class="toast-text">${note}</span>
-					</div>
-				`;
-			return html`${message()}`;
-		};
-
-		const renderToasts = (toasts: Array<Toast>) => {
-			if (toasts) {
-				return html`<div class="toast-list">
-					${toasts.map(({ type, message }, i) => (i < 3 ? renderToast(message, type) : html``))}
-				</div>`;
-			}
-			return html``;
-		};
-		return html`<div class="toast-portal">${renderToasts(this.toasts)}</div>`;
-	};
+	render = () => ToastPortalElementTemplate({ toasts: this.toasts });
 }
 
-type Toast = {
+export type Toast = {
 	type: string;
 	message: string;
 };

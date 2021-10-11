@@ -1,10 +1,10 @@
-import { controller, target } from '@github/catalyst';
-import { html, TemplateResult } from 'core/utils';
+import { TemplateResult, controller, target } from 'core/utils';
 import { TransactionsService } from 'services/';
 import { AppMainElement, AppPaginationElement } from 'components/';
 import { BasePageElement } from 'common/';
+import { HistoryPageElementTemplate } from 'pages/history-page';
 
-@controller
+@controller('history-page')
 class HistoryPageElement extends BasePageElement {
 	private transactionsService: TransactionsService;
 	@target pagination: AppPaginationElement;
@@ -48,18 +48,8 @@ class HistoryPageElement extends BasePageElement {
 		}
 	};
 
-	render = (): TemplateResult => {
-		const renderWallet = () => {
-			if (this.routerService?.routerState?.data?.walletId) {
-				return html`<span>${this.routerService?.routerState?.data?.walletId}</span>`;
-			}
-			return html``;
-		};
-		return html`<div>
-			${renderWallet()}
-			<app-pagination data-target="history-page.pagination"></app-pagination>
-		</div>`;
-	};
+	render = (): TemplateResult =>
+		HistoryPageElementTemplate({ walletId: this.routerService?.routerState?.data?.walletId });
 }
 
 export type { HistoryPageElement };

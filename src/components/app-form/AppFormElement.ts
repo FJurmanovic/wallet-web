@@ -1,11 +1,11 @@
-import { attr, controller, target } from '@github/catalyst';
-import { html, TemplateResult } from 'core/utils';
+import { TemplateResult, attr, controller, target } from 'core/utils';
 import { BaseComponentElement } from 'common/';
 import { AppDropdownElement } from 'components/app-dropdown/AppDropdownElement';
 import { InputFieldElement } from 'components/input-field/InputFieldElement';
-import { findMethod, isTrue, querys } from 'core/utils';
+import { findMethod, querys } from 'core/utils';
+import { AppFormElementTemplate } from 'components/app-form';
 
-@controller
+@controller('app-form')
 class AppFormElement extends BaseComponentElement {
 	@target formElement: HTMLElement;
 	@target innerSlot: HTMLElement;
@@ -85,18 +85,18 @@ class AppFormElement extends BaseComponentElement {
 	set = (data): any => {
 		for (let i = 0; i < this.inputField.length; i++) {
 			const input = this.inputField[i];
-			if(data?.[input.name]) {
-				input._value = data[input.name]
-				this.update()
+			if (data?.[input.name]) {
+				input._value = data[input.name];
+				this.update();
 			}
 		}
 		this.appDropdown?.forEach((input: AppDropdownElement) => {
-			if(data?.[input.name]) {
-				input.setValue(data[input.name])
-				this.update()
+			if (data?.[input.name]) {
+				input.setValue(data[input.name]);
+				this.update();
 			}
 		});
-	}
+	};
 
 	getInput = (name: string): InputFieldElement | AppDropdownElement => {
 		let formObject;
@@ -123,48 +123,14 @@ class AppFormElement extends BaseComponentElement {
 		}
 	};
 
-	render = (): TemplateResult => {
-		const renderSubmit = (valid: boolean) => {
-			if (!valid) {
-				return html`
-					<button class="btn btn-squared btn-primary --submit disabled" type="submit" disabled>Submit</button>
-				`;
-			}
-			return html` <button class="btn btn-squared btn-primary --submit" type="submit">Submit</button> `;
-		};
-		const renderError = (error: string) => {
-			if (error) {
-				return html`<span>${error}</span>`;
-			}
-			return html``;
-		};
-		const renderCancel = (hasCancel: boolean) => {
-			if (hasCancel) {
-				return html`<button class="btn btn-squared btn-red --cancel" type="button" app-action="click:app-form#goBack">
-					Cancel
-				</button>`;
-			}
-			return html``;
-		};
-
-		return html`
-			<div class="app-form">
-				<form
-					app-action="submit:app-form#onSubmit"
-					data-target="app-form.formElement"
-					autocomplete="on"
-					method="POST"
-					action="javascript:void(0)"
-				>
-					${this.renderInput ? this.customRender() : html`<slot data-target="app-form.innerSlot"></slot>`}
-					${renderError(this.error)}
-					<div class="form-buttons">
-						<div class="button-content">${renderSubmit(this.isValid)}${renderCancel(isTrue(this.hasCancel))}</div>
-					</div>
-				</form>
-			</div>
-		`;
-	};
+	render = (): TemplateResult =>
+		AppFormElementTemplate({
+			renderInput: this.renderInput,
+			customRender: this.customRender,
+			error: this.error,
+			isValid: this.isValid,
+			hasCancel: this.hasCancel,
+		});
 }
 
 export type { AppFormElement };

@@ -1,8 +1,8 @@
-import { attr, controller } from '@github/catalyst';
-import { html } from 'core/utils';
+import { attr, controller, TemplateResult } from 'core/utils';
 import { BaseComponentElement } from 'common/';
+import { CircleLoaderElementTemplate } from 'components/circle-loader';
 
-@controller
+@controller('circle-loader')
 class CircleLoaderElement extends BaseComponentElement {
 	@attr size: string;
 	constructor() {
@@ -13,9 +13,7 @@ class CircleLoaderElement extends BaseComponentElement {
 		this.update();
 	};
 
-	render = () => {
-		return html`<div class="circle-loader ${this.size ? `-${this.size}` : ''}"></div>`;
-	};
+	render = (): TemplateResult => CircleLoaderElementTemplate({ size: this.size });
 }
 
 export type { CircleLoaderElement };

@@ -1,5 +1,4 @@
-import { targets, controller, target } from '@github/catalyst';
-import { html, TemplateResult } from 'core/utils';
+import { html, TemplateResult, targets, controller, target } from 'core/utils';
 import {
 	AuthService,
 	SubscriptionService,
@@ -12,9 +11,10 @@ import { BasePageElement } from 'common/';
 import { AppDropdownElement } from 'components/app-dropdown/AppDropdownElement';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import { SubscriptionEditElementTemplate, SubscriptionEditFormTemplate } from 'pages/subscription-edit';
 dayjs.extend(utc);
 
-@controller
+@controller('subscription-edit')
 class SubscriptionEditElement extends BasePageElement {
 	@targets inputs: Array<InputFieldElement | AppDropdownElement>;
 	@target appForm: AppFormElement;
@@ -86,7 +86,7 @@ class SubscriptionEditElement extends BasePageElement {
 	getSubscription = async (id) => {
 		try {
 			const response = await this.subscriptionService.get(id, {
-				embed: 'Wallet'
+				embed: 'Wallet',
 			});
 			const wallet = this.appForm.getInput('wallet');
 			if (wallet) {
@@ -95,10 +95,8 @@ class SubscriptionEditElement extends BasePageElement {
 			response.wallet = response.walletId;
 			response.endDate = dayjs(response.endDate).format('YYYY-MM-DD');
 			this.appForm.set(response);
-		} catch (err) {
-
-		}
-	}
+		} catch (err) {}
+	};
 
 	getWallets = async (options): Promise<void> => {
 		try {
@@ -127,12 +125,7 @@ class SubscriptionEditElement extends BasePageElement {
 				return;
 			}
 
-			const {
-				description: description,
-				wallet: walletId,
-				amount,
-				endDate,
-			} = values;
+			const { description: description, wallet: walletId, amount, endDate } = values;
 
 			const endDateFormat = dayjs(endDate).utc(true).format();
 
@@ -181,80 +174,14 @@ class SubscriptionEditElement extends BasePageElement {
 		this.appForm.update();
 	};
 
-	renderForms = () => {
-		const renderInput = (type, name, label, rules, hide?, customAction?) => {
-			return html`<input-field
-				data-type="${type}"
-				data-name="${name}"
-				data-label="${label}"
-				data-targets="subscription-edit.inputs"
-				data-rules="${rules}"
-				data-custom-action="${customAction || ''}"
-				data-disabled="${hide}"
-			></input-field>`;
-		};
+	renderForms = () =>
+		SubscriptionEditFormTemplate({
+			hasEndCheck: this.hasEndCheck,
+			walletData: this.walletData,
+			errorMessage: this.errorMessage,
+		});
 
-		const renderNumericInput = (pattern, name, label, rules, hide?, customAction?) => {
-			if (hide) {
-				return html``;
-			}
-			return html`<input-field
-				data-type="number"
-				data-pattern="${pattern}"
-				data-name="${name}"
-				data-label="${label}"
-				data-targets="subscription-edit.inputs"
-				data-rules="${rules}"
-				custom-action="${customAction}"
-			></input-field>`;
-		};
-
-		const renderDropdown = (fetch, name, label, rules, hide?) => {
-			if (hide) {
-				return html``;
-			}
-			return html`<app-dropdown
-				data-name="${name}"
-				data-label="${label}"
-				data-targets="subscription-edit.inputs"
-				data-rules="${rules}"
-				data-fetch="${fetch}"
-			></app-dropdown>`;
-		};
-		return html`
-				<div slot="inputs">
-					${renderNumericInput('^d+(?:.d{1,2})?$', 'amount', 'Amount', 'required', false)}
-					${renderInput('text', 'description', 'Description', 'required')}
-					${renderInput('checkbox', 'hasEnd', 'Existing End Date', '', false, 'change:subscription-edit#onCheck')}
-					${renderInput(
-						'date',
-						'endDate',
-						'End date',
-						'required',
-						!(this.hasEndCheck?.inp as HTMLInputElement)?.checked
-					)}
-					${renderDropdown(
-						'subscription-edit#getWallets',
-						'wallet',
-						'Wallet',
-						'required',
-						this.walletData && this.walletData.walletId
-					)}
-					${this.errorMessage ? html`<div>${this.errorMessage}</div>` : html``}</template
-				>`;
-	};
-
-	render = (): TemplateResult => {
-		return html`
-			<app-form
-				data-custom="subscription-edit#onSubmit"
-				data-has-cancel="true"
-				data-target="subscription-edit.appForm"
-				data-render-input="subscription-edit#renderForms"
-			>
-			</app-form>
-		`;
-	};
+	render = (): TemplateResult => SubscriptionEditElementTemplate();
 }
 
 export type { SubscriptionEditElement };

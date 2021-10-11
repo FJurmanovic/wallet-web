@@ -1,10 +1,10 @@
-import { targets, controller, target } from '@github/catalyst';
-import { html, TemplateResult } from 'core/utils';
+import { TemplateResult, targets, controller, target } from 'core/utils';
 import { AuthService } from 'services/';
 import { AppFormElement, InputFieldElement } from 'components/';
 import { BasePageElement } from 'common/';
+import { RegisterPageElementTemplate } from 'pages/register-page';
 
-@controller
+@controller('register-page')
 class RegisterPageElement extends BasePageElement {
 	@targets inputs: Array<InputFieldElement>;
 	@target appForm: AppFormElement;
@@ -60,41 +60,7 @@ class RegisterPageElement extends BasePageElement {
 		return _return;
 	}
 
-	render = (): TemplateResult => {
-		return html`
-			<app-form data-custom="register-page#onSubmit" data-has-cancel="true" data-target="register-page.appForm">
-				<input-field
-					data-type="text"
-					data-name="username"
-					data-label="Username"
-					data-targets="register-page.inputs"
-					data-rules="required"
-				></input-field>
-				<input-field
-					data-type="email"
-					data-name="email"
-					data-label="E-mail"
-					data-targets="register-page.inputs"
-					data-rules="required|is_email"
-				></input-field>
-				<input-field
-					data-type="password"
-					data-name="password"
-					data-label="Password"
-					data-targets="register-page.inputs"
-					data-rules="required"
-				>
-				</input-field>
-				<input-field
-					data-type="password"
-					data-name="confirmpassword"
-					data-label="Confirm Password"
-					data-targets="register-page.inputs"
-					data-rules="required|is_same[field(password)]"
-				>
-			</app-form>
-		`;
-	};
+	render = (): TemplateResult => RegisterPageElementTemplate();
 }
 
 export type { RegisterPageElement };

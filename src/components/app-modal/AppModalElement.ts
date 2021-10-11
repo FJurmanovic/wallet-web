@@ -1,7 +1,7 @@
-import { controller, target } from '@github/catalyst';
+import { controller, target } from 'core/utils';
 import { BaseComponentElement } from 'common/';
 
-@controller
+@controller('app-modal')
 class AppModalElement extends BaseComponentElement {
 	@target modalElement: HTMLElement;
 	@target modalContent: HTMLElement;
