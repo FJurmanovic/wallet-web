@@ -1,5 +1,5 @@
 {
-    "apiUrl": "wallet-go-webapi.herokuapp.com",
+    "apiUrl": "api.jurmanovic.com/wallet",
     "apiVersion": "v1",
     "ssl": true,
     "appName": "Wallets"
