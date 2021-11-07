@@ -5,6 +5,7 @@ import { closest, controller, target } from 'core/utils';
 import { AppLoaderElement } from 'components/app-loader/AppLoaderElement';
 import { ToastPortalElement } from 'components/toast-portal/ToastPortalElement';
 import { BasePageElement } from 'common/';
+import { TransactionsService } from 'services/';
 
 @controller('app-main')
 class AppMainElement extends HTMLElement {
@@ -12,6 +13,8 @@ class AppMainElement extends HTMLElement {
 	public authStore: AuthStore;
 	private httpClient: HttpClient;
 	public appService: AppService;
+	private transactionsService: TransactionsService;
+	private subscriptionChecked: boolean = false;
 	//public shadow: any;
 	@target appModal: AppModalElement;
 	@target mainRoot: AppRootElement;
@@ -36,6 +39,7 @@ class AppMainElement extends HTMLElement {
 		this.httpClient = new HttpClient();
 		this.appService = new AppService(this, this.httpClient);
 		this.routerService = new RouterService(this, mainRoot);
+		this.transactionsService = new TransactionsService(this.appService);
 		this.authStore = new AuthStore(this, this.appService);
 		this.routerService.setRoutes([
 			{
@@ -113,6 +117,8 @@ class AppMainElement extends HTMLElement {
 		this.routerService.init();
 		this.addEventListener('mousedown', this.setActiveElement, false);
 		this.addEventListener('tokenchange', this.closeOffToken);
+		this.addEventListener('routechanged', this.checkSubscriptions);
+		this.checkSubscriptions();
 	}
 
 	closeOffToken = () => {
@@ -121,9 +127,19 @@ class AppMainElement extends HTMLElement {
 		}
 	};
 
+	checkSubscriptions = async () => {
+		if (this.isAuth && !this.subscriptionChecked) {
+			const checked = await this.transactionsService.check();
+			console.log(checked);
+			this.subscriptionChecked = true;
+			this.removeEventListener('routechanged', this.checkSubscriptions);
+		}
+	};
+
 	disconnectedCallback = () => {
 		this.removeEventListener('mousedown', this.setActiveElement);
 		this.removeEventListener('tokenchange', this.closeOffToken);
+		this.removeEventListener('routechanged', this.checkSubscriptions);
 	};
 
 	setActiveElement = (e) => {
