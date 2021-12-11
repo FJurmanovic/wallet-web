@@ -13,3 +13,4 @@ export * from './wallet-page';
 export * from './subscription-edit';
 export * from './transaction-edit';
 export * from './wallet-edit';
+export * from './transaction-check';

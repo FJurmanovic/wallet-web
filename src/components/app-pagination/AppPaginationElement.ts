@@ -60,7 +60,7 @@ class AppPaginationElement extends BaseComponentElement {
 		this.update();
 	};
 
-	executeFetch = async (options?): Promise<void> => {
+	executeFetch = async (options?, fetchFunc = this.fetchFunc): Promise<void> => {
 		if (!options) {
 			options = {
 				rpp: this.rpp || 5,
@@ -70,7 +70,7 @@ class AppPaginationElement extends BaseComponentElement {
 
 		try {
 			this.loader?.start?.();
-			const response = await this.fetchFunc(options);
+			const response = await fetchFunc(options);
 			this.loader?.stop?.();
 			this.setItems(response?.items);
 			this.totalItems = response?.totalRecords;
