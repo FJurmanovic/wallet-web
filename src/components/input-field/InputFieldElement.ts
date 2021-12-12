@@ -12,6 +12,7 @@ class InputFieldElement extends BaseComponentElement {
 	@attr rules: string;
 	@attr pattern: string;
 	@attr customAction: string;
+	@attr initialValue: string;
 	@target main: HTMLElement;
 	@target inp: HTMLElement;
 	@closest appForm: AppFormElement;
@@ -31,6 +32,9 @@ class InputFieldElement extends BaseComponentElement {
 		this.validator = new Validator(this, this.appForm, this.rules);
 		this.randId = `${name}${randomId()}`;
 		this.update();
+		if (this.initialValue) {
+			this._value = this.initialValue;
+		}
 	};
 
 	attributeChangedCallback() {

@@ -41,11 +41,18 @@ class HistoryPageElement extends BasePageElement {
 			}
 			options.embed = 'TransactionType';
 			options.sortBy = 'transactionDate|desc';
+			options.noPending = true;
 			const response = await this.transactionsService.getAll(options);
 			return response;
 		} catch (err) {
 			throw err;
 		}
+	};
+
+	transactionCheck = () => {
+		this.appMain.createModal('transaction-check', {
+			autoInit: true,
+		});
 	};
 
 	render = (): TemplateResult =>

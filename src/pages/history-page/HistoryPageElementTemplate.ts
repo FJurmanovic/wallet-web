@@ -1,16 +1,12 @@
 import { html, nothing, TemplateResult } from 'core/utils';
 
 export default (props): TemplateResult => {
-	const { walletId } = props;
-	const renderWallet = () => {
-		if (walletId) {
-			return html`<span>${walletId}</span>`;
-		}
-		return nothing;
-	};
-
 	return html`<div>
-		${renderWallet()}
+		<div class="wallet-buttons">
+			<button class="btn btn-squared btn-primary" app-action="click:history-page#transactionCheck">
+				Check Transactions
+			</button>
+		</div>
 		<app-pagination data-target="history-page.pagination"></app-pagination>
 	</div>`;
 };
