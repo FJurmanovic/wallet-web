@@ -5,6 +5,7 @@ import { isTrue } from 'core/utils';
 
 class BasePageElement extends BaseElement {
 	public _pageTitle: string = '';
+	public hideTitleHead: boolean = false;
 	@attr hidetitle: string;
 	@attr customtitle: string;
 	private _data: any;
@@ -13,6 +14,7 @@ class BasePageElement extends BaseElement {
 		if (options?.title) {
 			this._pageTitle = options?.title;
 		}
+		this.hideTitleHead = options?.hideTitleHead || false;
 		this.connectedCallback = this.connectedCallback.bind(this);
 		this.disconnectedCallback = this.disconnectedCallback.bind(this);
 	}
@@ -36,7 +38,9 @@ class BasePageElement extends BaseElement {
 	};
 
 	connectedCallback() {
-		this.appMain.setTitle(this.pageTitle);
+		if (!this.hideTitleHead) {
+			this.appMain.setTitle(this.pageTitle);
+		}
 		super.connectedCallback();
 	}
 
@@ -53,4 +57,5 @@ export default BasePageElement;
 
 export type OptionType = {
 	title?: string;
+	hideTitleHead?: boolean;
 };

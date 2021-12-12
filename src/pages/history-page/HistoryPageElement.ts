@@ -49,6 +49,12 @@ class HistoryPageElement extends BasePageElement {
 		}
 	};
 
+	transactionCheck = () => {
+		this.appMain.createModal('transaction-check', {
+			autoInit: true,
+		});
+	};
+
 	render = (): TemplateResult =>
 		HistoryPageElementTemplate({ walletId: this.routerService?.routerState?.data?.walletId });
 }

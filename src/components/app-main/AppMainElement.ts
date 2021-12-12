@@ -129,9 +129,10 @@ class AppMainElement extends HTMLElement {
 
 	checkSubscriptions = async () => {
 		if (this.isAuth && !this.subscriptionChecked) {
-			const checked = await this.transactionsService.check({ sortBy: 'transactionDate asc' });
+			const checked = await this.transactionsService.check({ sortBy: 'transactionDate asc', rpp: 10 });
 			this.createModal('transaction-check', {
 				data: checked,
+				autoInit: false,
 			});
 			this.subscriptionChecked = true;
 			this.removeEventListener('routechanged', this.checkSubscriptions);

@@ -15,6 +15,7 @@ class TransactionCheckElement extends BasePageElement {
 	constructor() {
 		super({
 			title: 'Transaction Check',
+			hideTitleHead: true,
 		});
 	}
 
@@ -23,10 +24,12 @@ class TransactionCheckElement extends BasePageElement {
 		await this.fetchTransactionStatus();
 		this.transactionsService = new TransactionsService(this.appMain?.appService);
 		this.update();
-		this.pagination?.setCustomRenderItem?.(this.renderSubscription)!;
-		this.pagination?.setFetchFunc?.(this.getTransactions, false)!;
 		this.modalData = this.getData();
-		this.pagination?.executeFetch?.(null, () => this.mappedData(this.modalData.data));
+		this.pagination?.setCustomRenderItem?.(this.renderSubscription)!;
+		this.pagination?.setFetchFunc?.(this.getTransactions, this.modalData?.autoInit)!;
+		if (!this.modalData?.autoInit) {
+			this.pagination?.executeFetch?.(null, () => this.mappedData(this.modalData.data));
+		}
 	};
 
 	mappedData = (data) => {
@@ -37,22 +40,15 @@ class TransactionCheckElement extends BasePageElement {
 	};
 
 	renderSubscription = (item) => {
-		const renderEditActions = () => html`<span
-				><button class="btn btn-rounded btn-red" @click="${() => this.transactionEdit(item)}}">Cancel</button></span
-			><span
-				><button class="btn btn-rounded btn-primary" @click="${() => this.transactionEditSave(item)}}">
-					Save
-				</button></span
-			>`;
-		const renderRegularActions = () => html`<span
-				><button class="btn btn-rounded btn-primary" @click="${() => this.transactionEdit(item)}}">Edit</button></span
-			>
-			<span
-				><button class="btn btn-rounded btn-green" @click="${() => this.transactionEditComplete(item)}}">
-					Complete
-				</button></span
-			>`;
-		return html`<tr class="col-transactions">
+		const renderEditActions = () => html`<div class="d--flex">
+			<button class="btn btn-rounded btn-red" @click="${() => this.transactionEdit(item)}}">Cancel</button>
+			<button class="btn btn-rounded btn-primary" @click="${() => this.transactionEditSave(item)}}">Save</button>
+		</div>`;
+		const renderRegularActions = () => html`<div class="d--flex">
+			<button class="btn btn-rounded btn-primary" @click="${() => this.transactionEdit(item)}}">Edit</button>
+			<button class="btn btn-rounded btn-green" @click="${() => this.transactionEditComplete(item)}}">Complete</button>
+		</div>`;
+		return html`<tr class="col-checks">
 			${!item.isEdit
 				? html`<td class="--left">${dayjs(item.transactionDate).format("MMM DD 'YY")}</td>`
 				: html`<input-field
@@ -129,7 +125,12 @@ class TransactionCheckElement extends BasePageElement {
 		} catch (err) {
 			throw err;
 		} finally {
-			this.pagination?.defaultFetch();
+			const options = {
+				page: this.pagination?.page || 1,
+				rpp: this.pagination?.rpp || 10,
+			};
+			this.pagination?.executeFetch(options);
+			this.appMain?.triggerTransactionUpdate?.()!;
 		}
 	};
 
