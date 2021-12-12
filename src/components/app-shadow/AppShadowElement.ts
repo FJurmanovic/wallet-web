@@ -13,12 +13,18 @@ import style from 'styles/main.scss';
 
 		connectedCallback() {
 			const _root = _shadow.get(this);
-			const _appMain = document.createElement('app-main');
 			const _style = document.createElement('style');
 			_style.innerHTML = style;
-
 			_root.appendChild(_style);
-			_root.appendChild(_appMain);
+			if ('requestAnimationFrame' in window) {
+				window.requestAnimationFrame(() => {
+					const _appMain = document.createElement('app-main');
+					_root.appendChild(_appMain);
+				});
+			} else {
+				const _appMain = document.createElement('app-main');
+				_root.appendChild(_appMain);
+			}
 		}
 	}
 })();
