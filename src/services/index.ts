@@ -5,3 +5,4 @@ export { default as TransactionsService } from './TransactionsService';
 export { default as TransactionTypeService } from './TransactionTypeService';
 export { default as SubscriptionService } from './SubscriptionService';
 export { default as SubscriptionTypeService } from './SubscriptionTypeService';
+export { default as TransactionStatusService } from './TransactionStatusService';

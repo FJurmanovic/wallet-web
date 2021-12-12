@@ -129,7 +129,7 @@ class AppMainElement extends HTMLElement {
 
 	checkSubscriptions = async () => {
 		if (this.isAuth && !this.subscriptionChecked) {
-			const checked = await this.transactionsService.check();
+			const checked = await this.transactionsService.check({ sortBy: 'transactionDate asc' });
 			this.createModal('transaction-check', {
 				data: checked,
 			});
