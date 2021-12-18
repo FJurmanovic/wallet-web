@@ -1,4 +1,5 @@
 export * from './library';
+export * as Library from './library';
 export * from './templating';
 
 export * from './directives/until';

@@ -3,7 +3,7 @@ import { html, nothing, TemplateResult } from 'core/utils';
 export default (props): TemplateResult => {
 	const { currentBalance, currency, lastMonth, nextMonth, loader, initial } = props;
 
-	const renderItem = (header, balance, currency) => html`<div class="header-item">
+	const renderItem = (header, balance, currency) => html` <div class="header-item">
 		<div class="--header">${header}</div>
 		<div class="--content">
 			<span class="--balance ${balance > 0 ? '--positive' : '--negative'}"

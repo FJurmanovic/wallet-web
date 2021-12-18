@@ -1,7 +1,6 @@
 import { attr } from '@github/catalyst';
-import { html, render } from 'core/utils';
+import { html, render, isTrue, TemplateResult } from 'core/utils';
 import { BaseElement } from 'common/';
-import { isTrue } from 'core/utils';
 
 class BasePageElement extends BaseElement {
 	public _pageTitle: string = '';
@@ -31,7 +30,12 @@ class BasePageElement extends BaseElement {
 	};
 
 	update = (): void => {
-		const _render = () => html` ${this.renderTitle()} ${this.render()} `;
+		let renderPage = this.render();
+		if (typeof renderPage === 'string') {
+			const strings: any = [renderPage];
+			renderPage = html(strings);
+		}
+		const _render = () => html` ${this.renderTitle()} ${renderPage} `;
 		render(_render(), this);
 		this.bindEvents('app-action');
 		this.updateCallback();

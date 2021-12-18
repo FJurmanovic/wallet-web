@@ -79,7 +79,14 @@ class BaseElement extends HTMLElement {
 	updateCallback = (): void => {};
 
 	update = (): void => {
-		render(this.render(), this);
+		let _rendered = this.render();
+		console.log(typeof _rendered, _rendered);
+		if (typeof _rendered === 'string') {
+			const strings: any = [_rendered];
+			console.log('Mwa', strings);
+			_rendered = html(strings);
+		}
+		render(_rendered, this);
 		if (this.shadowRoot) {
 			const renderSlot = () => html`<slot><slot></slot></slot>`;
 			render(renderSlot(), this.shadowRoot);

@@ -4,6 +4,52 @@ import { autoShadowRoot } from '@github/catalyst/lib/auto-shadow-root';
 import { defineObservedAttributes, initializeAttrs } from '@github/catalyst/lib/attr';
 
 import { CustomElement } from '@github/catalyst/lib/custom-element';
+import { html } from 'core/utils';
+
+function renderChildren(children) {
+	let _html = '';
+	for (const child of children) {
+		if (!child) break;
+		if (typeof child === 'string') {
+			_html += child;
+		} else {
+			_html += createElement(...child);
+		}
+	}
+	return _html;
+}
+
+const htmlTagReg = /<\/?[a-z][\s\S]*>/i;
+
+function processElement(tag?, attributes?, ...children) {
+	console.log(tag, attributes, children);
+	const isHtmlTag = htmlTagReg.test(tag);
+	if (isHtmlTag) {
+		console.log('tag1', [tag]);
+		return tag;
+	}
+	if (!tag) {
+		console.log('tag2', [tag]);
+		return renderChildren(children);
+	}
+
+	let _html = '<';
+	_html += tag;
+	for (const [key, value] of Object.entries(attributes || {})) {
+		_html += ` ${key}="${value}"`;
+	}
+	_html += '>';
+	_html += renderChildren(children);
+	_html += `</${tag}>`;
+	console.log('tag3', [_html]);
+	return _html;
+}
+
+function createElement(...args) {
+	return processElement(...args);
+}
+
+const Fragment = null;
 
 function controller(customElement: CustomElement | string): void | any {
 	if (typeof customElement == 'string') {
@@ -41,4 +87,4 @@ function controller(customElement: CustomElement | string): void | any {
 	}
 }
 
-export { attr, controller, target, targets };
+export { attr, controller, target, targets, createElement, Fragment };
