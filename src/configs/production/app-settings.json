@@ -1,5 +1,5 @@
 {
-    "apiUrl": "api.jurmanovic.com/wallet",
+    "apiUrl": "wallets-api.jurmanovic.com",
     "apiVersion": "v1",
     "ssl": true,
     "appName": "Wallets"
